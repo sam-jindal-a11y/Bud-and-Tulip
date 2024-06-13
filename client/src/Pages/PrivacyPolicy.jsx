@@ -3,7 +3,7 @@ import React from "react";
 const PrivacyPolicy = () => {
   return (
     <div className="flex items-center justify-center min-h-96 my-10">
-      <div className="text-center mx-36 mx-auto">
+      <div className="text-center mx-32 mx-auto">
         <h1 className="text-2xl font-bold mb-8">Privacy Policy</h1>
         <p className="text-base opacity-70 text-left">
           Bud & Tulip collects your general information for number of reasons;

@@ -52,7 +52,7 @@ const Contact = () => {
               type="submit"
               className="bg-pinkc text-white px-4 py-2 rounded-md hover:bg-blue-600"
             >
-              Submit
+              Submit  
             </button>
           </form>
         </div>

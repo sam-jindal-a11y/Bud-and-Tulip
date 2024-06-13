@@ -1,3 +1,13 @@
 .divsimp{
     justify-content: center;
 }
+.footer-div{
+    justify-content: space-around;
+    /* flex-direction: row; */
+}
+.footer{
+ margin-bottom: 0px !important;
+}
+.layout{
+    height: 100vh !important;
+}

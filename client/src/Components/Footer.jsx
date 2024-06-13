@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <div className="w-full h-screen px-20 flex bg-greyc text-white flex-col py-10 min-h-full">
-      <div className="flex flex-row  mx-auto justify-between">
-        <div className="about w-1/2 min-h-full ">
+  
+    <div className="w-full footer px-20 flex text-white flex-col py-10 bg-greyc">
+      <div className="flex flex-row  justify-between footer-div">
+        <div className="about mr-20">
           <h3 className="font-semibold text-lg	">About Us</h3>
+          <hr />
           <br />
           <p>
             Bud & Tulip is an everyday easy breezy, fuss free clothing<br/>  label
@@ -18,8 +20,9 @@ const Footer = () => {
           </p>
           
         </div>
-        <div className="account flex flex-col">
+        <div className="account flex flex-col mr-20">
             <h3 className="font-semibold text-lg">My Account</h3>
+            <hr />
             <br />
             <Link to="/Account" className=" hover:text-pinkc">My Account</Link>
             <Link to="/ShoppingCart"className=" hover:text-pinkc">Shopping Cart</Link>
@@ -30,8 +33,25 @@ const Footer = () => {
             <Link to="/Refund"className=" hover:text-pinkc">Refund Policy</Link>
             <Link to="/terms"className=" hover:text-pinkc">Terms & Conditions</Link>
         </div>
-        <div className="categories"></div>
+        <div className="categories flex flex-col mr-20">
+            <h3 className="font-semibold text-lg">Categories</h3>
+            <hr />
+            <br />
+            <Link to="/products">All Products</Link>
+            <Link>Sale</Link>
+            <Link>Suits</Link>
+            <Link>Loungewear</Link>
+            <Link>Co-Ords</Link>
+            <Link>Dresses</Link>
+            <Link>Saree</Link>
+            <Link>Kurtas</Link>
+            <Link>Tops</Link>
+            <Link>Blazer</Link>
+            <Link>Skirt Sets</Link>
+            <Link>Shirts</Link>
+        </div>
         <div className="insta"></div>
+        <div className="max-w-96 bg-white">instagram embedded</div>
       </div>
       <div className="nav2">
         <p className="font-semibold my-5">
@@ -40,6 +60,7 @@ const Footer = () => {
         </p>
       </div>
     </div>
+  
   );
 };
 

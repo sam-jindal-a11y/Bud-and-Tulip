@@ -18,7 +18,7 @@ import Wishlist from "./Pages/Wishlist";
 
 const Layout = () => {
   return (
-    <div>
+    <div className="layout">
       <Router>
         <Navbar />
         <Routes>
