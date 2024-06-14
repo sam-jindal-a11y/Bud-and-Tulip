@@ -15,3 +15,7 @@
 .carousel{
     width: 100vw !important;
 }
+.left-se{
+    text-align: left !important;
+    align-items: start;
+}
