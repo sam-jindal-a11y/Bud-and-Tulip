@@ -10,4 +10,8 @@
 }
 .layout{
     height: 100vh !important;
+    max-width: 100vw !important;
+}
+.carousel{
+    width: 100vw !important;
 }

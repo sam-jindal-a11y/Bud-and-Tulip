@@ -15,6 +15,9 @@ import Register from "./Pages/Register";
 import Account from "./Pages/Account";
 import ShoppingCart from "./Pages/ShoppingCart";
 import Wishlist from "./Pages/Wishlist";
+import SizeChart from "./Pages/SizeChart";
+import ProductView from "./Components/ProductView";
+import SearchSection from "./Pages/SearchSection";
 
 const Layout = () => {
   return (
@@ -31,10 +34,13 @@ const Layout = () => {
           <Route path="/shippingPolicy" element={<ShippingPolicy />} />
           <Route path="/Refund" element={<RefundPolicy />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/product" element={<ProductView />}/>
           <Route path="/Register" element={<Register />} />
           <Route path="/Account" element={<Account />} />
           <Route path="/ShoppingCart" element={<ShoppingCart />} />
+          <Route path="/Search" element={<SearchSection />} />
           <Route path="/Wishlist" element={<Wishlist />} />
+          <Route path="/SizeChart" element={<SizeChart />} />
         </Routes>
         <Footer />
       </Router>
