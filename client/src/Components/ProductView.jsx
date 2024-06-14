@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProductView = () => {
   const [visibleSection, setVisibleSection] = useState(null);
@@ -6,6 +7,12 @@ const ProductView = () => {
   const toggleSection = (section) => {
     setVisibleSection(visibleSection === section ? null : section);
   };
+
+  const Navigate = useNavigate();
+
+  function sizeButton(){
+    Navigate('/SizeChart')
+  }
   return (
     <div className="container mx-auto px-4 py-8">
       {/* First Section: Product Images and Details */}
@@ -78,7 +85,7 @@ const ProductView = () => {
             <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
               Add to Wishlist
             </button>
-            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
+            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 " onClick={sizeButton}>
               Size Chart
             </button>
           </div>
