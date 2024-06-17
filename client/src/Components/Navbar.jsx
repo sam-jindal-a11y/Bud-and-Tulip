@@ -32,7 +32,7 @@ const Navbar = () => {
     </div>
 
         <div className="flex space-x-4">
-        <Link to="/Register" className="text-gray-700 hover:text-pinkc text-center	text-base"> <i class="fa-regular fa-user"></i><br />My Account</Link>
+        <Link to="/Account" className="text-gray-700 hover:text-pinkc text-center	text-base"> <i class="fa-regular fa-user"></i><br />My Account</Link>
         <Link to="/Wishlist" className="text-gray-700 hover:text-pinkc text-center text-base	"><i class="fa-regular fa-heart"></i><br />Wishlist</Link>
         <Link to="/ShoppingCart" className="text-gray-700 hover:text-pinkc text-center text-base	"><i class="fa-solid fa-cart-shopping"></i><br />My Cart</Link>
         </div>

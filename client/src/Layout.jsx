@@ -18,6 +18,8 @@ import Wishlist from "./Pages/Wishlist";
 import SizeChart from "./Pages/SizeChart";
 import ProductView from "./Components/ProductView";
 import SearchSection from "./Pages/SearchSection";
+import Addressform from "./Components/Addressform";
+import CheckoutPage from "./Pages/CheckoutPage";
 
 const Layout = () => {
   return (
@@ -41,6 +43,8 @@ const Layout = () => {
           <Route path="/Search" element={<SearchSection />} />
           <Route path="/Wishlist" element={<Wishlist />} />
           <Route path="/SizeChart" element={<SizeChart />} />
+          <Route path="/AddressForm" element={<Addressform />} />
+          <Route path="/CheckoutPage" element={<CheckoutPage />} />
         </Routes>
         <Footer />
       </Router>
