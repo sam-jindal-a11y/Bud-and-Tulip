@@ -64,6 +64,17 @@ const ProductView = () => {
               <option>XL</option>
             </select>
           </div>
+          <div className="flex space-x-4 mb-4">
+            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
+              Add to Cart
+            </button>
+            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
+              Add to Wishlist
+            </button>
+            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 " onClick={sizeButton}>
+              Size Chart
+            </button>
+          </div>
           <p className="text-gray-700 mb-6">
             <b>Product Display Information:</b> <br /> 
             Model is Wearing Size Small (S)
@@ -78,17 +89,7 @@ const ProductView = () => {
             <br />
             <b>Guaranteed Safe Checkout</b>
           </p>
-          <div className="flex space-x-4 mb-4">
-            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
-              Add to Cart
-            </button>
-            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
-              Add to Wishlist
-            </button>
-            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 " onClick={sizeButton}>
-              Size Chart
-            </button>
-          </div>
+         
         </div>
       </div>
       {/* Second Section: Additional Information */}
