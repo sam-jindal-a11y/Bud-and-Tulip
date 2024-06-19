@@ -1,9 +1,31 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Carousel from "../Components/Carousel";
 import ProductCard from "../Components/ProductCard";
 
+
+
 const Home = () => {
+
+  const [product , setProduct] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/products");
+        const products = response.data.createdProducts;
+        setProduct(products);
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchProducts();
+    
+  }, []);
+
+  
+  
   return (
     <div>
       <Carousel />
@@ -16,31 +38,14 @@ const Home = () => {
         <section className="mb-12 text-center">
           <h2 className="text-3xl font-bold mb-12">New Arrivals</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            <ProductCard
-              image="https://www.budandtulips.com/Content/Pro_Images/BT763ir31.jpg"
-              name="Rabbit Suit"
-              price="2000.00"
-            />
-            <ProductCard
-              image="https://www.budandtulips.com/Content/Pro_Images/BT762ir21.jpg"
-              name="Manushi Suit"
-              price="2500.00"
-            />
-            <ProductCard
-              image="https://www.budandtulips.com/Content/Pro_Images/BT761ir11.jpg"
-              name="Jhilmil Suit"
-              price="3000.00"
-            />
-            <ProductCard
-              image="https://www.budandtulips.com/Content/Pro_Images/BT760ir01.jpg"
-              name="Lavanya Suit"
-              price="3500.00"
-            />
+          {product.map((product) => (
               <ProductCard
-              image="https://www.budandtulips.com/Content/Pro_Images/BT760ir01.jpg"
-              name="Lavanya Suit"
-              price="3500.00"
-            />
+                key={product._id}
+                image={product.image[0]}  // Using the first image from the array
+                name={product.name}
+                price={product.price}
+              />
+            ))}
           </div>
         </section>
         {/* Best Sellers Section */}

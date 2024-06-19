@@ -4,24 +4,57 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
+
   function signinToggle() {
-    Navigate("/Register");
+    navigate("/Register");
   }
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+    const loginData = {
+      email,
+      password
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Login successful:", result);
+        // Store the token in localStorage or context
+        localStorage.setItem('token', result.token);
+        // Redirect to the home page or another page
+        navigate("/");
+      } else {
+        console.error("Login failed:", result.message);
+        setErrorMessage(result.message);
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setErrorMessage("An error occurred. Please try again later.");
+    }
   };
 
   return (
     <div className="flex h-96 my-20">
       {/* Left Section */}
-      <div className="flex-1 flex flex-col justify-arround items-center bg-white p-6 ">
+      <div className="flex-1 flex flex-col justify-around items-center bg-white p-6">
+        
         <h2 className="text-2xl font-bold mb-2 text-pink-600">LOGIN</h2>
+  
+         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <p className="mb-6">
           If you've created an account with us, please enter.
         </p>
@@ -39,7 +72,7 @@ const Login = () => {
               placeholder="EMAIL"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-SM shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               required
             />
           </div>
@@ -56,7 +89,7 @@ const Login = () => {
               placeholder="PASSWORD"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-SM shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               required
             />
           </div>
@@ -68,16 +101,17 @@ const Login = () => {
           <br />
           <button
             type="submit"
-            className="w-full bg-pinkc text-white py-2 px-4 rounded-SM hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full bg-pink-600 text-white py-2 px-4 rounded-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             SIGN IN
           </button>
           <br />
+         
         </form>
       </div>
 
       {/* Right Section */}
-      <div className="flex-1 flex flex-col justify-center items-center bg-pinkc mr-8 p-6">
+      <div className="flex-1 flex flex-col justify-center items-center bg-pink-600 mr-8 p-6">
         <h2 className="text-3xl font-bold text-center mb-4">
           Welcome to Bud & Tulip
         </h2>
@@ -85,7 +119,10 @@ const Login = () => {
           Join us today to explore the latest trends in ladies' fashion. Sign up
           now to get exclusive offers and discounts!
         </p>
-        <button className="bg-pink-600 text-white py-2 px-6 rounded-sm hover:bg-pink-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500" onClick={signinToggle}>
+        <button
+          className="bg-pink-600 text-white py-2 px-6 rounded-sm hover:bg-pink-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+          onClick={signinToggle}
+        >
           Create New Account
         </button>
       </div>
