@@ -19,3 +19,6 @@
     text-align: left !important;
     align-items: start;
 }
+.img-proudct{
+    object-fit: contain !important;
+}

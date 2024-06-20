@@ -37,6 +37,7 @@ const Layout = () => {
           <Route path="/Refund" element={<RefundPolicy />} />
           <Route path="/login" element={<Login />} />
           <Route path="/product" element={<ProductView />}/>
+          <Route path="/product/:id" element={<ProductView />} />
           <Route path="/Register" element={<Register />} />
           <Route path="/Account" element={<Account />} />
           <Route path="/ShoppingCart" element={<ShoppingCart />} />
