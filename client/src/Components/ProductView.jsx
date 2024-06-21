@@ -1,27 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 
 const ProductView = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [size, setSize] = useState('M'); // Default size
-
+  const [size, setSize] = useState('M');
+  const [user, setUser] = useState(null);
   const handleThumbnailClick = (index) => {
     setSelectedImageIndex(index);
   };
 
   const addToCart = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/cart', {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login to add items to the cart.');
+        return;
+      }
+
+      const decoded = await jwtDecode(token);
+      await setUser(decoded);
+
+      await axios.post('http://localhost:5000/api/cart', {
+        userId : user.id,
         productId: product._id,
         productName: product.name,
         price: product.price,
-        quantity: quantity,
-        size: size,
+        quantity,
+        size,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      console.log(user);
       alert('Product added to cart');
     } catch (error) {
       console.error("Error adding product to cart:", error.response?.data?.message || error.message);

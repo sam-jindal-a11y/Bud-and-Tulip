@@ -32,15 +32,13 @@ const Login = () => {
       const result = await response.json();
 
       if (response.ok) {
-        console.log("Login successful:", result);
-        // Store the token in localStorage or context
-        localStorage.setItem('token', result.token);
-        // Redirect to the home page or another page
-        navigate("/");
-      } else {
-        console.error("Login failed:", result.message);
-        setErrorMessage(result.message);
-      }
+        // Store the token in localStorage
+        localStorage.setItem('token', result.user.token);
+        alert('Login successful');
+        // Redirect to another page or perform other actions
+    } else {
+        alert(result.message);
+    }
     } catch (error) {
       console.error("Error logging in:", error);
       setErrorMessage("An error occurred. Please try again later.");
