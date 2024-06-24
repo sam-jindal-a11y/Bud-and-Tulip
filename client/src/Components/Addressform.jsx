@@ -1,11 +1,48 @@
 import React from 'react';
 
 const Addressform = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const addressData = {
+      firstName: e.target['first-name'].value,
+      lastName: e.target['last-name'].value,
+      company: e.target['company'].value,
+      address1: e.target['address1'].value,
+      address2: e.target['address2'].value,
+      city: e.target['city'].value,
+      country: e.target['country'].value,
+      province: e.target['province'].value,
+      postalCode: e.target['postal-code'].value,
+      phone: e.target['phone'].value,
+      defaultAddress: e.target['default-address'].checked,
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/api/address', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify(addressData)
+      });
+      const result = await response.json();
+      if (response.ok) {
+        alert('Address added successfully');
+      } else {
+        alert('Error: ' + result.error);
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
+  };
+
   return (
     <div className="addressform flex justify-center items-center min-h-screen bg-gray-100">
       <div className="flex flex-col max-w-lg w-full bg-white p-8 shadow-md rounded-lg my-20">
         <h1 className="text-2xl font-semibold mb-6 text-center">Add New Address</h1>
-        <form action="" className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">First Name</label>
             <input type="text" id="first-name" placeholder="First Name" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>

@@ -3,12 +3,13 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import verifyToken from './middleware/verifyToken.js';
 import cors from 'cors';
 import seedRouter from './Routes/SeedRoutes.js';
 import authRouter from './Routes/AuthRoutes.js';
 import Product from './models/Product.js';
 import Cart from './models/Cart.js';
-
+import ShipDetails from './models/ShipDetails.js';
 dotenv.config();
 
 const app = express();
@@ -76,14 +77,20 @@ app.post('/api/cart', async (req, res) => {
   }
 });
 
-app.get('/api/cart', async (req, res) => {
-  const userId = req.userId;
+app.get('/api/cart/', async (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID is required' });
+  }
 
   try {
     const cartItems = await Cart.find({ userId });
     res.status(200).json(cartItems);
+    console.log(cartItems);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch cart items' });
+    res.status(500).json({ message: 'Error fetching cart items', error });
+    // console.log(cartItems);
   }
 });
 
@@ -106,6 +113,91 @@ app.put('/api/cart/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to update item' });
   }
 });
+app.delete("/api/cart/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedItem = await Cart.findByIdAndDelete(id);
+    if (!deletedItem) {
+      return res.status(404).json({ message: "Cart item not found" });
+    }
+    res.status(200).json({ message: "Cart item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting cart item:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+app.patch("/api/cart/:id", async (req, res) => {
+  const { id } = req.params;
+  const { quantity } = req.body;
+
+  try {
+    const updatedCartItem = await Cart.findByIdAndUpdate(
+      id,
+      { quantity },
+      { new: true } // Return the updated document
+    );
+
+    res.json(updatedCartItem);
+  } catch (error) {
+    console.error("Error updating cart item quantity:", error);
+    res.status(500).json({ error: "Unable to update cart item quantity" });
+  }
+});
+app.post('/api/address', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const newAddress = new ShipDetails({ ...req.body, userId });
+    await newAddress.save();
+    res.status(201).send(newAddress);
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get('/api/address/', async (req, res) => {
+  const userId = req.query.userId;
+  if (!userId) {
+    return res.status(400).send({ message: 'User ID is required' });
+  }
+
+  try {
+    const shipDetails = await ShipDetails.find({ userId });
+    if (!shipDetails) {
+      return res.status(404).send({ message: 'No addresses found for this user' });
+    }
+    res.status(200).json(shipDetails);
+  } catch (error) {
+    res.status(500).send({ message: 'Server error', error });
+  }
+});
+
+app.post('/api/orderhistory', async (req, res) => {
+  try {
+    const { userId, products, addressId, finalPrice, paymentMethod } = req.body;
+
+    // Fetch address details based on addressId
+    const address = await Address.findById(addressId);
+
+    if (!address) {
+      return res.status(404).json({ error: 'Address not found' });
+    }
+
+    const order = new OrderHistory({
+      userId,
+      products,
+      addressId,
+      finalPrice,
+      paymentMethod
+    });
+
+    await order.save();
+    res.status(201).json({ message: 'Order saved successfully', order });
+  } catch (err) {
+    console.error('Error saving order:', err);
+    res.status(500).json({ error: 'Failed to save order' });
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

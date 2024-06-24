@@ -1,27 +1,53 @@
-import React, { useState } from 'react';
-
-const products = [
-  { id: 1, name: 'Product 1', price: 10, size: 'M', color: 'Blue', popularity: 5 },
-  { id: 2, name: 'Product 2', price: 20, size: 'L', color: 'Red', popularity: 3 },
-  { id: 3, name: 'Product 3', price: 30, size: 'S', color: 'Green', popularity: 4 },
-  // Repeat the product data as necessary, but ensure no duplicates.
-];
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const SearchSection = () => {
+  const [products, setProducts] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 250 });
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [sortOption, setSortOption] = useState('popularity');
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const handleSizeChange = (size) => {
-    setSelectedSizes((prevSizes) =>
-      prevSizes.includes(size)
-        ? prevSizes.filter((s) => s !== size)
-        : [...prevSizes, size]
-    );
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:5000/api/seed');
+        const productArray = Object.values(response.data); // Convert JSON object to array
+        setProducts(productArray);
+        console.log(productArray);
+        setLoading(false);
+        myFata();
+      } catch (error) {
+        setError('Failed to fetch products');
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+    console.log(products)
+  }, [products.length]);
+
+  const handleSizeChange = async (size) => {
+    await setSelectedSizes((prevSizes) => {
+      if (prevSizes.includes(size)) {
+        console.log("lplplp");
+        return prevSizes.filter((s) => s !== size);
+      } else {
+        console.log("pink");
+        return [size];
+      }
+    });
+    console.log(selectedSizes);
+    myFata()
   };
+  
 
   const handleColorChange = (color) => {
     setSelectedColors((prevColors) =>
@@ -29,6 +55,7 @@ const SearchSection = () => {
         ? prevColors.filter((c) => c !== color)
         : [...prevColors, color]
     );
+    myFata();
   };
 
   const handlePriceChange = (e) => {
@@ -48,14 +75,29 @@ const SearchSection = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+  console.log(products);
+  
+const myFata=() => {
+  console.warn(products)
+  if(products.length !== 0){
 
-  const filteredProducts = products.filter((product) => {
-    const sizeMatch = selectedSizes.length === 0 || selectedSizes.includes(product.size);
-    const colorMatch = selectedColors.length === 0 || selectedColors.includes(product.color);
-    const priceMatch = product.price >= priceRange.min && product.price <= priceRange.max;
-    return sizeMatch && colorMatch && priceMatch;
+  
+    const filteredProducts = products[0].filter((product) => {
+      console.error( product.size.some(size => selectedSizes.includes(size)));
+      console.error(product.color.some(color => selectedColors.includes(color)));
+      
+      // Check if there is any intersection between selectedSizes and product.size
+      const sizeMatch = selectedSizes.length === 0 || product.size.some(size => selectedSizes.includes(size));
+      
+      // Check if the product color is in selectedColors
+      const colorMatch = selectedColors.length === 0 || product.color.some(color => selectedColors.includes(color));
+      
+      // Check if the product price is within the specified range
+      const priceMatch = product.price >= priceRange.min && product.price <= priceRange.max;
+      
+      return sizeMatch && colorMatch && priceMatch;
   });
-
+  
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortOption) {
       case 'priceLowToHigh':
@@ -68,13 +110,26 @@ const SearchSection = () => {
         return 0;
     }
   });
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const displayedProducts = sortedProducts.slice(startIndex, endIndex);
+   setDisplayedProducts( sortedProducts.slice(startIndex, endIndex)) ;
 
-  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+   setTotalPages(Math.ceil(sortedProducts.length / itemsPerPage)) 
+   console.warn(displayedProducts)
+   ;}
+  
+}
 
+  
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+  console.log(products)
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -89,7 +144,8 @@ const SearchSection = () => {
                   <input
                     type="checkbox"
                     value={size}
-                    onChange={() => handleSizeChange(size)}
+                    onClick={() =>{handleSizeChange(size)
+                    }}
                     className="mr-2"
                   />
                   {size}
@@ -107,7 +163,8 @@ const SearchSection = () => {
                   <input
                     type="checkbox"
                     value={color}
-                    onChange={() => handleColorChange(color)}
+                    onChange={() =>{ handleColorChange(color)
+                    }}
                     className="mr-2"
                   />
                   {color}
@@ -124,7 +181,7 @@ const SearchSection = () => {
               type="number"
               name="min"
               value={priceRange.min}
-              onChange={handlePriceChange}
+              onChange={(e)=>{handlePriceChange(e)}}
               className="border p-1 w-20"
             />
           </div>
@@ -134,7 +191,7 @@ const SearchSection = () => {
               type="number"
               name="max"
               value={priceRange.max}
-              onChange={handlePriceChange}
+              onChange={(e)=>{handlePriceChange(e)}}
               className="border p-1 w-20"
             />
           </div>
@@ -166,9 +223,10 @@ const SearchSection = () => {
 
         {/* Product Listing */}
         <div className="grid grid-cols-3 gap-4">
-          {displayedProducts.map((product) => (
+          {displayedProducts.length>0 && displayedProducts.map((product) => (
+    
             <div key={product.id} className="border p-4">
-              <img src={`https://www.budandtulips.com/Content/Pro_Images/BT763ir31.jpg?text=${product.name}`} alt={product.name} className="mb-4" />
+              <img src={product.image[0]} alt={product.name} className="mb-4" />
               <h3 className="font-bold mb-2">{product.name}</h3>
               <p className="text-gray-700">₹{product.price}</p>
               <p className="text-gray-500">Popularity: {product.popularity}</p>

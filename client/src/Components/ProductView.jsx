@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 
 const ProductView = () => {
@@ -10,6 +10,7 @@ const ProductView = () => {
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState('M');
   const [user, setUser] = useState(null);
+  const Navigate = useNavigate();
   const handleThumbnailClick = (index) => {
     setSelectedImageIndex(index);
   };
@@ -39,6 +40,8 @@ const ProductView = () => {
       });
       console.log(user);
       alert('Product added to cart');
+      Navigate('/ShoppingCart');
+      
     } catch (error) {
       console.error("Error adding product to cart:", error.response?.data?.message || error.message);
       alert('Failed to add product to cart');

@@ -1,10 +1,11 @@
 // src/Account.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 const Account = () => {
   const [user, setUser] = useState(null);
+  const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,10 +13,25 @@ const Account = () => {
     if (token) {
       const decoded = jwtDecode(token);
       setUser(decoded);
+      fetchAddresses(decoded.id);
     } else {
       navigate('/login'); // Redirect to login if no token
     }
   }, [navigate]);
+
+  const fetchAddresses = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/address?userId=${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setAddresses(data);
+      } else {
+        console.error('Failed to fetch addresses');
+      }
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+    }
+  };
 
   const handleAddAddress = () => {
     navigate('/AddressForm');
@@ -56,9 +72,19 @@ const Account = () => {
         <div className="p-4 border rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-2">Addresses</h2>
           <ul>
-            {/* Replace with dynamic content */}
-            <li>Address 1</li>
-            <li>Address 2</li>
+            {addresses.length > 0 ? (
+              addresses.map((address) => (
+                <li key={address._id} className="mb-4 p-4 border rounded-lg shadow">
+                  <p className="font-semibold">{address.firstName} {address.lastName}</p>
+                  <p>{address.address1}</p>
+                  {address.address2 && <p>{address.address2}</p>}
+                  <p>{address.city}, {address.province}, {address.country}, {address.postalCode}</p>
+                  <p>{address.phone}</p>
+                </li>
+              ))
+            ) : (
+              <li>No addresses found</li>
+            )}
           </ul>
           <button
             onClick={handleAddAddress}

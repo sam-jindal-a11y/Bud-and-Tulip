@@ -1,7 +1,7 @@
-
 import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema({
+
     name: {
         type: String,
         required: true
@@ -18,15 +18,23 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    category:{
-        type : String,
-        required : true
+    category: {
+        type: Array,
+        required: true
     },
-    image :{
-        type : Array,
-        required : true
+    image: {
+        type: Array,
+        required: true
+    },
+    size: {
+        type: Array,
+        required: true
+    },
+    color: {
+        type: Array,
+        required: true
     }
 });
 
-const Product = mongoose.model('Product',ProductSchema);
+const Product = mongoose.model('Product', ProductSchema);
 export default Product;

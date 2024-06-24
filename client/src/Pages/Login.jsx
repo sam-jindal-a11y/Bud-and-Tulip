@@ -35,6 +35,7 @@ const Login = () => {
         // Store the token in localStorage
         localStorage.setItem('token', result.user.token);
         alert('Login successful');
+        navigate('/');
         // Redirect to another page or perform other actions
     } else {
         alert(result.message);
@@ -109,7 +110,7 @@ const Login = () => {
       </div>
 
       {/* Right Section */}
-      <div className="flex-1 flex flex-col justify-center items-center bg-pink-600 mr-8 p-6">
+      <div className="flex-1 flex flex-col justify-center items-center bg-pinkc mr-8 p-6">
         <h2 className="text-3xl font-bold text-center mb-4">
           Welcome to Bud & Tulip
         </h2>
