@@ -33,6 +33,14 @@ const ProductSchema = new mongoose.Schema({
     color: {
         type: Array,
         required: true
+    },
+    inbox :{
+        type: String,
+        
+    },
+    washingInstruction : {
+        type: String,
+       
     }
 });
 

@@ -1,6 +1,6 @@
 // src/CheckoutPage.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const CheckoutPage = () => {
@@ -62,7 +62,7 @@ const CheckoutPage = () => {
     setMaxDiscount(totalPrice * 0.1); // 10% discount for demonstration
   };
 
-  const totalPrice = products.reduce((acc, product) => acc + product.price, 0);
+  const totalPrice = products.reduce((acc, product) => acc + product.price * product.quantity, 0);
   const finalPrice = totalPrice - maxDiscount;
 
   const handlePayment = () => {
@@ -114,7 +114,7 @@ const CheckoutPage = () => {
               </div>
             ))
           ) : (
-            <p>No addresses found. Please add an address first.</p>
+            <p>No addresses found. Please add an address first. <Link to="/AddressForm" className="font-bold">Click here.</Link></p>
           )}
         </div>
         <div className="mb-4">
@@ -192,7 +192,7 @@ const CheckoutPage = () => {
                 </p>
               </div>
               <div className="flex items-center">
-                <p className="text-gray-700 font-bold mr-4">₹ {product.price}</p>
+                <p className="text-gray-700 font-bold mr-4">₹ {product.price * product.quantity}</p>
                 <button className="text-red-500 hover:text-red-700 focus:outline-none">
                   Delete
                 </button>

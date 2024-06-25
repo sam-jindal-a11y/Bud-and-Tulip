@@ -1,13 +1,15 @@
 const data = [
   {
-    "name": "Printed Cotton Kurti",
-    "description": "A comfortable and stylish printed cotton kurti, perfect for casual wear.",
-    "price": 799,
+    "name": "Rabbit Suit",
+    "description": "100% Linen Cotton,Hand Block Printed,Hand Embroidered Sequins Detailing On Neck,Hand Embroidered Sequins Chidkaw All over Kurta,Hand Embroidered Sequins And Delicate Lace Detailing On Sleeves,Delicate Lace Detailing On Mid And Front Of Kurta,Side Cut With Sequins Detailing On Bottom,Straight Fit Pant,Straight Fit Silhouette",
+    "price": 3141,
     "stock": 100,
-    "category": ["All Products", "Dresses", "Kurtas", "Tops"],
-    "image": ["http://localhost:5000/images/kurti1.jpg", "http://localhost:5000/images/kurti2.jpg"],
+    "category": ["Suits"],
+    "image": ["http://localhost:5000/images/rb1.jpg", "http://localhost:5000/images/rb2.jpg","http://localhost:5000/images/rb3.jpg","http://localhost:5000/images/rb4.jpg","http://localhost:5000/images/rb5.jpg","http://localhost:5000/images/rb2.jpg"],
     "size": ["S", "M", "L", "XL"],
-    "color": ["Red", "Blue", "Green"]
+    "color": ["white,pink"],
+    "inbox" : "kurta and Pant",
+    "washingInstruction" : "Wash Inside Out,Use Cloth Bag for Machine Wash or Handwash,Iron on Low Heat,Do Not Iron on Embellishments"
   },
   {
     "name": "Embroidered Anarkali Suit",

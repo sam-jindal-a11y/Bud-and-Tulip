@@ -21,6 +21,7 @@ import SearchSection from "./Pages/SearchSection";
 import Addressform from "./Components/Addressform";
 import CheckoutPage from "./Pages/CheckoutPage";
 
+
 const Layout = () => {
   return (
     <div className="layout">
@@ -46,6 +47,7 @@ const Layout = () => {
           <Route path="/SizeChart" element={<SizeChart />} />
           <Route path="/AddressForm" element={<Addressform />} />
           <Route path="/CheckoutPage" element={<CheckoutPage />} />
+       
         </Routes>
         <Footer />
       </Router>
