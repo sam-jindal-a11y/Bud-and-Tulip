@@ -53,7 +53,6 @@ app.get('/products', async (req, res) => {
     res.status(500).send(error);
   }
 });
-
 app.post('/api/products', async (req, res) => {
   const {
     name,
@@ -65,7 +64,10 @@ app.post('/api/products', async (req, res) => {
     size,
     color,
     inbox,
-    washingInstruction
+    washingInstruction,
+    hasOffer,
+    offerPrice,
+    isActive
   } = req.body;
 
   try {
@@ -80,6 +82,9 @@ app.post('/api/products', async (req, res) => {
       color,
       inbox,
       washingInstruction,
+      hasOffer,
+      offerPrice,
+      isActive
     });
 
     const savedProduct = await newProduct.save();
@@ -90,6 +95,7 @@ app.post('/api/products', async (req, res) => {
     });
   }
 });
+
 
 app.get('/products/:id', async (req, res) => {
   try {
@@ -383,27 +389,40 @@ app.put('/sizes/:id', async (req, res) => {
   }
 });
 
-// Get all categories
-app.get('/categories', async (req, res) => {
+
+// Add a new category
+app.post('/categories', async (req, res) => {
   try {
-    const categories = await Category.find();
-    res.json(categories);
+    const { name } = req.body;
+    const count = await Category.countDocuments();
+    const category = new Category({
+      category_id: count + 1,
+      name
+    });
+    await category.save();
+    res.status(201).send('Category added');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error retrieving categories');
+    res.status(500).send('Error adding category');
+  }
+});
+// Add a new color
+app.post('/colors', async (req, res) => {
+  try {
+    const { name } = req.body;
+    const count = await Color.countDocuments();
+    const color = new Color({
+      color_id: count + 1,
+      name
+    });
+    await color.save();
+    res.status(201).send('Color added');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error adding color');
   }
 });
 
-// Get all colors
-app.get('/colors', async (req, res) => {
-  try {
-    const colors = await Color.find();
-    res.json(colors);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error retrieving colors');
-  }
-});
 
 app.post('/sizes', async (req, res) => {
   try {
@@ -423,29 +442,112 @@ app.post('/sizes', async (req, res) => {
   }
 });
 
-// Add a new category
-app.post('/categories', async (req, res) => {
+// Retrieve all categories
+app.get('/categories', async (req, res) => {
   try {
-    const newCategory = new Category(req.body);
-    await newCategory.save();
-    res.status(201).send('Category added');
+    const categories = await Category.find();
+    res.json(categories);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error adding category');
+    res.status(500).send('Error retrieving categories');
   }
 });
 
-// Add a new color
-app.post('/colors', async (req, res) => {
+// Delete a category by ID
+app.delete('/categories/:id', async (req, res) => {
   try {
-    const newColor = new Color(req.body);
-    await newColor.save();
-    res.status(201).send('Color added');
+    const { id } = req.params;
+
+    const deletedCategory = await Category.findOneAndDelete({ category_id: id });
+
+    if (!deletedCategory) {
+      return res.status(404).send('Category not found');
+    }
+
+    res.send(`Category with id ${id} deleted successfully`);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error adding color');
+    res.status(500).send('Error deleting category');
   }
 });
+
+// Update a category by ID
+app.put('/categories/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body; // Assuming you're updating only the name field
+
+    const updatedCategory = await Category.findOneAndUpdate(
+      { category_id: id },
+      { name },
+      { new: true } // To return the updated document
+    );
+
+    if (!updatedCategory) {
+      return res.status(404).send('Category not found');
+    }
+
+    res.json(updatedCategory); // Return updated category object
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating category');
+  }
+});
+
+
+// Add a new color
+// Retrieve all colors
+app.get('/colors', async (req, res) => {
+  try {
+    const colors = await Color.find();
+    res.json(colors);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error retrieving colors');
+  }
+});
+
+// Delete a color by ID
+app.delete('/colors/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedColor = await Color.findOneAndDelete({ color_id: id });
+
+    if (!deletedColor) {
+      return res.status(404).send('Color not found');
+    }
+
+    res.send(`Color with id ${id} deleted successfully`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error deleting color');
+  }
+});
+
+// Update a color by ID
+app.put('/colors/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body; // Assuming you're updating only the name field
+
+    const updatedColor = await Color.findOneAndUpdate(
+      { color_id: id },
+      { name },
+      { new: true } // To return the updated document
+    );
+
+    if (!updatedColor) {
+      return res.status(404).send('Color not found');
+    }
+
+    res.json(updatedColor); // Return updated color object
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating color');
+  }
+});
+
 
 app.get('/initialize', async (req, res) => {
   try {

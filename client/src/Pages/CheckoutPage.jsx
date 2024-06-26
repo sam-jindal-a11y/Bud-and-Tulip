@@ -193,9 +193,7 @@ const CheckoutPage = () => {
               </div>
               <div className="flex items-center">
                 <p className="text-gray-700 font-bold mr-4">₹ {product.price * product.quantity}</p>
-                <button className="text-red-500 hover:text-red-700 focus:outline-none">
-                  Delete
-                </button>
+               
               </div>
             </div>
           ))

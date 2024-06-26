@@ -22,3 +22,13 @@
 .img-proudct{
     object-fit: contain !important;
 }
+.product-name {
+    height: 3rem; /* Adjust this height as needed */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Show maximum of 2 lines */
+    -webkit-box-orient: vertical;
+  }
+  
+  

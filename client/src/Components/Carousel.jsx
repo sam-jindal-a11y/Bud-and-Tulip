@@ -17,24 +17,29 @@ const Carousel = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-68  rounded-md">
+    <div className="relative w-full max-w-screen-lg mx-auto overflow-hidden rounded-md">
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {slides.map((slide) => (
-          <div key={slide.id} className="w-full h-68 flex-shrink-0">
+          <div key={slide.id} className="w-full">
             <img
               src={slide.imageUrl}
               alt={`Slide ${slide.id}`}
-              className="w-full h-68 object-cover"
+              className="w-full object-cover"
+              style={{ height: '400px' }} // Adjust height as needed
             />
           </div>
         ))}
       </div>
       <div className="absolute inset-0 flex justify-between items-center p-4">
         <button
-          onClick={() => setCurrentSlide((prevSlide) => (prevSlide === 0 ? slides.length - 1 : prevSlide - 1))}
+          onClick={() =>
+            setCurrentSlide((prevSlide) =>
+              prevSlide === 0 ? slides.length - 1 : prevSlide - 1
+            )
+          }
           className="bg-white text-black rounded-full p-2 shadow-md"
         >
           &#8592;

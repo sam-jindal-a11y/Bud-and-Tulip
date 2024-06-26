@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 const ProductView = () => {
   const { id } = useParams();
@@ -11,13 +11,12 @@ const ProductView = () => {
   const [size, setSize] = useState("M");
   const [user, setUser] = useState(null);
   const [visibleSection, setVisibleSection] = useState('description');
-  const Navigate = useNavigate();
-
-  
+  const navigate = useNavigate();
 
   const handleThumbnailClick = (index) => {
     setSelectedImageIndex(index);
   };
+
   const formatInstructions = (instructions) => {
     return instructions.split(',').map((item, index) => (
       <span key={index}>
@@ -26,9 +25,11 @@ const ProductView = () => {
       </span>
     ));
   };
+
   const toggleSection = (section) => {
     setVisibleSection(visibleSection === section ? null : section);
   };
+
   const addToCart = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -37,16 +38,16 @@ const ProductView = () => {
         return;
       }
 
-      const decoded = await jwtDecode(token);
-      await setUser(decoded);
+      const decoded = jwtDecode(token);
+      setUser(decoded);
 
       await axios.post(
         "http://localhost:5000/api/cart",
         {
-          userId: user.id,
+          userId: decoded.id,
           productId: product._id,
           productName: product.name,
-          price: product.price,
+          price: product.hasOffer ? product.offerPrice : product.price,
           quantity,
           size,
         },
@@ -56,9 +57,8 @@ const ProductView = () => {
           },
         }
       );
-      console.log(user);
       alert("Product added to cart");
-      Navigate("/ShoppingCart");
+      navigate("/ShoppingCart");
     } catch (error) {
       console.error(
         "Error adding product to cart:",
@@ -84,8 +84,7 @@ const ProductView = () => {
   }, [id]);
 
   if (!product) return <div>Loading...</div>;
-
-  
+  if (!product.isActive) return <div>Product not available</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -112,7 +111,16 @@ const ProductView = () => {
         </div>
         <div className="w-full lg:w-1/2 lg:pl-8">
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-          <p className="text-xl text-gray-700 mb-4">₹ {product.price}</p>
+          <p className="text-xl text-gray-700 mb-4">
+            {product.hasOffer ? (
+              <>
+                <span className="line-through">₹ {product.price}</span>
+                <span className="ml-2 text-gray-700">Sale Price : ₹ {product.offerPrice}</span>
+              </>
+            ) : (
+              <>₹ {product.price}</>
+            )}
+          </p>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2 font-bold">
               Quantity
@@ -132,10 +140,11 @@ const ProductView = () => {
               onChange={(e) => setSize(e.target.value)}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
-              <option value="XL">XL</option>
+              {product.size.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
           </div>
           <div className="flex space-x-4 mb-4">
@@ -172,85 +181,85 @@ const ProductView = () => {
         </div>
       </div>
       <div className="container mx-auto p-4">
-      <div className="mb-8 flex gap-8 text-center justify-center">
-        <h2
-          className="text-2xl font-bold mb-2 cursor-pointer "
-          onClick={() => toggleSection('description')}
-        >
-          Description
-          <hr />
-        </h2>
-        <h2
-          className="text-2xl font-bold mb-2 cursor-pointer"
-          onClick={() => toggleSection('additionalInfo')}
-        >
-          Additional Information
-          <hr />
-        </h2>
-        <h2
-          className="text-2xl font-bold mb-2 cursor-pointer "
-          onClick={() => toggleSection('washingInfo')}
-        >
-          Washing Information
-          <hr />
-        </h2>
-      </div>
-
-      {visibleSection === 'description' && (
-        <div className="mb-8 text-left">
-          <h3 className="font-bold mb-2">Description</h3>
-          <p className="text-gray-700">
-            {formatInstructions(product.description)}
-          </p>
+        <div className="mb-8 flex gap-8 text-center justify-center">
+          <h2
+            className="text-2xl font-bold mb-2 cursor-pointer "
+            onClick={() => toggleSection('description')}
+          >
+            Description
+            <hr />
+          </h2>
+          <h2
+            className="text-2xl font-bold mb-2 cursor-pointer"
+            onClick={() => toggleSection('additionalInfo')}
+          >
+            Additional Information
+            <hr />
+          </h2>
+          <h2
+            className="text-2xl font-bold mb-2 cursor-pointer "
+            onClick={() => toggleSection('washingInfo')}
+          >
+            Washing Information
+            <hr />
+          </h2>
         </div>
-      )}
 
-      {visibleSection === 'additionalInfo' && (
-        <div className="mb-8 text-left">
-          <h3 className="font-bold mb-2">Additional Information</h3>
-          <div className="container mx-auto p-4">
-            <table className="min-w-full bg-white">
-              <tbody>
-                <tr className="border-b">
-                  <td className="py-2 px-4 font-semibold">Include</td>
-                  <td className="py-2 px-4">{product.inbox}</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 px-4 font-semibold">Shipping Details</td>
-                  <td className="py-2 px-4">
-                    The order will take 5-18 working days to deliver. Free delivery within India.
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 px-4 font-semibold">Exchange/Return</td>
-                  <td className="py-2 px-4">
-                    We only exchange size within 10 working days; In case we are sold out, we'll exchange the piece. <br />
-                    We don't do returns or cancel orders once placed. <br />
-                    We don't exchange or return international orders. <br />
-                    We don't exchange or refund reduced price articles. Customized pieces can't be exchanged.
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 px-4 font-semibold">Other Description</td>
-                  <td className="py-2 px-4">
-                    Model is Wearing Size Small (S) & Model Height is 5 Ft. 7 Inch.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        {visibleSection === 'description' && (
+          <div className="mb-8 text-left">
+            <h3 className="font-bold mb-2">Description</h3>
+            <p className="text-gray-700">
+              {formatInstructions(product.description)}
+            </p>
           </div>
-        </div>
-      )}
+        )}
 
-      {visibleSection === 'washingInfo' && (
-        <div className="mb-8 text-left">
-          <h3 className="font-bold mb-2">Washing Information</h3>
-          <p className="text-gray-700">
-            {formatInstructions(product.washingInstruction)}
-          </p>
-        </div>
-      )}
-    </div>
+        {visibleSection === 'additionalInfo' && (
+          <div className="mb-8 text-left">
+            <h3 className="font-bold mb-2">Additional Information</h3>
+            <div className="container mx-auto p-4">
+              <table className="min-w-full bg-white">
+                <tbody>
+                  <tr className="border-b">
+                    <td className="py-2 px-4 font-semibold">Include</td>
+                    <td className="py-2 px-4">{product.inbox}</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 px-4 font-semibold">Shipping Details</td>
+                    <td className="py-2 px-4">
+                      The order will take 5-18 working days to deliver. Free delivery within India.
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 px-4 font-semibold">Exchange/Return</td>
+                    <td className="py-2 px-4">
+                      We only exchange size within 10 working days; In case we are sold out, we'll exchange the piece. <br />
+                      We don't do returns or cancel orders once placed. <br />
+                      We don't exchange or return international orders. <br />
+                      We don't exchange or refund reduced price articles. Customized pieces can't be exchanged.
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 px-4 font-semibold">Other Description</td>
+                    <td className="py-2 px-4">
+                      Model is Wearing Size Small (S) & Model Height is 5 Ft. 7 Inch.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {visibleSection === 'washingInfo' && (
+          <div className="mb-8 text-left">
+            <h3 className="font-bold mb-2">Washing Information</h3>
+            <p className="text-gray-700">
+              {formatInstructions(product.washingInstruction)}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
