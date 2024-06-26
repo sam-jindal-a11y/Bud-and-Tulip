@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema({
-
     name: {
         type: String,
         required: true
@@ -19,28 +18,40 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
     category: {
-        type: Array,
+        type: [String], // Array of strings
         required: true
     },
     image: {
-        type: Array,
+        type: [String], // Array of strings
         required: true
     },
     size: {
-        type: Array,
+        type: [String], // Array of strings
         required: true
     },
     color: {
-        type: Array,
+        type: [String], // Array of strings
         required: true
     },
-    inbox :{
-        type: String,
-        
+    inbox: {
+        type: String
     },
-    washingInstruction : {
-        type: String,
-       
+    washingInstruction: {
+        type: String
+    },
+    hasOffer: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    offerPrice: {
+        type: Number,
+         // offerPrice is required if hasOffer is true
+    },
+    isActive: {
+        type: Boolean,
+        required: true,
+        default: true
     }
 });
 
