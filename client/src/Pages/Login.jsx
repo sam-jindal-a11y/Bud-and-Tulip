@@ -17,7 +17,7 @@ const Login = () => {
 
     const loginData = {
       email,
-      password
+      password,
     };
 
     try {
@@ -33,13 +33,13 @@ const Login = () => {
 
       if (response.ok) {
         // Store the token in localStorage
-        localStorage.setItem('token', result.user.token);
-        alert('Login successful');
-        navigate('/');
+        localStorage.setItem("token", result.user.token);
+        alert("Login successful");
+        navigate("/");
         // Redirect to another page or perform other actions
-    } else {
+      } else {
         alert(result.message);
-    }
+      }
     } catch (error) {
       console.error("Error logging in:", error);
       setErrorMessage("An error occurred. Please try again later.");
@@ -47,13 +47,12 @@ const Login = () => {
   };
 
   return (
-    <div className="flex h-96 my-20">
+    <div className="flex flex-col md:flex-row h-full md:h-96 my-20">
       {/* Left Section */}
       <div className="flex-1 flex flex-col justify-around items-center bg-white p-6">
-        
         <h2 className="text-2xl font-bold mb-2 text-pink-600">LOGIN</h2>
-  
-         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <p className="mb-6">
           If you've created an account with us, please enter.
         </p>
@@ -105,12 +104,11 @@ const Login = () => {
             SIGN IN
           </button>
           <br />
-         
         </form>
       </div>
 
       {/* Right Section */}
-      <div className="flex-1 flex flex-col justify-center items-center bg-pinkc mr-8 p-6">
+      <div className="flex-1 flex flex-col justify-center items-center bg-pinkc p-6">
         <h2 className="text-3xl font-bold text-center mb-4">
           Welcome to Bud & Tulip
         </h2>

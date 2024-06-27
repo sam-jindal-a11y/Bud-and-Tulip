@@ -181,85 +181,86 @@ const ProductView = () => {
         </div>
       </div>
       <div className="container mx-auto p-4">
-        <div className="mb-8 flex gap-8 text-center justify-center">
-          <h2
-            className="text-2xl font-bold mb-2 cursor-pointer "
-            onClick={() => toggleSection('description')}
-          >
-            Description
-            <hr />
-          </h2>
-          <h2
-            className="text-2xl font-bold mb-2 cursor-pointer"
-            onClick={() => toggleSection('additionalInfo')}
-          >
-            Additional Information
-            <hr />
-          </h2>
-          <h2
-            className="text-2xl font-bold mb-2 cursor-pointer "
-            onClick={() => toggleSection('washingInfo')}
-          >
-            Washing Information
-            <hr />
-          </h2>
-        </div>
+  <div className="mb-8 flex flex-col sm:flex-row gap-4 sm:gap-8 text-center justify-center">
+    <h2
+      className="text-2xl font-bold mb-2 cursor-pointer"
+      onClick={() => toggleSection('description')}
+    >
+      Description
+      <hr />
+    </h2>
+    <h2
+      className="text-2xl font-bold mb-2 cursor-pointer"
+      onClick={() => toggleSection('additionalInfo')}
+    >
+      Additional Information
+      <hr />
+    </h2>
+    <h2
+      className="text-2xl font-bold mb-2 cursor-pointer"
+      onClick={() => toggleSection('washingInfo')}
+    >
+      Washing Information
+      <hr />
+    </h2>
+  </div>
 
-        {visibleSection === 'description' && (
-          <div className="mb-8 text-left">
-            <h3 className="font-bold mb-2">Description</h3>
-            <p className="text-gray-700">
-              {formatInstructions(product.description)}
-            </p>
-          </div>
-        )}
+  {visibleSection === 'description' && (
+    <div className="mb-8 text-left">
+      <h3 className="font-bold mb-2">Description</h3>
+      <p className="text-gray-700">
+        {formatInstructions(product.description)}
+      </p>
+    </div>
+  )}
 
-        {visibleSection === 'additionalInfo' && (
-          <div className="mb-8 text-left">
-            <h3 className="font-bold mb-2">Additional Information</h3>
-            <div className="container mx-auto p-4">
-              <table className="min-w-full bg-white">
-                <tbody>
-                  <tr className="border-b">
-                    <td className="py-2 px-4 font-semibold">Include</td>
-                    <td className="py-2 px-4">{product.inbox}</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-2 px-4 font-semibold">Shipping Details</td>
-                    <td className="py-2 px-4">
-                      The order will take 5-18 working days to deliver. Free delivery within India.
-                    </td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-2 px-4 font-semibold">Exchange/Return</td>
-                    <td className="py-2 px-4">
-                      We only exchange size within 10 working days; In case we are sold out, we'll exchange the piece. <br />
-                      We don't do returns or cancel orders once placed. <br />
-                      We don't exchange or return international orders. <br />
-                      We don't exchange or refund reduced price articles. Customized pieces can't be exchanged.
-                    </td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-2 px-4 font-semibold">Other Description</td>
-                    <td className="py-2 px-4">
-                      Model is Wearing Size Small (S) & Model Height is 5 Ft. 7 Inch.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {visibleSection === 'washingInfo' && (
-          <div className="mb-8 text-left">
-            <h3 className="font-bold mb-2">Washing Information</h3>
-            <p className="text-gray-700">
-              {formatInstructions(product.washingInstruction)}
-            </p>
-          </div>
-        )}
+  {visibleSection === 'additionalInfo' && (
+    <div className="mb-8 text-left">
+      <h3 className="font-bold mb-2">Additional Information</h3>
+      <div className="container mx-auto p-4 overflow-x-auto">
+        <table className="min-w-full bg-white">
+          <tbody>
+            <tr className="border-b">
+              <td className="py-2 px-4 font-semibold">Include</td>
+              <td className="py-2 px-4">{product.inbox}</td>
+            </tr>
+            <tr className="border-b">
+              <td className="py-2 px-4 font-semibold">Shipping Details</td>
+              <td className="py-2 px-4">
+                The order will take 5-18 working days to deliver. Free delivery within India.
+              </td>
+            </tr>
+            <tr className="border-b">
+              <td className="py-2 px-4 font-semibold">Exchange/Return</td>
+              <td className="py-2 px-4">
+                We only exchange size within 10 working days; In case we are sold out, we'll exchange the piece. <br />
+                We don't do returns or cancel orders once placed. <br />
+                We don't exchange or return international orders. <br />
+                We don't exchange or refund reduced price articles. Customized pieces can't be exchanged.
+              </td>
+            </tr>
+            <tr className="border-b">
+              <td className="py-2 px-4 font-semibold">Other Description</td>
+              <td className="py-2 px-4">
+                Model is Wearing Size Small (S) & Model Height is 5 Ft. 7 Inch.
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
+  )}
+
+  {visibleSection === 'washingInfo' && (
+    <div className="mb-8 text-left">
+      <h3 className="font-bold mb-2">Washing Information</h3>
+      <p className="text-gray-700">
+        {formatInstructions(product.washingInstruction)}
+      </p>
+    </div>
+  )}
+</div>
+
     </div>
   );
 };

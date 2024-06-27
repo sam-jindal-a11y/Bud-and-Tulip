@@ -14,9 +14,12 @@ const SearchSection = () => {
   const [error, setError] = useState(null);
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -75,14 +78,16 @@ const SearchSection = () => {
   const filterProducts = (query, category) => {
     if (products.length !== 0) {
       let filteredProducts = products[0];
-console.log(category);
+      console.log(category);
       // Filter by category if specified
       if (category && category !== 'All Products') {
-        
-        filteredProducts = filteredProducts.filter((product) =>{console.log(product.category.includes(category)); return product.category.includes(category)});
+        filteredProducts = filteredProducts.filter((product) => {
+          console.log(product.category.includes(category));
+          return product.category.includes(category);
+        });
       }
 
-      console.log(filteredProducts)
+      console.log(filteredProducts);
 
       // Apply other filters
       filteredProducts = filteredProducts.filter((product) => {
@@ -122,9 +127,9 @@ console.log(category);
   }
 
   return (
-    <div className="flex">
+    <div className="flex flex-col lg:flex-row">
       {/* Sidebar */}
-      <div className="w-1/4 p-4 mx-20">
+      <div className="w-full lg:w-1/4 p-4 px-20 hidden lg:block">
         {/* Filters Section */}
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-4">Sizes</h2>
@@ -195,11 +200,93 @@ console.log(category);
         </div>
       </div>
 
+      {/* Mobile Filter Button */}
+      <div className="block lg:hidden w-full p-4">
+        <button
+          onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+          className="bg-pinkc text-white px-4 py-2 rounded"
+        >
+          {isFilterDropdownOpen ? 'Hide Filters' : 'Show Filters'}
+        </button>
+        {isFilterDropdownOpen && (
+          <div className="mt-4">
+            {/* Filters Section */}
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Sizes</h2>
+              <div>
+                {['4XL', '5XL', 'L', 'M', 'S', 'XL', 'XS', 'XXL', 'XXS', 'XXXL'].map((size) => (
+                  <div key={size} className="mb-1">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value={size}
+                        onClick={() => {
+                          handleSizeChange(size);
+                        }}
+                        className="mr-2"
+                      />
+                      {size}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Colors</h2>
+              <div>
+                {['Blue', 'Red', 'Purple', 'Yellow', 'Pink', 'Orange', 'Green'].map((color) => (
+                  <div key={color} className="mb-1">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value={color}
+                        onChange={() => {
+                          handleColorChange(color);
+                        }}
+                        className="mr-2"
+                      />
+                      {color}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Price</h2>
+              <div className="flex items-center mb-2">
+                <span className="mr-2">From ₹</span>
+                <input
+                  type="number"
+                  name="min"
+                  value={priceRange.min}
+                  onChange={(e) => {
+                    handlePriceChange(e);
+                  }}
+                  className="border p-1 w-20"
+                />
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">To ₹</span>
+                <input
+                  type="number"
+                  name="max"
+                  value={priceRange.max}
+                  onChange={(e) => {
+                    handlePriceChange(e);
+                  }}
+                  className="border p-1 w-20"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Main Content */}
-      <div className="w-2/3 p-4">
+      <div className="w-full lg:w-2/3 p-4 mx-auto">
         {/* Top Layer */}
-        <div className="mb-4 flex justify-between items-center">
-          <div>
+        <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
+          <div className="mb-2 sm:mb-0">
             <label className="mr-2">Show</label>
             <select
               value={itemsPerPage}
@@ -225,25 +312,52 @@ console.log(category);
             </select>
           </div>
         </div>
-
-        {/* Product Listing */}
-        <div className="grid grid-cols-3 gap-4">
-          {displayedProducts.length > 0 &&
-            displayedProducts.map((product) => (
-              <div key={product.id} className="border p-4">
-                <img
-                  src={product.image[0]}
-                  alt={product.name}
-                  className="mb-4"
-                />
-                <h3 className="font-bold mb-2">{product.name}</h3>
-                <p className="text-gray-700">₹{product.price}</p>
-                <p className="text-gray-500">
-                  Popularity: {product.popularity}
-                </p>
+      
+       {/* Product Listing */}
+       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+      {displayedProducts.length > 0 &&
+        displayedProducts.map((product) => (
+          <div
+            key={product.id}
+            className="bg-white rounded-sm shadow-md overflow-hidden relative cursor-pointer"
+            onClick={() => handleProductClick(product._id)}
+          >
+            {product.hasOffer && (
+              <div className="absolute top-0 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md mx-4 my-4">
+                Sale
               </div>
-            ))}
-        </div>
+            )}
+            <img
+              src={product.image[0]}
+              alt={product.name}
+              className="w-full h-68 img-product"
+            />
+            <div className="p-4 text-left">
+              <p className="text-sm text-gray-400 mb-1">{product.category}</p>
+              <h3 className="text-md font-semibold mb-2 product-name sm:text-sm md:text-md">{product.name}</h3>
+              <p className="text-gray-500 mb-4">
+                {product.hasOffer ? (
+                  <>
+                    <span className="line-through">₹&nbsp;{product.price}</span>
+                    &nbsp;
+                    <span>₹&nbsp;{product.offerPrice}</span>
+                  </>
+                ) : (
+                  `₹ ${product.price}`
+                )}
+              </p>
+              <div className="flex justify-between items-center">
+                <button className="bg-pink-500 text-white px-3 py-1.5 sm:px-5 sm:py-2 rounded-sm">
+                  <i className="fa-solid fa-cart-shopping"></i> &nbsp;Add to Cart
+                </button>
+                <button className="text-red-500 hover:text-red-600">
+                  <i className="fa fa-heart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+    </div>
 
         {/* Pagination */}
         <div className="mt-8 flex justify-center">

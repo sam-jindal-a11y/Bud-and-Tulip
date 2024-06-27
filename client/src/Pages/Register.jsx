@@ -49,9 +49,9 @@ const Register = () => {
   };
 
   return (
-    <div className="flex h-96 my-20">
+    <div className="flex flex-col md:flex-row h-auto md:h-96 my-20">
       {/* Left Section */}
-      <div className="flex-1 flex flex-col justify-center items-center bg-white p-6">
+      <div className="flex-1 flex flex-col justify-center items-center bg-white p-6 md:mr-4">
         <h2 className="text-2xl font-bold mb-2 text-pink-600">REGISTER</h2>
         <p className="mb-6">Please fill in the details to create a new account.</p>
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -114,7 +114,7 @@ const Register = () => {
       </div>
 
       {/* Right Section */}
-      <div className="flex-1 flex flex-col justify-center items-center bg-pink-50 mr-8 p-6">
+      <div className="flex-1 flex flex-col justify-center items-center bg-pink-50 mt-8 md:mt-0 ml-0 md:ml-8 p-6">
         <h2 className="text-3xl font-bold text-center mb-4">Welcome Back!</h2>
         <p className="text-lg text-center mb-6 text-gray-600">
           Already have an account? Sign in now to explore exclusive offers and the latest trends in ladies' fashion.

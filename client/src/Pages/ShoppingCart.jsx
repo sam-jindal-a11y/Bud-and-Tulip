@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-// import Product from "../../../ecommerce-backend/models/Product";
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -25,6 +24,18 @@ const ShoppingCart = () => {
     }
   };
 
+  const fetchProductDetails = async (productId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/products/${productId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+      return null;
+    }
+  };
+
   const fetchCartItems = async (userId) => {
     if (!userId) {
       console.error("User ID not available.");
@@ -36,8 +47,20 @@ const ShoppingCart = () => {
       const response = await axios.get(
         `http://localhost:5000/api/cart?userId=${userId}`
       );
-      setCartItems(response.data);
-      console.log(response.data);
+      const cartItems = response.data;
+
+      // Fetch product details for each cart item
+      const updatedCartItems = await Promise.all(
+        cartItems.map(async (item) => {
+          const productDetails = await fetchProductDetails(item.productId);
+          return {
+            ...item,
+            productDetails,
+          };
+        })
+      );
+
+      setCartItems(updatedCartItems);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     } finally {
@@ -57,12 +80,12 @@ const ShoppingCart = () => {
 
   const calculateTotalPrice = (items) => {
     return items.reduce((acc, item) => {
-      const price = parseFloat(item.price);
+      const price = parseFloat(item.productDetails.price);
       const quantity = parseInt(item.quantity, 10);
 
       if (isNaN(price) || isNaN(quantity)) {
         console.error(
-          `Invalid price or quantity for item: ${item.productName}`
+          `Invalid price or quantity for item: ${item.productDetails.name}`
         );
         return acc;
       }
@@ -144,31 +167,33 @@ const ShoppingCart = () => {
                   className="flex flex-col md:flex-row justify-between items-center border-b py-4 space-y-4 md:space-y-0"
                 >
                   <div className="flex flex-col md:flex-row items-center">
-                    <img
-                      src={item.productImage}
-                      alt={item.productName}
-                      className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
-                    />
+                    {item.productDetails &&
+                    item.productDetails.images &&
+                    item.productDetails.images.length > 0 ? (
+                      <img
+                      src={item.productDetails.image[0]}
+                      alt={item.productDetails.name}
+                        className="w-32 h-32 md:w-32 md:h-40 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
+                      />
+                    ) : (
+                      <img
+                      src={item.productDetails.image[0]}
+                      alt={item.productDetails.name}
+                        className="w-32 h-32 md:w-32 md:h-40 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
+                      />
+                    )}
                     <div className="text-center md:text-left">
                       <h2 className="text-lg md:text-xl font-semibold">
-                        {item.productName}
+                        {item.productDetails
+                          ? item.productDetails.name
+                          : "Unknown Product"}
                       </h2>
                       <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start mt-2">
                         <div className="flex items-center mr-2 md:mr-4">
-                          <p className="text-gray-600 mr-2">Size: {item.size}</p>
-                          {/* <select
-                            value={item.size}
-                            onChange={(e) =>
-                              handleSizeChange(item._id, e.target.value)
-                            }
-                            className="border rounded px-2 py-1"
-                          >
-                            {.map((size) => (
-                              <option key={size} value={size}>
-                                {size}  
-                              </option>
-                            ))}
-                          </select> */}
+                          <p className="text-gray-600 mr-2">
+                            Size: {item.size}
+                          </p>
+                          {/* Size selection dropdown */}
                         </div>
                         <div className="flex items-center mr-2 md:mr-4">
                           <p className="text-gray-600 mr-2">Quantity:</p>
@@ -209,7 +234,7 @@ const ShoppingCart = () => {
                   </div>
                   <div className="flex flex-col items-center md:flex-row md:items-center">
                     <p className="text-lg md:text-xl mr-0 md:mr-4 mb-2 md:mb-0">
-                      ₹{(item.price * item.quantity).toFixed(2)}
+                      ₹{(item.productDetails.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 </div>
