@@ -36,7 +36,7 @@ mongoose.connect('mongodb+srv://harshil:harsh@cluster0.cbh4pcf.mongodb.net/', {
   .catch(err => console.log(err));
 
 // Routes
-app.use('/api/seed', seedRouter);
+app.get('/api/seed', seedRouter);
 app.use('/api/auth', authRouter);
 
 app.get('/', (req, res) => {
@@ -95,7 +95,42 @@ app.post('/api/products', async (req, res) => {
     });
   }
 });
+app.delete('/products/:id', async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found'
+      });
+    }
+    res.json({
+      message: 'Product deleted successfully'
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Server error'
+    });
+  }
+});
 
+app.put('/products/:id', async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(id, updates, { new: true });
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ message: 'Server error, could not update product' });
+  }
+});
 
 app.get('/products/:id', async (req, res) => {
   try {

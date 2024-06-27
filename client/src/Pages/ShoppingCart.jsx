@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+// import Product from "../../../ecommerce-backend/models/Product";
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -36,6 +37,7 @@ const ShoppingCart = () => {
         `http://localhost:5000/api/cart?userId=${userId}`
       );
       setCartItems(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     } finally {
@@ -125,7 +127,9 @@ const ShoppingCart = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-xl md:text-2xl font-bold mb-4 text-center">Shopping Cart</h1>
+      <h1 className="text-xl md:text-2xl font-bold mb-4 text-center">
+        Shopping Cart
+      </h1>
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : (
@@ -151,19 +155,20 @@ const ShoppingCart = () => {
                       </h2>
                       <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start mt-2">
                         <div className="flex items-center mr-2 md:mr-4">
-                          <p className="text-gray-600 mr-2">Size:</p>
-                          <select
+                          <p className="text-gray-600 mr-2">Size: {item.size}</p>
+                          {/* <select
                             value={item.size}
                             onChange={(e) =>
                               handleSizeChange(item._id, e.target.value)
                             }
                             className="border rounded px-2 py-1"
                           >
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                          </select>
+                            {.map((size) => (
+                              <option key={size} value={size}>
+                                {size}  
+                              </option>
+                            ))}
+                          </select> */}
                         </div>
                         <div className="flex items-center mr-2 md:mr-4">
                           <p className="text-gray-600 mr-2">Quantity:</p>
@@ -210,7 +215,9 @@ const ShoppingCart = () => {
                 </div>
               ))}
               <div className="flex flex-col items-center md:flex-row justify-between mt-4">
-                <h2 className="text-lg md:text-xl font-bold mr-0 md:mr-2">Total Price:</h2>
+                <h2 className="text-lg md:text-xl font-bold mr-0 md:mr-2">
+                  Total Price:
+                </h2>
                 <p className="text-lg md:text-xl font-bold">
                   ₹ {calculateTotalPrice(cartItems).toFixed(2)}
                 </p>
