@@ -24,9 +24,10 @@ const Home = () => {
   return (
     <div>
       {/* <Carousel /> */}
+      <Carousel/>
       <div className="container mx-auto px-4 py-8">
         {/* Carousel Section */}
-        <section className="mb-12">{/* Content can be added here */}</section>
+       
         {/* New Arrivals Section */}
         <section className="mb-12 text-center">
           <h2 className="text-3xl font-bold mb-6">New Arrivals</h2>

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import {jwtDecode} from "jwt-decode"; // Corrected import statement
 
 const ProductView = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [size, setSize] = useState("M");
+  const [size, setSize] = useState(""); // Initialize with an empty string
   const [user, setUser] = useState(null);
-  const [visibleSection, setVisibleSection] = useState('description');
+  const [visibleSection, setVisibleSection] = useState("description");
   const navigate = useNavigate();
 
   const handleThumbnailClick = (index) => {
@@ -18,7 +18,7 @@ const ProductView = () => {
   };
 
   const formatInstructions = (instructions) => {
-    return instructions.split(',').map((item, index) => (
+    return instructions.split(",").map((item, index) => (
       <span key={index}>
         {item.trim()}
         <br />
@@ -29,19 +29,23 @@ const ProductView = () => {
   const toggleSection = (section) => {
     setVisibleSection(visibleSection === section ? null : section);
   };
+  function toggleSizeChart(){
+    navigate('/sizechart');
+  }
 
   const addToCart = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         alert("Please login to add items to the cart.");
+        navigate("/login"); // Redirect to login page if not authenticated
         return;
       }
-
+  
       const decoded = jwtDecode(token);
       setUser(decoded);
-
-      await axios.post(
+  
+      const response = await axios.post(
         "http://localhost:5000/api/cart",
         {
           userId: decoded.id,
@@ -57,6 +61,7 @@ const ProductView = () => {
           },
         }
       );
+  
       alert("Product added to cart");
       navigate("/ShoppingCart");
     } catch (error) {
@@ -64,9 +69,10 @@ const ProductView = () => {
         "Error adding product to cart:",
         error.response?.data?.message || error.message
       );
-      alert("Failed to add product to cart");
+      alert("Login Expired !!");
     }
   };
+  
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -74,7 +80,13 @@ const ProductView = () => {
         const response = await axios.get(
           `http://localhost:5000/products/${id}`
         );
-        setProduct(response.data);
+        const productData = response.data;
+        setProduct(productData);
+        if (productData.size.length === 1) {
+          setSize(productData.size[0]); // Set size to the single available size
+        } else {
+          setSize(productData.size[0]); // Set default size to M if multiple sizes are available
+        }
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
@@ -115,7 +127,9 @@ const ProductView = () => {
             {product.hasOffer ? (
               <>
                 <span className="line-through">₹ {product.price}</span>
-                <span className="ml-2 text-gray-700">Sale Price : ₹ {product.offerPrice}</span>
+                <span className="ml-2 text-gray-700">
+                  Sale Price : ₹ {product.offerPrice}
+                </span>
               </>
             ) : (
               <>₹ {product.price}</>
@@ -134,18 +148,28 @@ const ProductView = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2 font-bold">Size</label>
-            <select
-              value={size}
-              onChange={(e) => setSize(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {product.size.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
+            {product.size.length === 1 ? (
+              <select
+                value={size} // Use the size state variable
+                onChange={(e) => setSize(e.target.value)}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled // Optionally disable the select if there's only one size
+              >
+                <option value={product.size[0]}>{product.size[0]}</option>
+              </select>
+            ) : (
+              <select
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {product.size.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
           <div className="flex space-x-4 mb-4">
             <button
@@ -157,10 +181,10 @@ const ProductView = () => {
             <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
               Add to Wishlist
             </button>
-            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
-              <a href={`/size-chart/${product._id}`} className="text-white">
+            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950" onClick={toggleSizeChart}>
+           
                 Size Chart
-              </a>
+           
             </button>
           </div>
           <p className="text-gray-700 mb-6">
@@ -181,86 +205,93 @@ const ProductView = () => {
         </div>
       </div>
       <div className="container mx-auto p-4">
-  <div className="mb-8 flex flex-col sm:flex-row gap-4 sm:gap-8 text-center justify-center">
-    <h2
-      className="text-2xl font-bold mb-2 cursor-pointer"
-      onClick={() => toggleSection('description')}
-    >
-      Description
-      <hr />
-    </h2>
-    <h2
-      className="text-2xl font-bold mb-2 cursor-pointer"
-      onClick={() => toggleSection('additionalInfo')}
-    >
-      Additional Information
-      <hr />
-    </h2>
-    <h2
-      className="text-2xl font-bold mb-2 cursor-pointer"
-      onClick={() => toggleSection('washingInfo')}
-    >
-      Washing Information
-      <hr />
-    </h2>
-  </div>
+        <div className="mb-8 flex flex-col sm:flex-row gap-4 sm:gap-8 text-center justify-center">
+          <h2
+            className="text-2xl font-bold mb-2 cursor-pointer"
+            onClick={() => toggleSection("description")}
+          >
+            Description
+            <hr />
+          </h2>
+          <h2
+            className="text-2xl font-bold mb-2 cursor-pointer"
+            onClick={() => toggleSection("additionalInfo")}
+          >
+            Additional Information
+            <hr />
+          </h2>
+          <h2
+            className="text-2xl font-bold mb-2 cursor-pointer"
+            onClick={() => toggleSection("washingInfo")}
+          >
+            Washing Information
+            <hr />
+          </h2>
+        </div>
 
-  {visibleSection === 'description' && (
-    <div className="mb-8 text-left">
-      <h3 className="font-bold mb-2">Description</h3>
-      <p className="text-gray-700">
-        {formatInstructions(product.description)}
-      </p>
-    </div>
-  )}
+        {visibleSection === "description" && (
+          <div className="mb-8 text-left">
+            <h3 className="font-bold mb-2">Description</h3>
+            <p className="text-gray-700">
+              {formatInstructions(product.description)}
+            </p>
+          </div>
+        )}
 
-  {visibleSection === 'additionalInfo' && (
-    <div className="mb-8 text-left">
-      <h3 className="font-bold mb-2">Additional Information</h3>
-      <div className="container mx-auto p-4 overflow-x-auto">
-        <table className="min-w-full bg-white">
-          <tbody>
-            <tr className="border-b">
-              <td className="py-2 px-4 font-semibold">Include</td>
-              <td className="py-2 px-4">{product.inbox}</td>
-            </tr>
-            <tr className="border-b">
-              <td className="py-2 px-4 font-semibold">Shipping Details</td>
-              <td className="py-2 px-4">
-                The order will take 5-18 working days to deliver. Free delivery within India.
-              </td>
-            </tr>
-            <tr className="border-b">
-              <td className="py-2 px-4 font-semibold">Exchange/Return</td>
-              <td className="py-2 px-4">
-                We only exchange size within 10 working days; In case we are sold out, we'll exchange the piece. <br />
-                We don't do returns or cancel orders once placed. <br />
-                We don't exchange or return international orders. <br />
-                We don't exchange or refund reduced price articles. Customized pieces can't be exchanged.
-              </td>
-            </tr>
-            <tr className="border-b">
-              <td className="py-2 px-4 font-semibold">Other Description</td>
-              <td className="py-2 px-4">
-                Model is Wearing Size Small (S) & Model Height is 5 Ft. 7 Inch.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        {visibleSection === "additionalInfo" && (
+          <div className="mb-8 text-left">
+            <h3 className="font-bold mb-2">Additional Information</h3>
+            <div className="container mx-auto p-4 overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <tbody>
+                  <tr className="border-b">
+                    <td className="py-2 px-4 font-semibold">Include</td>
+                    <td className="py-2 px-4">{product.inbox}</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 px-4 font-semibold">
+                      Shipping Details
+                    </td>
+                    <td className="py-2 px-4">
+                      The order will take 5-18 working days to deliver. Free
+                      delivery within India.
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 px-4 font-semibold">Exchange/Return</td>
+                    <td className="py-2 px-4">
+                      We only exchange size within 10 working days; In case we
+                      are sold out, we'll exchange the piece. <br />
+                      We don't do returns or cancel orders once placed. <br />
+                      We don't exchange or return international orders. <br />
+                      We don't exchange or refund reduced price articles.
+                      Customized pieces can't be exchanged.
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-2 px-4 font-semibold">
+                      Other Description
+                    </td>
+                    <td className="py-2 px-4">
+                      Model is Wearing Size Small (S) & Model Height is 5 Ft. 7
+                      Inch.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {visibleSection === "washingInfo" && (
+          <div className="mb-8 text-left">
+            <h3 className="font-bold mb-2">Washing Information</h3>
+            <p className="text-gray-700">
+              {formatInstructions(product.washingInstruction)}
+            </p>
+          </div>
+        )}
       </div>
-    </div>
-  )}
-
-  {visibleSection === 'washingInfo' && (
-    <div className="mb-8 text-left">
-      <h3 className="font-bold mb-2">Washing Information</h3>
-      <p className="text-gray-700">
-        {formatInstructions(product.washingInstruction)}
-      </p>
-    </div>
-  )}
-</div>
-
     </div>
   );
 };

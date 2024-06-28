@@ -17,50 +17,15 @@ const ShoppingCart = () => {
         setUser(decodedToken);
       } catch (error) {
         console.error("Failed to decode token", error);
-        setLoading(false);
       }
-    } else {
-      setLoading(false);
     }
-  };
-
-  const fetchProductDetails = async (productId) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/products/${productId}`
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching product details:", error);
-      return null;
-    }
+    setLoading(false);
   };
 
   const fetchCartItems = async (userId) => {
-    if (!userId) {
-      console.error("User ID not available.");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/cart?userId=${userId}`
-      );
-      const cartItems = response.data;
-
-      // Fetch product details for each cart item
-      const updatedCartItems = await Promise.all(
-        cartItems.map(async (item) => {
-          const productDetails = await fetchProductDetails(item.productId);
-          return {
-            ...item,
-            productDetails,
-          };
-        })
-      );
-
-      setCartItems(updatedCartItems);
+      const response = await axios.get(`http://localhost:5000/api/cart?userId=${userId}`);
+      setCartItems(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     } finally {
@@ -70,28 +35,10 @@ const ShoppingCart = () => {
 
   const updateCartItemQuantity = async (itemId, quantity) => {
     try {
-      await axios.patch(`http://localhost:5000/api/cart/${itemId}`, {
-        quantity,
-      });
+      await axios.patch(`http://localhost:5000/api/cart/${itemId}`, { quantity });
     } catch (error) {
       console.error("Error updating cart item quantity:", error);
     }
-  };
-
-  const calculateTotalPrice = (items) => {
-    return items.reduce((acc, item) => {
-      const price = parseFloat(item.productDetails.price);
-      const quantity = parseInt(item.quantity, 10);
-
-      if (isNaN(price) || isNaN(quantity)) {
-        console.error(
-          `Invalid price or quantity for item: ${item.productDetails.name}`
-        );
-        return acc;
-      }
-
-      return acc + price * quantity;
-    }, 0);
   };
 
   useEffect(() => {
@@ -111,12 +58,6 @@ const ShoppingCart = () => {
       )
     );
     updateCartItemQuantity(itemId, quantity);
-  };
-
-  const handleSizeChange = (itemId, size) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) => (item._id === itemId ? { ...item, size } : item))
-    );
   };
 
   const handleDelete = async (itemId) => {
@@ -148,6 +89,20 @@ const ShoppingCart = () => {
     handleQuantityChange(itemId, newQuantity);
   };
 
+  const calculateTotalPrice = (items) => {
+    return items.reduce((acc, item) => {
+      const price = parseFloat(item.price);
+      const quantity = parseInt(item.quantity, 10);
+
+      if (isNaN(price) || isNaN(quantity)) {
+        console.error(`Invalid price or quantity for item: ${item.productName}`);
+        return acc;
+      }
+
+      return acc + price * quantity;
+    }, 0);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-xl md:text-2xl font-bold mb-4 text-center">
@@ -166,35 +121,24 @@ const ShoppingCart = () => {
                   key={item._id}
                   className="flex flex-col md:flex-row justify-between items-center border-b py-4 space-y-4 md:space-y-0"
                 >
-                  <div className="flex flex-col md:flex-row items-center">
-                    {item.productDetails &&
-                    item.productDetails.images &&
-                    item.productDetails.images.length > 0 ? (
-                      <img
-                      src={item.productDetails.image[0]}
-                      alt={item.productDetails.name}
-                        className="w-32 h-32 md:w-32 md:h-40 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
-                      />
-                    ) : (
-                      <img
-                      src={item.productDetails.image[0]}
-                      alt={item.productDetails.name}
-                        className="w-32 h-32 md:w-32 md:h-40 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
-                      />
-                    )}
-                    <div className="text-center md:text-left">
+                  <div className="flex flex-col md:flex-row items-center w-full">
+                    <img
+                      src={item.productImage}
+                      alt={item.productName}
+                      className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
+                    />
+                    <div className="flex-1 text-center md:text-left">
                       <h2 className="text-lg md:text-xl font-semibold">
-                        {item.productDetails
-                          ? item.productDetails.name
-                          : "Unknown Product"}
+                        {item.productName}
                       </h2>
                       <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start mt-2">
                         <div className="flex items-center mr-2 md:mr-4">
-                          <p className="text-gray-600 mr-2">
-                            Size: {item.size}
-                          </p>
-                          {/* Size selection dropdown */}
+                          <p className="text-gray-600 mr-2">Size:</p>
+                          <span className="border rounded px-2 py-1">
+                            {item.size}
+                          </span>
                         </div>
+
                         <div className="flex items-center mr-2 md:mr-4">
                           <p className="text-gray-600 mr-2">Quantity:</p>
                           <div className="flex items-center border border-gray-300 rounded-md">
@@ -231,15 +175,15 @@ const ShoppingCart = () => {
                         </button>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col items-center md:flex-row md:items-center">
-                    <p className="text-lg md:text-xl mr-0 md:mr-4 mb-2 md:mb-0">
-                      ₹{(item.productDetails.price * item.quantity).toFixed(2)}
-                    </p>
+                    <div className="flex items-center">
+                      <p className="text-lg md:text-xl mr-0 md:mr-4 mb-2 md:mb-0">
+                        ₹{(item.price * item.quantity).toFixed(2)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
-              <div className="flex flex-col items-center md:flex-row justify-between mt-4">
+              <div className="flex flex-col md:flex-row justify-between mt-4">
                 <h2 className="text-lg md:text-xl font-bold mr-0 md:mr-2">
                   Total Price:
                 </h2>
@@ -249,13 +193,13 @@ const ShoppingCart = () => {
               </div>
               <div className="flex flex-col md:flex-row justify-center mt-4 space-y-4 md:space-y-0 md:space-x-4">
                 <button
-                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full md:w-1/2"
+                  className="bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 w-full md:w-1/2"
                   onClick={handleContinueShopping}
                 >
                   Continue Shopping
                 </button>
                 <button
-                  className="bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 w-full md:w-1/2"
+                  className="bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 w-full md:w-1/2"
                   onClick={handleCheckout}
                 >
                   Checkout

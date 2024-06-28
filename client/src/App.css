@@ -31,4 +31,31 @@
     -webkit-box-orient: vertical;
   }
   
+  /* Custom CSS for Navbar */
+@media (min-width: 768px) {
+    .navbar-desktop {
+      display: flex !important;
+      justify-content: center;
+      align-items: center;
+    }
+    .navbar-mobile {
+      display: none !important;
+    }
+    .navbar-link {
+      margin: 0 1rem;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .navbar-desktop {
+      display: none !important;
+    }
+    .navbar-mobile {
+      display: flex !important;
+      justify-content: center;
+    }
+    .navbar-mobile-link {
+      margin: 0 0.5rem;
+    }
+  }
   

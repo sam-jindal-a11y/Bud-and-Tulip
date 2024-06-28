@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DropdownMenu from "./DropdownMenu";
+import Sidebar from "./Sidebar";
 
 const Navbar = () => {
   const [productName, setProductName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Products");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -41,13 +43,17 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <nav className="bg-white shadow-md">
-      <div className="container mx-auto py-4 flex flex-wrap items-center justify-between">
-        <div className="flex items-center justify-between w-full md:w-auto">
+      <div className="container mx-auto py-4 px-6 md:px-0 flex items-center justify-between">
+        <div className="flex items-center justify-around	 w-full md:w-auto">
           <button
             className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none"
-            onClick={toggleMenu}
+            onClick={toggleSidebar}
           >
             <i className="fas fa-bars text-2xl"></i>
           </button>
@@ -60,9 +66,9 @@ const Navbar = () => {
         </div>
 
         <div
-          className={`md:flex items-center mt-4 md:mt-0 ${
+          className={`navbar-desktop ${
             isMenuOpen ? "block" : "hidden"
-          }`}
+          } md:flex items-center mt-4 md:mt-0`}
         >
           <div className="relative md:ml-6 flex flex-col md:flex-row items-start md:items-center">
             <select
@@ -83,10 +89,7 @@ const Navbar = () => {
               <option>Blazer</option>
               <option>Shirts</option>
             </select>
-            <form
-              onSubmit={handleSubmit}
-              className="flex w-full md:w-auto"
-            >
+            <form onSubmit={handleSubmit} className="flex w-full md:w-auto">
               <input
                 type="text"
                 placeholder="Product name..."
@@ -104,35 +107,32 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div className="flex items-center mt-4 md:mt-0 lg:mt-0">
+        <div className="flex items-center mt-4 md:mt-0">
           <Link
             to="/Account"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4"
+            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
           >
-            <i className="far fa-user"></i>
-            <br />
-            My Account
+            <i className="far fa-user text-2xl"></i>
+            <span className="hidden md:inline-block">My Account</span>
           </Link>
           <Link
             to="/Wishlist"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4"
+            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
           >
-            <i className="far fa-heart"></i>
-            <br />
-            Wish List
+            <i className="hidden md:inline-block far fa-heart text-2xl"></i>
+            <span className="hidden md:inline-block">Wish List</span>
           </Link>
           <Link
             to="/ShoppingCart"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4"
+            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
           >
-            <i className="fas fa-shopping-cart"></i>
-            <br />
-            My cart
+            <i className="fas fa-shopping-cart text-2xl "></i>
+            <span className="hidden md:inline-block">My Cart</span>
           </Link>
         </div>
       </div>
 
-      <div className="bg-white py-5 border-t border-gray-300 hidden md:flex md:justify-between md:items-center">
+      <div className="navbar-desktop bg-white py-5 border-t border-gray-300 hidden md:flex md:justify-between md:items-center">
         <div className="container mx-auto">
           <div className="flex justify-center md:justify-start">
             <Link to="/" className="text-gray-700 hover:text-pinkc px-4 py-2">
@@ -154,6 +154,50 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      <div className="navbar-mobile fixed bottom-0 left-0 right-0 bg-white shadow-md py-2 border-t border-gray-300 z-50">
+        <div className="container mx-auto flex justify-around">
+          <Link to="/" className="text-gray-700 hover:text-pinkc text-center">
+            <i className="fas fa-home text-2xl"></i>
+            <br />
+            Home
+          </Link>
+          <Link
+            to="/search?query=&category=All%20Products"
+            className="text-gray-700 hover:text-pinkc text-center"
+          >
+            <i className="fas fa-store text-2xl"></i>
+            <br />
+            Shop
+          </Link>
+          <Link
+            to="/Search"
+            className="text-gray-700 hover:text-pinkc text-center"
+          >
+            <i className="fas fa-search text-2xl"></i>
+            <br />
+            Search
+          </Link>
+          <Link
+            to="/ShoppingCart"
+            className="text-gray-700 hover:text-pinkc text-center"
+          >
+            <i className="fas fa-shopping-cart text-2xl"></i>
+            <br />
+            Cart
+          </Link>
+          <Link
+            to="/Wishlist"
+            className="text-gray-700 hover:text-pinkc text-center"
+          >
+            <i className="fas fa-heart text-2xl"></i>
+            <br />
+            Wishlist
+          </Link>
+        </div>
+      </div>
+
+      <Sidebar isOpen={isSidebarOpen} toggleMenu={toggleSidebar} />
     </nav>
   );
 };
