@@ -14,7 +14,7 @@ const DropdownMenu = () => {
         onClick={toggleDropdown}
         className="text-gray-700 hover:text-pinkc px-4 py-2"
       >
-        Products
+        Products  <i class="fa-solid fa-angle-down"></i>
       </button>
       {isOpen && (
         <div className="absolute bg-white shadow-lg rounded-md mt-2 w-48 z-10 overflow-hidden">

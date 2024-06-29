@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import MobileSearchBar from '../Components/MobileSearchBar';
 
 const SearchSection = () => {
   const [products, setProducts] = useState([]);
@@ -128,6 +129,7 @@ const SearchSection = () => {
 
   return (
     <div className="flex flex-col lg:flex-row">
+      <MobileSearchBar />
       {/* Sidebar */}
       <div className="w-full lg:w-1/4 p-4 px-20 hidden lg:block">
         {/* Filters Section */}
