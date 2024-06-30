@@ -13,6 +13,8 @@ import Size from './models/Size.js';
 import Color from './models/Color.js';
 import Category from './models/Category.js';
 import ShipDetails from './models/ShipDetails.js';
+import Wishlist from './models/Wishlist.js';
+import auth from './middleware/auth.js';
 dotenv.config();
 
 const app = express();
@@ -156,6 +158,7 @@ app.post('/api/cart', async (req, res) => {
     productId,
     productName,
     price,
+    image,
     quantity,
     size
   } = req.body;
@@ -171,6 +174,7 @@ app.post('/api/cart', async (req, res) => {
       productId,
       productName,
       price,
+      image,
       quantity,
       size
     });
@@ -582,6 +586,65 @@ app.put('/colors/:id', async (req, res) => {
     res.status(500).send('Error updating color');
   }
 });
+
+// routes/wishlist.js
+
+
+
+// Add to Wishlist
+app.post("/api/wishlist", auth, async (req, res) => {
+  try {
+    const { userId, productId, productName, price, image } = req.body;
+
+    const newWishlistItem = new Wishlist({
+      userId,
+      productId,
+      productName,
+      price,
+      image,
+    });
+
+    await newWishlistItem.save();
+    res.status(201).send("Product added to wishlist");
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+// Get all wishlist items for a user
+app.get("/api/wishlist/:userId", auth, async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find all wishlist items for the user
+    const wishlistItems = await Wishlist.find({ userId });
+
+    res.status(200).send(wishlistItems);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+// Delete wishlist item
+app.delete("/api/wishlist/:userId/:productId", auth, async (req, res) => {
+  const { userId, productId } = req.params;
+
+  try {
+    // Find and delete the wishlist item
+    const deletedItem = await Wishlist.findOneAndDelete({ userId, productId });
+
+    if (!deletedItem) {
+      return res.status(404).send({ message: "Wishlist item not found" });
+    }
+
+    res.status(200).send({ message: "Wishlist item deleted successfully", deletedItem });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+
+
 
 
 app.get('/initialize', async (req, res) => {

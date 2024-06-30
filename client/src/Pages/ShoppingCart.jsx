@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { useNavigate, Link } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -122,58 +122,59 @@ const ShoppingCart = () => {
                   className="flex flex-col md:flex-row justify-between items-center border-b py-4 space-y-4 md:space-y-0"
                 >
                   <div className="flex flex-col md:flex-row items-center w-full">
-                    <img
-                      src={item.productImage}
-                      alt={item.productName}
-                      className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
-                    />
-                    <div className="flex-1 text-center md:text-left">
-                      <h2 className="text-lg md:text-xl font-semibold">
-                        {item.productName}
-                      </h2>
-                      <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start mt-2">
-                        <div className="flex items-center mr-2 md:mr-4">
-                          <p className="text-gray-600 mr-2">Size:</p>
-                          <span className="border rounded px-2 py-1">
-                            {item.size}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center mr-2 md:mr-4">
-                          <p className="text-gray-600 mr-2">Quantity:</p>
-                          <div className="flex items-center border border-gray-300 rounded-md">
-                            <button
-                              onClick={() =>
-                                handleDecrementQuantity(item._id, item.quantity)
-                              }
-                              className="text-gray-600 px-2 py-1 rounded-l-md bg-gray-200 hover:bg-gray-400 focus:outline-none"
-                            >
-                              -
-                            </button>
-                            <input
-                              type="number"
-                              min="1"
-                              value={item.quantity}
-                              readOnly
-                              className="w-8 text-center focus:outline-none"
-                            />
-                            <button
-                              onClick={() =>
-                                handleIncrementQuantity(item._id, item.quantity)
-                              }
-                              className="text-gray-600 px-2 py-1 rounded-r-md bg-gray-200 hover:bg-gray-400 focus:outline-none"
-                            >
-                              +
-                            </button>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleDelete(item._id)}
-                          className="bg-red-500 text-white py-1 px-2 md:px-3 rounded-lg hover:bg-red-600 mt-2 sm:mt-0"
-                        >
-                          Delete
-                        </button>
+                    <Link to={`/product/${item.productId}`} className="flex flex-col md:flex-row items-center w-full">
+                      <img
+                        src={item.image}
+                        alt={item.productName}
+                        className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
+                      />
+                      <div className="flex-1 text-center md:text-left">
+                        <h2 className="text-lg md:text-xl font-semibold">
+                          {item.productName}
+                        </h2>
                       </div>
+                    </Link>
+                    <div className="flex flex-col md:flex-row items-center w-full">
+                      <div className="flex items-center mr-2 md:mr-4">
+                        <p className="text-gray-600 mr-2">Size:</p>
+                        <span className="border rounded px-2 py-1">
+                          {item.size}
+                        </span>
+                      </div>
+                      <div className="flex items-center mr-2 md:mr-4">
+                        <p className="text-gray-600 mr-2">Quantity:</p>
+                        <div className="flex items-center border border-gray-300 rounded-md">
+                          <button
+                            onClick={() =>
+                              handleDecrementQuantity(item._id, item.quantity)
+                            }
+                            className="text-gray-600 px-2 py-1 rounded-l-md bg-gray-200 hover:bg-gray-400 focus:outline-none"
+                          >
+                            -
+                          </button>
+                          <input
+                            type="number"
+                            min="1"
+                            value={item.quantity}
+                            readOnly
+                            className="w-8 text-center focus:outline-none"
+                          />
+                          <button
+                            onClick={() =>
+                              handleIncrementQuantity(item._id, item.quantity)
+                            }
+                            className="text-gray-600 px-2 py-1 rounded-r-md bg-gray-200 hover:bg-gray-400 focus:outline-none"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="bg-red-500 text-white py-1 px-2 md:px-3 rounded-lg hover:bg-red-600 mt-2 sm:mt-0"
+                      >
+                        Delete
+                      </button>
                     </div>
                     <div className="flex items-center">
                       <p className="text-lg md:text-xl mr-0 md:mr-4 mb-2 md:mb-0">

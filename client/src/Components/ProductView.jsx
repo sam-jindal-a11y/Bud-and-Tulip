@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import {jwtDecode} from "jwt-decode"; // Corrected import statement
+import ProductCard from "./ProductCard";
 
 const ProductView = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const ProductView = () => {
   const [size, setSize] = useState(""); // Initialize with an empty string
   const [user, setUser] = useState(null);
   const [visibleSection, setVisibleSection] = useState("description");
+  const [allProducts, setAllProducts] = useState([]);
   const navigate = useNavigate();
 
   const handleThumbnailClick = (index) => {
@@ -29,9 +31,10 @@ const ProductView = () => {
   const toggleSection = (section) => {
     setVisibleSection(visibleSection === section ? null : section);
   };
-  function toggleSizeChart(){
-    navigate('/sizechart');
-  }
+
+  const toggleSizeChart = () => {
+    navigate("/sizechart");
+  };
 
   const addToCart = async () => {
     try {
@@ -41,17 +44,18 @@ const ProductView = () => {
         navigate("/login"); // Redirect to login page if not authenticated
         return;
       }
-  
+
       const decoded = jwtDecode(token);
       setUser(decoded);
-  
-      const response = await axios.post(
+
+      await axios.post(
         "http://localhost:5000/api/cart",
         {
           userId: decoded.id,
           productId: product._id,
           productName: product.name,
           price: product.hasOffer ? product.offerPrice : product.price,
+          image: product.image[0],
           quantity,
           size,
         },
@@ -61,7 +65,7 @@ const ProductView = () => {
           },
         }
       );
-  
+
       alert("Product added to cart");
       navigate("/ShoppingCart");
     } catch (error) {
@@ -72,7 +76,44 @@ const ProductView = () => {
       alert("Login Expired !!");
     }
   };
-  
+
+  const addToWishlist = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login to add items to the wishlist.");
+        navigate("/login"); // Redirect to login page if not authenticated
+        return;
+      }
+
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+
+      await axios.post(
+        "http://localhost:5000/api/wishlist",
+        {
+          userId: decoded.id,
+          productId: product._id,
+          productName: product.name,
+          price: product.hasOffer ? product.offerPrice : product.price,
+          image: product.image[0], // Assuming the first image is used for the wishlist
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Product added to wishlist");
+    } catch (error) {
+      console.error(
+        "Error adding product to wishlist:",
+        error.response?.data?.message || error.message
+      );
+      alert("Login Expired !!");
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -87,6 +128,12 @@ const ProductView = () => {
         } else {
           setSize(productData.size[0]); // Set default size to M if multiple sizes are available
         }
+
+        // Fetch all products
+        const allProductsResponse = await axios.get(
+          "http://localhost:5000/products"
+        );
+        setAllProducts(allProductsResponse.data);
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
@@ -178,13 +225,17 @@ const ProductView = () => {
             >
               Add to Cart
             </button>
-            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950">
+            <button
+              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+              onClick={addToWishlist}
+            >
               Add to Wishlist
             </button>
-            <button className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950" onClick={toggleSizeChart}>
-           
-                Size Chart
-           
+            <button
+              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+              onClick={toggleSizeChart}
+            >
+              Size Chart
             </button>
           </div>
           <p className="text-gray-700 mb-6">
@@ -291,6 +342,37 @@ const ProductView = () => {
             </p>
           </div>
         )}
+      </div>
+
+      {/* You may also like these section */}
+      <div className="container mx-auto ">
+        <h2 className="text-2xl font-bold mb-4 text-center">You may also like these</h2>
+        <hr />
+        <br />
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
+          {allProducts.createdProducts && allProducts.createdProducts.map((product) => (
+            <div key={product._id} className="">
+              <ProductCard
+                productId={product._id}
+                image={product.image[0]}
+                name={product.name}
+                price={product.price}
+                offerPrice={product.offerPrice}
+                category={product.category}
+                isActive={product.isActive}
+                hasOffer={product.hasOffer}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center mt-4">
+          <button
+            className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+            onClick={() => navigate("/products")}
+          >
+            More
+          </button>
+        </div>
       </div>
     </div>
   );

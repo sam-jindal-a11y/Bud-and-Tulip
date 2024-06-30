@@ -14,6 +14,8 @@ const Account = () => {
       const decoded = jwtDecode(token);
       setUser(decoded);
       fetchAddresses(decoded.id);
+      fetchUserDetails(decoded.id);
+      console.log(decoded);
     } else {
       navigate('/login'); // Redirect to login if no token
     }
@@ -33,6 +35,21 @@ const Account = () => {
     }
   };
 
+  const fetchUserDetails = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/users/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+      } else {
+        console.error('Failed to fetch user details');
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  };
+
+
   const handleAddAddress = () => {
     navigate('/AddressForm');
   };
@@ -51,7 +68,7 @@ const Account = () => {
       <h1 className="text-2xl font-bold mb-4">My Account</h1>
       <div className="mb-4">
         <h2 className="text-xl font-semibold">Welcome, {user.firstName}</h2>
-        <p>User ID: {user.id}</p>
+        <p>User ID: {user._id}</p><span><p>Email : {user.email}</p></span>
       </div>
       <button
         onClick={handleLogout}

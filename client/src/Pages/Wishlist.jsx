@@ -1,52 +1,137 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { Link } from "react-router-dom";
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Fetch the wishlist items from the API or local storage
     const fetchWishlist = async () => {
-      // Replace with your API call or state management logic
-      const response = await fetch('/api/wishlist');
-      const data = await response.json();
-      setWishlist(data);
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          throw new Error("Token not found in local storage");
+        }
+
+        const decodedToken = jwtDecode(token);
+        setUser(decodedToken.id);
+
+        if (decodedToken) {
+          const response = await fetch(
+            `http://localhost:5000/api/wishlist/${decodedToken.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch wishlist items");
+          }
+
+          const data = await response.json();
+          setWishlist(data);
+        }
+      } catch (error) {
+        console.error("Error fetching wishlist:", error);
+      }
     };
 
     fetchWishlist();
   }, []);
 
+  const handleDelete = async (productId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/wishlist/${user}/${productId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete wishlist item");
+      }
+
+      setWishlist(
+        wishlist.filter((product) => product.productId !== productId)
+      );
+      console.log(`Deleted product with ID: ${productId}`);
+    } catch (error) {
+      console.error("Error deleting wishlist item:", error);
+    }
+  };
+
   const handleAddToCart = (productId) => {
-    // Implement add to cart functionality
     console.log(`Add to cart: ${productId}`);
   };
 
-  const handleDelete = (productId) => {
-    // Implement delete functionality
-    setWishlist(wishlist.filter(product => product.id !== productId));
-    console.log(`Delete: ${productId}`);
+  const handleRedirect = (productId) => {
+    window.location.href = `/product/${productId}`;
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Wishlist</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {wishlist.map(product => (
-          <div key={product.id} className="bg-white shadow-md rounded-lg p-4">
-            <img src={product.image} alt={product.name} className="w-full h-48 object-cover rounded-md mb-4" />
-            <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-            <p className="text-gray-600 mb-4">${product.price}</p>
-            <button 
-              onClick={() => handleAddToCart(product.id)} 
-              className="bg-blue-500 text-white py-2 px-4 rounded-md mr-2 hover:bg-blue-600">
-              Add to Cart
-            </button>
-            <button 
-              onClick={() => handleDelete(product.id)} 
-              className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
-              Delete
-            </button>
-          </div>
-        ))}
+    <div className="container mx-auto p-4 sm:p-6">
+      <h1 className="text-2xl font-bold mb-4 sm:mb-6">Wishlist</h1>
+      <table className="w-full text-left">
+        <thead>
+          <tr>
+            <th className="pb-2 sm:pb-4">PRODUCT</th>
+            <th className="pb-2 sm:pb-4">PRICE</th>
+            <th className="pb-2 sm:pb-4">ADD TO CART</th>
+          </tr>
+        </thead>
+        <tbody>
+          {wishlist.map((product) => (
+            <tr key={product.productId} className="border-t">
+              <td className="py-2 sm:py-4">
+                <div className="flex items-center">
+                  <button
+                    onClick={() => handleDelete(product.productId)}
+                    className="mr-2 sm:mr-4 text-red-500 font-bold"
+                  >
+                    X
+                  </button>
+                  <div
+                    onClick={() => handleRedirect(product.productId)}
+                    className="flex items-center cursor-pointer"
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.productName}
+                      className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-md"
+                    />
+                    <span className="ml-2 sm:ml-4">{product.productName}</span>
+                  </div>
+                </div>
+              </td>
+              <td className="py-2 sm:py-4">₹ {product.price}</td>
+              <td className="py-2 sm:py-4">
+                <button
+                  onClick={() => handleRedirect(product.productId)}
+                  className="bg-pink-200 text-pink-700 py-1 px-2 sm:py-2 sm:px-4 rounded-md hover:bg-pink-300"
+                >
+                  Add To Cart
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="mt-6 sm:mt-8 flex justify-between">
+        <Link to="/ShoppingCart" className="text-pink-400 hover:underline">
+          Continue Shopping
+        </Link>
+        <Link to="/search?query=&category=All%20Products" className="text-pink-400 hover:underline">
+          View All Products
+        </Link>
       </div>
     </div>
   );

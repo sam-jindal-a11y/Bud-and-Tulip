@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import InstagramPost from "./InstagramPost";
 
 const Footer = () => {
   return (
@@ -95,6 +96,9 @@ const Footer = () => {
           {/* Instagram embedded section */}
           {/* Replace with your Instagram embed code */}
           {/* <div className="max-w-96 bg-white">instagram embedded</div> */}
+        </div>
+        <div className="hide-on-small-screens">
+          <InstagramPost/>
         </div>
       </div>
       <div className="nav2">
