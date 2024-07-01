@@ -20,6 +20,7 @@ import ProductView from "./Components/ProductView";
 import SearchSection from "./Pages/SearchSection";
 import Addressform from "./Components/Addressform";
 import CheckoutPage from "./Pages/CheckoutPage";
+import OrderDetails from "./Components/OrderDetails";
 
 
 const Layout = () => {
@@ -47,7 +48,7 @@ const Layout = () => {
           <Route path="/SizeChart" element={<SizeChart />} />
           <Route path="/AddressForm" element={<Addressform />} />
           <Route path="/CheckoutPage" element={<CheckoutPage />} />
-       
+          <Route path="/orderDetails" element={<OrderDetails />} />
         </Routes>
         <Footer />
       </Router>

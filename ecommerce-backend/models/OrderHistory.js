@@ -1,23 +1,24 @@
-const mongoose = require('mongoose');
+// models/OrderHistory.js
+import mongoose from "mongoose";
 
-
-// Define schema for order history
-const OrderHistorySchema = mongoose.Schema({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+const orderHistorySchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  ShipDetails: { type: mongoose.Schema.Types.ObjectId, ref: 'Address', required: true },
   products: [
     {
-      productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-      size: { type: String, required: true },
-      quantity: { type: Number, required: true }
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+      quantity: { type: Number, required: true },
+      price: { type: Number, required: true }
     }
   ],
-  addressId: { type: Schema.Types.ObjectId, ref: 'Address', required: true }, // Reference to Address model
-  finalPrice: { type: Number, required: true },
   paymentMethod: { type: String, enum: ['cod', 'razorpay'], required: true },
-  orderDate: { type: Date, default: Date.now }
+  totalAmount: { type: Number, required: true },
+  discount: { type: Number, default: 0 },
+  codCharge: { type: Number, default: 0 },
+  finalAmount: { type: Number, required: true },
+  createdAt: { type: Date, default: Date.now }
 });
 
-// Create model for order history
-const OrderHistory = mongoose.model('OrderHistory', OrderHistorySchema);
-
+const OrderHistory = mongoose.model('OrderHistory', orderHistorySchema);
 export default OrderHistory;
+// const Cart = mongoose.model('Cart', cartSchema);

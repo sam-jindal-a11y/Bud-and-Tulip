@@ -1,7 +1,8 @@
 // src/CheckoutPage.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode"; // Corrected import statement
+import axios from "axios"; // Added axios for HTTP requests
 
 const CheckoutPage = () => {
   const [addresses, setAddresses] = useState([]);
@@ -32,7 +33,7 @@ const CheckoutPage = () => {
         const data = await response.json();
         setAddresses(data);
         if (data.length > 0) {
-          setSelectedAddress(data[0].id);
+          setSelectedAddress(data[0]._id);
         }
       } else {
         console.error("Failed to fetch addresses");
@@ -65,11 +66,34 @@ const CheckoutPage = () => {
   const totalPrice = products.reduce((acc, product) => acc + product.price * product.quantity, 0);
   const finalPrice = totalPrice - maxDiscount;
 
-  const handlePayment = () => {
-    if (paymentMethod === "razorpay") {
-      navigate("/razorpay");
-    } else {
-      alert("Order placed with Cash on Delivery");
+  const handlePayment = async () => {
+    const token = localStorage.getItem("token");
+    const decoded = jwtDecode(token);
+
+    const orderData = {
+      userId: decoded.id,
+      addressId: selectedAddress,
+      products: products.map(product => ({
+        productId: product._id,
+        quantity: product.quantity,
+        price: product.price
+      })),
+      paymentMethod,
+      totalAmount: totalPrice,
+      discount: maxDiscount,
+      codCharge: paymentMethod === "cod" ? 300 : 0,
+      finalAmount: finalPrice + (paymentMethod === "cod" ? 300 : 0)
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/orderHistory", orderData);
+      if (response.status === 201) {
+        alert("Order placed successfully!");
+        navigate("/orderSuccess");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order. Please try again.");
     }
   };
 
@@ -193,7 +217,6 @@ const CheckoutPage = () => {
               </div>
               <div className="flex items-center">
                 <p className="text-gray-700 font-bold mr-4">₹ {product.price * product.quantity}</p>
-               
               </div>
             </div>
           ))
@@ -246,8 +269,7 @@ const CheckoutPage = () => {
             onClick={handlePayment}
             className="w-full bg-pink-500 text-white py-2 rounded-lg mt-4 hover:bg-pink-600 focus:outline-none"
           >
-            Pay Now  ₹ {(finalPrice + (paymentMethod === "cod" ? 300 : 0)).toFixed(2)
-            }
+            Pay Now ₹ {(finalPrice + (paymentMethod === "cod" ? 300 : 0)).toFixed(2)}
           </button>
         </div>
       </div>

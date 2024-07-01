@@ -15,6 +15,7 @@ import Category from './models/Category.js';
 import ShipDetails from './models/ShipDetails.js';
 import Wishlist from './models/Wishlist.js';
 import auth from './middleware/auth.js';
+import orderHistoryRouter from './Routes/OrderHistory.js'
 dotenv.config();
 
 const app = express();
@@ -40,7 +41,7 @@ mongoose.connect('mongodb+srv://harshil:harsh@cluster0.cbh4pcf.mongodb.net/', {
 // Routes
 app.get('/api/seed', seedRouter);
 app.use('/api/auth', authRouter);
-
+app.use('/api/orderHistory', orderHistoryRouter);
 app.get('/', (req, res) => {
   res.send('Welcome to the E-commerce API');
 });
