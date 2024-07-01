@@ -57,9 +57,9 @@ router.get('/orders', async (req, res) => {
   router.get('/:orderId', async (req, res) => {
     try {
       const order = await OrderHistory.findById(req.params.orderId)
-        .populate('userId')
-        .populate('ShipDetails')
-        .populate('products.productId');
+      .populate('userId', 'name email mobile') // Populate user details
+      .populate('ShipDetails', 'address city state country pinCode') // Populate shipping address
+      .populate('products.productId', 'name image price')
       if (!order) {
         return res.status(404).json({ message: 'Order not found' });
       }
