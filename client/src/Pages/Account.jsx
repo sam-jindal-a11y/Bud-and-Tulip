@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode'; // Correct the import statement
+import {jwtDecode} from 'jwt-decode';
 
 const Account = () => {
   const [user, setUser] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [orders, setOrders] = useState([]);
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('dashboard'); // State to manage active tab
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -18,9 +17,9 @@ const Account = () => {
       fetchOrders(decoded.id); // Fetch orders for the user
       console.log(decoded);
     } else {
-      navigate('/login'); // Redirect to login if no token
+      window.location.href = '/login'; // Redirect to login if no token
     }
-  }, [navigate]);
+  }, []);
 
   const fetchAddresses = async (userId) => {
     try {
@@ -64,30 +63,41 @@ const Account = () => {
     }
   };
 
-  const handleAddAddress = () => {
-    navigate('/AddressForm');
-  };
-
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    window.location.href = '/login';
   };
 
   if (!user) {
     return <div>Loading...</div>;
   }
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return <Dashboard orders={orders} />;
+      case 'addresses':
+        return <Addresses addresses={addresses} />;
+      case 'wishlist':
+        return <Wishlist />;
+      case 'wallet':
+        return <Wallet />;
+      default:
+        return <Dashboard orders={orders} />;
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h2 className="text-2xl font-semibold mb-6">Hello, {user.firstName}! Welcome to your dashboard!</h2>
-      <div className="flex">
-        <div className="w-1/3 p-4 border-r">
+    <div className="max-w-4xl mx-auto p-4">
+      <h2 className="text-2xl font-semibold mb-4">Hello, {user.firstName}! Welcome to your dashboard!</h2>
+      <div className="flex flex-col md:flex-row">
+        <div className="md:w-1/3 p-4 border-r mb-4 md:mb-0">
           <h3 className="text-xl font-bold mb-4">My Profile</h3>
-          <ul>
-            <li className="mb-2"><a href="/dashboard" className="text-pink-500">Dashboard</a></li>
-            <li className="mb-2"><a href="/addresses">Addresses</a></li>
-            <li className="mb-2"><a href="/wishlist">Wishlist</a></li>
-            <li className="mb-2"><a href="/wallet">Wallet</a></li>
+          <ul className="space-y-2">
+            <li className={`cursor-pointer ${activeTab === 'dashboard' ? 'text-pink-500' : ''}`} onClick={() => setActiveTab('dashboard')}>Dashboard</li>
+            <li className={`cursor-pointer ${activeTab === 'addresses' ? 'text-pink-500' : ''}`} onClick={() => setActiveTab('addresses')}>Addresses</li>
+            <li className={`cursor-pointer ${activeTab === 'wishlist' ? 'text-pink-500' : ''}`} onClick={() => setActiveTab('wishlist')}>Wishlist</li>
+            <li className={`cursor-pointer ${activeTab === 'wallet' ? 'text-pink-500' : ''}`} onClick={() => setActiveTab('wallet')}>Wallet</li>
           </ul>
           <button
             onClick={handleLogout}
@@ -96,40 +106,83 @@ const Account = () => {
             Log Out
           </button>
         </div>
-        <div className="w-2/3 p-4">
-          <h3 className="text-xl font-bold mb-4">Orders History</h3>
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">Order ID</th>
-                <th className="py-2 px-4 border-b">Date</th>
-                <th className="py-2 px-4 border-b">Payment Status</th>
-                <th className="py-2 px-4 border-b">Fulfillment Status</th>
-                <th className="py-2 px-4 border-b">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.length > 0 ? (
-                orders.map((order) => (
-                  <tr key={order._id}>
-                    <td className="py-2 px-4 border-b">{order._id}</td>
-                    <td className="py-2 px-4 border-b">{new Date(order.createdAt).toLocaleDateString()}</td>
-                    <td className="py-2 px-4 border-b">{order.paymentStatus}</td>
-                    <td className="py-2 px-4 border-b">{order.fulfillmentStatus}</td>
-                    <td className="py-2 px-4 border-b">₹ {order.finalAmount}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td className="py-2 px-4 border-b" colSpan="5">No orders found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        <div className="md:w-2/3 p-4">
+          {renderContent()}
         </div>
       </div>
     </div>
   );
 };
+
+const Dashboard = ({ orders }) => (
+  <div>
+    <h3 className="text-xl font-bold mb-4">Orders History</h3>
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white">
+        <thead>
+          <tr>
+            <th className="py-2 px-4 border-b">Order ID</th>
+            <th className="py-2 px-4 border-b">Date</th>
+            <th className="py-2 px-4 border-b">Payment Status</th>
+            <th className="py-2 px-4 border-b">Fulfillment Status</th>
+            <th className="py-2 px-4 border-b">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.length > 0 ? (
+            orders.map((order) => (
+              <tr key={order._id}>
+                <td className="py-2 px-4 border-b">{order._id}</td>
+                <td className="py-2 px-4 border-b">{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td className="py-2 px-4 border-b">{order.paymentStatus}</td>
+                <td className="py-2 px-4 border-b">{order.fulfillmentStatus}</td>
+                <td className="py-2 px-4 border-b">₹ {order.finalAmount}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td className="py-2 px-4 border-b" colSpan="5">No orders found</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
+
+const Addresses = ({ addresses }) => (
+  <div>
+    <h3 className="text-xl font-bold mb-4">Addresses</h3>
+    <ul>
+      {addresses.length > 0 ? (
+        addresses.map((address) => (
+          <li key={address._id} className="mb-4 p-4 border rounded-lg shadow">
+            <p className="font-semibold">{address.firstName} {address.lastName}</p>
+            <p>{address.address1}</p>
+            {address.address2 && <p>{address.address2}</p>}
+            <p>{address.city}, {address.province}, {address.country}, {address.postalCode}</p>
+            <p>{address.phone}</p>
+          </li>
+        ))
+      ) : (
+        <li>No addresses found</li>
+      )}
+    </ul>
+  </div>
+);
+
+const Wishlist = () => (
+  <div>
+    <h3 className="text-xl font-bold mb-4">Wishlist</h3>
+    <p>Wishlist content goes here.</p>
+  </div>
+);
+
+const Wallet = () => (
+  <div>
+    <h3 className="text-xl font-bold mb-4">Wallet</h3>
+    <p>Wallet content goes here.</p>
+  </div>
+);
 
 export default Account;
