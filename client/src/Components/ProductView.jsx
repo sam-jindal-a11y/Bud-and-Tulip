@@ -368,7 +368,7 @@ const ProductView = () => {
         <div className="flex justify-center mt-4">
           <button
             className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-            onClick={() => navigate("/products")}
+            onClick={() => navigate("/search?query=&category=All%20Products")}
           >
             More
           </button>
