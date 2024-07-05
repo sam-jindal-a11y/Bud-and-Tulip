@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DropdownMenu from "./DropdownMenu";
 import Sidebar from "./Sidebar";
+import axios from 'axios';
 
 const Navbar = () => {
   const [productName, setProductName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Products");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [upcomingSale, setUpcomingSale] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -15,15 +17,25 @@ const Navbar = () => {
     const params = new URLSearchParams(location.search);
     const query = params.get("query");
     const category = params.get("category");
-
+    const fetchUpcomingSaleDetails = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/sales');
+        setUpcomingSale(response.data[0]);
+        console.log(response.data[0]._id); // Log the actual data received
+      } catch (error) {
+        console.error('Error fetching upcoming sale details:', error);
+      }
+    };
     if (query) {
       setProductName(decodeURIComponent(query));
     }
     if (category) {
       setSelectedCategory(decodeURIComponent(category));
     }
+    fetchUpcomingSaleDetails();
   }, [location.search]);
-
+  
+ 
   const handleInputChange = (event) => {
     setProductName(event.target.value);
   };
@@ -49,6 +61,13 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-md">
+       {upcomingSale && (
+        <div className="bg-pinkc text-white text-center py-2">
+          <p className="text-md text-black font-bold">
+            Upcoming Sale: {upcomingSale.saleName} - {upcomingSale.saleDate}
+          </p>
+        </div>
+      )}
       <div className="container mx-auto py-4 px-6 md:px-0 flex items-center justify-between">
         <div className="flex items-center justify-around	 w-full md:w-auto">
           <button

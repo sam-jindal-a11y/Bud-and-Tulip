@@ -123,8 +123,7 @@ const Dashboard = ({ orders }) => (
           <tr>
             <th className="py-2 px-4 border-b">Order ID</th>
             <th className="py-2 px-4 border-b">Date</th>
-            <th className="py-2 px-4 border-b">Payment Status</th>
-            <th className="py-2 px-4 border-b">Fulfillment Status</th>
+            <th className="py-2 px-4 border-b">Status</th>
             <th className="py-2 px-4 border-b">Total</th>
           </tr>
         </thead>
@@ -134,8 +133,7 @@ const Dashboard = ({ orders }) => (
               <tr key={order._id}>
                 <td className="py-2 px-4 border-b">{order._id}</td>
                 <td className="py-2 px-4 border-b">{new Date(order.createdAt).toLocaleDateString()}</td>
-                <td className="py-2 px-4 border-b">{order.paymentStatus}</td>
-                <td className="py-2 px-4 border-b">{order.fulfillmentStatus}</td>
+                <td className="py-2 px-4 border-b">{order.status ? order.status : 'pending'}</td>
                 <td className="py-2 px-4 border-b">₹ {order.finalAmount}</td>
               </tr>
             ))

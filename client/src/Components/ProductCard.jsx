@@ -77,7 +77,7 @@ const ProductCard = ({
         onClick={singleProduct}
       />
       <div className="p-4 text-left">
-        <p className="text-sm text-gray-400 mb-1">{category}</p>
+        <p className="text-sm text-gray-400 mb-1">{category[0]}</p>
         <h3 className="text-md font-semibold mb-2 product-name">{name}</h3>
         <p className="text-gray-500 mb-4">
           {hasOffer ? (

@@ -20,7 +20,14 @@ const userSchema = new mongoose.Schema({
     },
     token: {
         type: String,
-    }
+    },
+    usedVouchers: [{
+        voucherId: mongoose.Schema.Types.ObjectId,
+        usageCount: {
+            type: Number,
+            default: 0,
+        },
+    }, ],
 });
 
 const User = mongoose.model('User', userSchema);

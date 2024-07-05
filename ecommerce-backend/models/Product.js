@@ -46,12 +46,20 @@ const ProductSchema = new mongoose.Schema({
     },
     offerPrice: {
         type: Number,
-         // offerPrice is required if hasOffer is true
+        // offerPrice is required if hasOffer is true
     },
     isActive: {
         type: Boolean,
         required: true,
         default: true
+    },
+    originalPrice: {
+        type: Number,
+        default: null,
+    },
+    originalHasOffer: {
+        type: Boolean,
+        default: false,
     }
 });
 

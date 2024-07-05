@@ -16,6 +16,9 @@ import ShipDetails from './models/ShipDetails.js';
 import Wishlist from './models/Wishlist.js';
 import auth from './middleware/auth.js';
 import orderHistoryRouter from './Routes/OrderHistory.js'
+import Voucher from './models/Voucher.js';
+import User from './models/User.js';
+import Sale from './models/Sale.js';
 dotenv.config();
 
 const app = express();
@@ -118,22 +121,47 @@ app.delete('/products/:id', async (req, res) => {
 });
 
 app.put('/products/:id', async (req, res) => {
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
   const updates = req.body;
 
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(id, updates, { new: true });
+    const updatedProduct = await Product.findByIdAndUpdate(id, updates, {
+      new: true
+    });
 
     if (!updatedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({
+        message: 'Product not found'
+      });
     }
 
     res.status(200).json(updatedProduct);
   } catch (error) {
     console.error('Error updating product:', error);
-    res.status(500).json({ message: 'Server error, could not update product' });
+    res.status(500).json({
+      message: 'Server error, could not update product'
+    });
   }
 });
+
+app.post('/products/by-categories', async (req, res) => {
+  const { categoryNames } = req.body;
+
+  if (!categoryNames || !Array.isArray(categoryNames)) {
+    return res.status(400).json({ error: 'Invalid category names' });
+  }
+  console.log(categoryNames);
+  try {
+    const products = await Product.find({ category: { $in: categoryNames } }); // Assuming categoryName is stored in Product model
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 app.get('/products/:id', async (req, res) => {
   try {
@@ -149,6 +177,106 @@ app.get('/products/:id', async (req, res) => {
     res.status(500).json({
       message: 'Server error'
     });
+  }
+});
+
+app.post('/sales', async (req, res) => {
+  const {
+    saleName,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    discount,
+    flatDiscount,
+    categories,
+    products,
+  } = req.body;
+
+  try {
+    // Create a new sale
+    const newSale = new Sale({
+      saleName,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      discount,
+      flatDiscount,
+      categories,
+    });
+
+    await newSale.save();
+
+    const updatePromises = products.map(product => 
+      Product.findByIdAndUpdate(product._id, {
+        originalPrice: product.price,
+        originalHasOffer: product.hasOffer,
+        offerPrice: product.offerPrice,
+        hasOffer: product.hasOffer,
+      }, { new: true })
+    );
+
+    await Promise.all(updatePromises);
+
+    // Schedule a task to revert products to their original state after the sale ends
+    const saleEndTime = new Date(`${endDate}T${endTime}`);
+    setTimeout(async () => {
+      const revertPromises = products.map(product =>
+        Product.findByIdAndUpdate(product._id, {
+          offerPrice: product.originalPrice,
+          hasOffer: product.originalHasOffer,
+        }, { new: true })
+      );
+      await Promise.all(revertPromises);
+    }, saleEndTime - Date.now());
+
+    res.status(201).json(newSale);
+  } catch (error) {
+    console.error('Error creating sale:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+// GET all sales
+app.get('/sales', async (req, res) => {
+  try {
+    const sales = await Sale.find();
+    res.json(sales);
+  } catch (err) {
+    console.error('Error fetching sales:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+const oneWeekBefore = (date) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() - 7);
+  return result;
+};
+
+app.get('/upcoming-sales', async (req, res) => {
+  try {
+    const today = new Date();
+    const upcomingSales = await Sale.find({
+      startDate: { $gte: today, $lte: oneWeekBefore(today) },
+    });
+
+    res.json(upcomingSales);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+// DELETE a sale by ID
+app.delete('/sales/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedSale = await Sale.findByIdAndDelete(id);
+    if (!deletedSale) {
+      return res.status(404).json({ message: 'Sale not found' });
+    }
+    res.json({ message: 'Sale deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting sale:', err);
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
@@ -409,13 +537,20 @@ app.delete('/sizes/:id', async (req, res) => {
 
 app.put('/sizes/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name } = req.body; // Assuming you're updating only the name field
+    const {
+      id
+    } = req.params;
+    const {
+      name
+    } = req.body; // Assuming you're updating only the name field
 
-    const updatedSize = await Size.findOneAndUpdate(
-      { size_id: id },
-      { name },
-      { new: true } // To return the updated document
+    const updatedSize = await Size.findOneAndUpdate({
+        size_id: id
+      }, {
+        name
+      }, {
+        new: true
+      } // To return the updated document
     );
 
     if (!updatedSize) {
@@ -433,7 +568,9 @@ app.put('/sizes/:id', async (req, res) => {
 // Add a new category
 app.post('/categories', async (req, res) => {
   try {
-    const { name } = req.body;
+    const {
+      name
+    } = req.body;
     const count = await Category.countDocuments();
     const category = new Category({
       category_id: count + 1,
@@ -449,7 +586,9 @@ app.post('/categories', async (req, res) => {
 // Add a new color
 app.post('/colors', async (req, res) => {
   try {
-    const { name } = req.body;
+    const {
+      name
+    } = req.body;
     const count = await Color.countDocuments();
     const color = new Color({
       color_id: count + 1,
@@ -496,9 +635,13 @@ app.get('/categories', async (req, res) => {
 // Delete a category by ID
 app.delete('/categories/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const {
+      id
+    } = req.params;
 
-    const deletedCategory = await Category.findOneAndDelete({ category_id: id });
+    const deletedCategory = await Category.findOneAndDelete({
+      category_id: id
+    });
 
     if (!deletedCategory) {
       return res.status(404).send('Category not found');
@@ -514,13 +657,20 @@ app.delete('/categories/:id', async (req, res) => {
 // Update a category by ID
 app.put('/categories/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name } = req.body; // Assuming you're updating only the name field
+    const {
+      id
+    } = req.params;
+    const {
+      name
+    } = req.body; // Assuming you're updating only the name field
 
-    const updatedCategory = await Category.findOneAndUpdate(
-      { category_id: id },
-      { name },
-      { new: true } // To return the updated document
+    const updatedCategory = await Category.findOneAndUpdate({
+        category_id: id
+      }, {
+        name
+      }, {
+        new: true
+      } // To return the updated document
     );
 
     if (!updatedCategory) {
@@ -550,9 +700,13 @@ app.get('/colors', async (req, res) => {
 // Delete a color by ID
 app.delete('/colors/:id', async (req, res) => {
   try {
-    const { id } = req.params;
+    const {
+      id
+    } = req.params;
 
-    const deletedColor = await Color.findOneAndDelete({ color_id: id });
+    const deletedColor = await Color.findOneAndDelete({
+      color_id: id
+    });
 
     if (!deletedColor) {
       return res.status(404).send('Color not found');
@@ -568,13 +722,20 @@ app.delete('/colors/:id', async (req, res) => {
 // Update a color by ID
 app.put('/colors/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name } = req.body; // Assuming you're updating only the name field
+    const {
+      id
+    } = req.params;
+    const {
+      name
+    } = req.body; // Assuming you're updating only the name field
 
-    const updatedColor = await Color.findOneAndUpdate(
-      { color_id: id },
-      { name },
-      { new: true } // To return the updated document
+    const updatedColor = await Color.findOneAndUpdate({
+        color_id: id
+      }, {
+        name
+      }, {
+        new: true
+      } // To return the updated document
     );
 
     if (!updatedColor) {
@@ -595,7 +756,13 @@ app.put('/colors/:id', async (req, res) => {
 // Add to Wishlist
 app.post("/api/wishlist", auth, async (req, res) => {
   try {
-    const { userId, productId, productName, price, image } = req.body;
+    const {
+      userId,
+      productId,
+      productName,
+      price,
+      image
+    } = req.body;
 
     const newWishlistItem = new Wishlist({
       userId,
@@ -608,46 +775,187 @@ app.post("/api/wishlist", auth, async (req, res) => {
     await newWishlistItem.save();
     res.status(201).send("Product added to wishlist");
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).send({
+      message: error.message
+    });
   }
 });
 
 // Get all wishlist items for a user
 app.get("/api/wishlist/:userId", auth, async (req, res) => {
-  const { userId } = req.params;
+  const {
+    userId
+  } = req.params;
 
   try {
     // Find all wishlist items for the user
-    const wishlistItems = await Wishlist.find({ userId });
+    const wishlistItems = await Wishlist.find({
+      userId
+    });
 
     res.status(200).send(wishlistItems);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).send({
+      message: error.message
+    });
   }
 });
 
 // Delete wishlist item
 app.delete("/api/wishlist/:userId/:productId", auth, async (req, res) => {
-  const { userId, productId } = req.params;
+  const {
+    userId,
+    productId
+  } = req.params;
 
   try {
     // Find and delete the wishlist item
-    const deletedItem = await Wishlist.findOneAndDelete({ userId, productId });
+    const deletedItem = await Wishlist.findOneAndDelete({
+      userId,
+      productId
+    });
 
     if (!deletedItem) {
-      return res.status(404).send({ message: "Wishlist item not found" });
+      return res.status(404).send({
+        message: "Wishlist item not found"
+      });
     }
 
-    res.status(200).send({ message: "Wishlist item deleted successfully", deletedItem });
+    res.status(200).send({
+      message: "Wishlist item deleted successfully",
+      deletedItem
+    });
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).send({
+      message: error.message
+    });
   }
 });
 
 
+// vouchers
+app.post('/api/vouchers', async (req, res) => {
+  try {
+    const voucher = new Voucher(req.body);
+    await voucher.save();
+    res.status(201).send(voucher);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 
+app.get('/api/vouchers', async (req, res) => {
+  try {
+    const vouchers = await Voucher.find();
+    res.send(vouchers);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
+app.delete('/api/vouchers/:id', async (req, res) => {
+  try {
+    const voucher = await Voucher.findByIdAndDelete(req.params.id);
+    if (!voucher) {
+      res.status(404).send('Voucher not found');
+    } else {
+      res.send(voucher);
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+app.post('/api/validate', async (req, res) => {
+  const {
+    code,
+    userId
+  } = req.body;
+  try {
+    const voucher = await Voucher.findOne({
+      code
+    });
+    if (!voucher) {
+      return res.status(404).json({
+        message: 'Voucher not found'
+      });
+    }
 
+    const currentDate = new Date();
+    if (currentDate < voucher.startDate || currentDate > voucher.endDate) {
+      return res.status(400).json({
+        message: 'Voucher is not valid'
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (user.usedVouchers.includes(voucher._id)) {
+      return res.status(400).json({
+        message: 'Voucher has already been used by this user'
+      });
+    }
+
+    console.log(user); // Ensure this logs correctly
+    return res.json(voucher);
+  } catch (error) {
+    console.error('Server error:', error); // Log the error
+    return res.status(500).json({
+      message: 'Server error'
+    });
+  }
+});
+app.post('/api/apply-voucher', async (req, res) => {
+  const {
+    code,
+    userId
+  } = req.body;
+  try {
+    const voucher = await Voucher.findOne({
+      code
+    });
+    if (!voucher) {
+      return res.status(404).json({
+        message: 'Voucher not found'
+      });
+    }
+    const currentDate = new Date();
+    if (currentDate < voucher.startDate || currentDate > voucher.endDate) {
+      return res.status(400).json({
+        message: 'Voucher is not valid'
+      });
+    }
+    const user = await User.findById(userId);
+    const voucherUsage = user.usedVouchers.find(v => v.voucherId.equals(voucher._id));
+    console.log(voucherUsage); // Ensure this logs correctly
+    if (voucherUsage && voucherUsage.usageCount >= voucher.maxPerUse) {
+      return res.status(400).json({
+        message: 'Voucher usage limit exceeded for this user'
+      });
+    } else {
+      // Update the usage count or add the voucher usage record
+      if (voucherUsage) {
+        voucherUsage.usageCount += 1;
+      } else {
+        user.usedVouchers.push({
+          voucherId: voucher._id,
+          usageCount: 1
+        });
+      }
+
+      await user.save();
+
+      // Continue with applying the voucher or other logic
+    }
+
+    return res.json({
+      message: 'Voucher applied successfully',
+      voucher
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Server error'
+    });
+  }
+});
 app.get('/initialize', async (req, res) => {
   try {
     await Size.insertMany([{

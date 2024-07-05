@@ -11,6 +11,7 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [voucherCode, setVoucherCode] = useState("");
   const [maxDiscount, setMaxDiscount] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,32 +60,66 @@ const CheckoutPage = () => {
     }
   };
 
-  const applyVoucher = () => {
-    setMaxDiscount(totalPrice * 0.1); // 10% discount for demonstration
+  const applyVoucher = async () => {
+    try {
+      // Retrieve the token from local storage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('User not logged in');
+      }
+  
+      // Decode the token to get the user ID
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id; // Adjust this based on your token structure
+      // console.log(decodedToken.id);
+      // Send the request to validate the voucher
+      const response = await axios.post('http://localhost:5000/api/validate', { code: voucherCode, userId });
+      const voucher = response.data;
+      const discountAmount = (voucher.discount / 100) * totalPrice;
+      setMaxDiscount(discountAmount);
+  
+      // Send a request to apply the voucher and track usage
+      await axios.post('http://localhost:5000/api/apply-voucher', { code: voucherCode, userId});
+    } catch (error) {
+      console.error('Error applying voucher:', error.response ? error.response.data.message : error.message);
+      setErrorMessage(error.response ? error.response.data.message : 'An error occurred');
+      setMaxDiscount(0); // Reset discount if voucher is invalid
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 1000);
+    }
   };
-
+  
+  
   const totalPrice = products.reduce((acc, product) => acc + product.price * product.quantity, 0);
   const finalPrice = totalPrice - maxDiscount;
 
   const handlePayment = async () => {
     const token = localStorage.getItem("token");
+    if (!token) {
+      alert("User not logged in");
+      navigate("/login");
+      return;
+    }
     const decoded = jwtDecode(token);
-
+  
     const orderData = {
       userId: decoded.id,
-      addressId: selectedAddress,
+      ShipDetails: selectedAddress,
       products: products.map(product => ({
         productId: product._id,
         quantity: product.quantity,
-        price: product.price
+        price: product.price,
+        size: product.size
       })),
       paymentMethod,
       totalAmount: totalPrice,
       discount: maxDiscount,
+      voucherCode: voucherCode || null, // Include voucher code if used
       codCharge: paymentMethod === "cod" ? 300 : 0,
       finalAmount: finalPrice + (paymentMethod === "cod" ? 300 : 0)
     };
-
+  
     try {
       const response = await axios.post("http://localhost:5000/api/orderHistory", orderData);
       if (response.status === 201) {
@@ -93,10 +128,11 @@ const CheckoutPage = () => {
       }
     } catch (error) {
       console.error("Error placing order:", error);
+      console.log(orderData)
       alert("Failed to place order. Please try again.");
     }
   };
-
+  
   return (
     <div className="container mx-auto p-4 flex flex-wrap">
       <div className="w-full lg:w-2/3 p-4">
@@ -223,25 +259,37 @@ const CheckoutPage = () => {
         ) : (
           <p className="text-gray-700 mb-4">No products in cart.</p>
         )}
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold mb-2">
-            Apply Gift Card or Voucher
-          </h2>
-          <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="Enter code"
-              value={voucherCode}
-              onChange={(e) => setVoucherCode(e.target.value)}
-              className="w-full p-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
-            />
-            <button
-              onClick={applyVoucher}
-              className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
-            >
-              Apply
-            </button>
-          </div>
+       <div className="mt-6">
+      <h2 className="text-lg font-semibold mb-2">
+        Apply Gift Card or Voucher
+      </h2>
+      <div className="flex items-center">
+        <input
+          type="text"
+          placeholder="Enter code"
+          value={voucherCode}
+          onChange={(e) => setVoucherCode(e.target.value)}
+          className="w-full p-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
+        />
+        <button
+          onClick={applyVoucher}
+          className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
+        >
+          Apply
+        </button>
+      </div>
+      {maxDiscount > 0 && (
+        <div className="mt-4 text-green-500">
+          Voucher applied! You get a discount of ₹{maxDiscount.toFixed(2)}.
+        </div>
+      )}
+      {errorMessage && (
+        <div className="mt-4 text-red-500">
+          {errorMessage}!
+        </div>
+      )}
+  
+    
           <div className="flex justify-between items-center font-light mt-2">
             <span>Total Price:</span>
             <span>₹ {totalPrice.toFixed(2)}</span>
