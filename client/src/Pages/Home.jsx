@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Carousel from "../Components/Carousel";
 import ProductCard from "../Components/ProductCard";
-
+import config from "../config";
 const Home = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/products");
+        const response = await axios.get(`${config}/products`);
         const products = response.data.createdProducts;
         setProducts(products);
         console.log("Products Loaded:", products);

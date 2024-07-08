@@ -18,7 +18,6 @@ const ProductCard = ({
 
   const singleProduct = () => {
     navigate(`/product/${productId}`);
-    window.location.reload();
   };
 
   const addToWishlist = async () => {

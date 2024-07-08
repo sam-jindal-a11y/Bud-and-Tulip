@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {jwtDecode} from 'jwt-decode';
-
+// import config from '../../config';
 const Account = () => {
   const [user, setUser] = useState(null);
   const [addresses, setAddresses] = useState([]);
