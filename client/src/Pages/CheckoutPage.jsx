@@ -174,7 +174,7 @@ const CheckoutPage = () => {
               </div>
             ))
           ) : (
-            <p>No addresses found. Please add an address first. <Link to="/AddressForm" className="font-bold">Click here.</Link></p>
+            <p>No addresses found. Please add an address first. <Link to="/AddressForm" className="font-bold bg-pinkc p-2 rounded-sm">Click here.</Link></p>
           )}
         </div>
         <div className="mb-4">

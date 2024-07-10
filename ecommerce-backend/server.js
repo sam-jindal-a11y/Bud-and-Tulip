@@ -433,6 +433,45 @@ app.post('/api/address', verifyToken, async (req, res) => {
     });
   }
 });
+app.delete('/api/address/:id', async (req, res) => {
+  try {
+    
+    const addressId = req.params.id;
+
+    // Ensure that the address belongs to the current user before deleting
+    const addressToDelete = await ShipDetails.findOneAndDelete({ _id: addressId });
+
+    if (!addressToDelete) {
+      return res.status(404).send({ error: 'Address not found or unauthorized' });
+    }
+
+    res.status(200).send({ message: 'Address deleted successfully' });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+// Update API
+app.put('/api/address/:id', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const addressId = req.params.id;
+
+    const address = await ShipDetails.findOneAndUpdate(
+      { _id: addressId, userId },
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!address) {
+      return res.status(404).send({ error: 'Address not found or not authorized' });
+    }
+
+    res.status(200).send(address);
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
 
 app.get('/api/address/', async (req, res) => {
   const userId = req.query.userId;

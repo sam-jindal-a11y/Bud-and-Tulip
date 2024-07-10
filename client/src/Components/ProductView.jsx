@@ -152,7 +152,7 @@ const ProductView = () => {
           <img
             src={product.image[selectedImageIndex]}
             alt={product.name}
-            className="w-full h-auto object-contain rounded-md mb-4"
+            className="w-full h-96 object-contain rounded-md mb-4"
           />
           <div className="flex space-x-2">
             {product.image.map((img, index) => (
@@ -238,10 +238,10 @@ const ProductView = () => {
               Size Chart
             </button>
           </div>
-          <p className="text-gray-700 mb-6">
+          {/* <p className="text-gray-700 mb-6">
             <b>Category : </b>
             {product.category[0]}
-          </p>
+          </p> */}
           <p className="text-gray-700 mb-6">
             <b>Include : </b>
             {product.inbox}

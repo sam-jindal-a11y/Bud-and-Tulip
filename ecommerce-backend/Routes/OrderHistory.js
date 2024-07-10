@@ -94,18 +94,18 @@ router.post("/", async (req, res) => {
     const mailOptions = {
       from: "dev.harshmangal@gmail.com",
       to: user.email,
-      subject: "Order Placed",
+      subject: "Order Confirmation",
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="text-align: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
     <h1 style="margin: 0; color: pink;">Bud & Tulip</h1>
-    <p style="margin: 0; font-size: 16px;">Your Order Has Been Placed Successfully!</p>
+    <p style="margin: 0; font-size: 16px;">Your Order Has Been Confirmed Successfully!</p>
   </div>
   <div style="padding: 20px;">
-    <p>Hello ${user.firstName},</p>
+    <p>Namaste ${user.firstName},</p>
     <p>Order ID: <strong>${savedOrder._id}</strong></p>
     <p>Order Date & Time: <strong>${new Date(savedOrder.createdAt).toLocaleString()}</strong></p>
-    <p>Total Amount: <strong>₹ ${savedOrder.totalAmount}</strong></p>
+    <p>Total Amount: <strong>₹ ${savedOrder.finalAmount}</strong></p>
     <p>Thank you for shopping with us!</p>
     <p>Best regards,</p>
     <p>Bud & Tulip</p>
@@ -190,7 +190,7 @@ router.put("/:id/status", async (req, res) => {
         <p style="margin: 0; font-size: 16px;">Thank you for your order!</p>
       </div>
       <div style="padding: 20px;">
-        <p>Hello ${user.firstName},</p>
+        <p>Namaste ${user.firstName},</p>
         <p>Your order status has been updated to: <strong>${status}</strong>.</p>
         <p>Order ID: <strong>${id}</strong></p>
         <p>Thank you for shopping with us!</p>

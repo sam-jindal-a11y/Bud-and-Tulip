@@ -68,7 +68,7 @@ const Navbar = () => {
           </p>
         </div>
       )}
-      <div className="container mx-auto py-4 px-6 md:px-0 flex items-center justify-between">
+      <div className="container mx-auto py-2.5 px-6 md:px-0 flex items-center justify-between">
         <div className="flex items-center justify-around	 w-full md:w-auto">
           <button
             className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none"
@@ -90,31 +90,13 @@ const Navbar = () => {
           } md:flex items-center mt-4 md:mt-0`}
         >
           <div className="relative md:ml-6 flex flex-col md:flex-row items-start md:items-center">
-            <select
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 md:mb-0 md:mr-2"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-            >
-              <option>All Products</option>
-              <option>Sale</option>
-              <option>Suits</option>
-              <option>Loungewear</option>
-              <option>Co-ords</option>
-              <option>Dresses</option>
-              <option>Saree</option>
-              <option>Kurtas</option>
-              <option>Tops</option>
-              <option>Skirt Sets</option>
-              <option>Blazer</option>
-              <option>Shirts</option>
-            </select>
-            <form onSubmit={handleSubmit} className="flex w-full md:w-auto">
+            <form onSubmit={handleSubmit} className="flex w-full md:w-96">
               <input
                 type="text"
                 placeholder="Product name..."
                 value={productName}
                 onChange={handleInputChange}
-                className="w-full md:w-auto px-4 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full md:w-full px-4 py-2 border rounded-l-md focus:outline-none  focus:ring-blue-500"
               />
               <button
                 type="submit"
@@ -132,26 +114,26 @@ const Navbar = () => {
             className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
           >
             <i className="far fa-user text-2xl"></i>
-            <span className="hidden md:inline-block">My Account</span>
+        
           </Link>
           <Link
             to="/Wishlist"
             className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
           >
             <i className="hidden md:inline-block far fa-heart text-2xl"></i>
-            <span className="hidden md:inline-block">Wish List</span>
+          
           </Link>
           <Link
             to="/ShoppingCart"
             className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
           >
             <i className="fas fa-shopping-cart text-2xl "></i>
-            <span className="hidden md:inline-block">My Cart</span>
+            
           </Link>
         </div>
       </div>
 
-      <div className="navbar-desktop bg-white py-5 border-t border-gray-300 hidden md:flex md:justify-between md:items-center">
+      <div className="navbar-desktop bg-white py-2 border-t px-6 border-gray-300 hidden md:flex md:justify-between md:items-center">
         <div className="container mx-auto">
           <div className="flex justify-center md:justify-start">
             <Link to="/" className="text-gray-700 hover:text-pinkc px-4 py-2">

@@ -34,7 +34,7 @@ const Login = () => {
       if (response.ok) {
         // Store the token in localStorage
         localStorage.setItem("token", result.user.token);
-        alert("Login successful");
+        // alert("Login successful");
         navigate("/");
         // Redirect to another page or perform other actions
       } else {
