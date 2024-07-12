@@ -19,7 +19,7 @@ const Navbar = () => {
     const category = params.get("category");
     const fetchUpcomingSaleDetails = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/sales');
+        const response = await axios.get('https://bud-tulips.onrender.com/sales');
         setUpcomingSale(response.data[0]);
         console.log(response.data[0]._id); // Log the actual data received
       } catch (error) {

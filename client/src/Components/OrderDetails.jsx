@@ -9,7 +9,7 @@ const OrderDetails = ({ orderId }) => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/orderHistory/6682acb74dd2c4aa085acbfc`);
+        const response = await axios.get(`https://bud-tulips.onrender.com/api/orderHistory/6682acb74dd2c4aa085acbfc`);
         console.log(response.data); // Log the response to verify its structure
         setOrder(response.data);
         setLoading(false);

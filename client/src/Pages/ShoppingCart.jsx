@@ -24,7 +24,7 @@ const ShoppingCart = () => {
 
   const fetchCartItems = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/cart?userId=${userId}`);
+      const response = await axios.get(`https://bud-tulips.onrender.com/api/cart?userId=${userId}`);
       setCartItems(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
@@ -35,7 +35,7 @@ const ShoppingCart = () => {
 
   const updateCartItemQuantity = async (itemId, quantity) => {
     try {
-      await axios.patch(`http://localhost:5000/api/cart/${itemId}`, { quantity });
+      await axios.patch(`https://bud-tulips.onrender.com/api/cart/${itemId}`, { quantity });
     } catch (error) {
       console.error("Error updating cart item quantity:", error);
     }
@@ -62,7 +62,7 @@ const ShoppingCart = () => {
 
   const handleDelete = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/cart/${itemId}`);
+      await axios.delete(`https://bud-tulips.onrender.com/api/cart/${itemId}`);
       setCartItems((prevItems) =>
         prevItems.filter((item) => item._id !== itemId)
       );

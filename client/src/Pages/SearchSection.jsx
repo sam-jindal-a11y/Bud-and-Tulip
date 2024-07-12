@@ -26,7 +26,7 @@ const SearchSection = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/products');
+        const response = await axios.get('https://bud-tulips.onrender.com/products');
         const productArray = Object.values(response.data); // Convert JSON object to array
         setProducts(productArray);
         setLoading(false);

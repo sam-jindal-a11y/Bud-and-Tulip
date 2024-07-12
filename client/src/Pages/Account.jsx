@@ -37,7 +37,7 @@ const Account = () => {
 
   const fetchAddresses = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/address?userId=${userId}`);
+      const response = await fetch(`https://bud-tulips.onrender.com/api/address?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setAddresses(data);
@@ -51,7 +51,7 @@ const Account = () => {
 
   const fetchUserDetails = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/users/${userId}`);
+      const response = await fetch(`https://bud-tulips.onrender.com/api/auth/users/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setUser(data);
@@ -65,7 +65,7 @@ const Account = () => {
 
   const fetchOrders = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orderHistory/orders/user/${userId}`);
+      const response = await fetch(`https://bud-tulips.onrender.com/api/orderHistory/orders/user/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setOrders(data);
@@ -89,7 +89,7 @@ const Account = () => {
         'Authorization': `Bearer ${token}`
       };
 
-      const response = await axios.delete(`http://localhost:5000/api/address/${addressId}`, { headers });
+      const response = await axios.delete(`https://bud-tulips.onrender.com/api/address/${addressId}`, { headers });
 
       if (response.status === 200) {
         // Handle success, e.g., update state or show a success message
@@ -125,7 +125,7 @@ const Account = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/api/address/${editAddress._id}`, {
+      const response = await fetch(`https://bud-tulips.onrender.com/api/address/${editAddress._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

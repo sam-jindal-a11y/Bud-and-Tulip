@@ -20,7 +20,7 @@ const Wishlist = () => {
 
         if (decodedToken) {
           const response = await fetch(
-            `http://localhost:5000/api/wishlist/${decodedToken.id}`,
+            `https://bud-tulips.onrender.com/api/wishlist/${decodedToken.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const Wishlist = () => {
   const handleDelete = async (productId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/wishlist/${user}/${productId}`,
+        `https://bud-tulips.onrender.com/api/wishlist/${user}/${productId}`,
         {
           method: "DELETE",
           headers: {

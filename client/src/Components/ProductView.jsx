@@ -51,7 +51,7 @@ const ProductView = () => {
       setUser(decoded);
 
       await axios.post(
-        "http://localhost:5000/api/cart",
+        "https://bud-tulips.onrender.com/api/cart",
         {
           userId: decoded.id,
           productId: product._id,
@@ -92,7 +92,7 @@ const ProductView = () => {
       setUser(decoded);
 
       await axios.post(
-        "http://localhost:5000/api/wishlist",
+        "https://bud-tulips.onrender.com/api/wishlist",
         {
           userId: decoded.id,
           productId: product._id,
@@ -121,7 +121,7 @@ const ProductView = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/products/${id}`
+          `https://bud-tulips.onrender.com/products/${id}`
         );
         const productData = response.data;
         setProduct(productData);
@@ -133,7 +133,7 @@ const ProductView = () => {
 
         // Fetch all products
         const allProductsResponse = await axios.get(
-          "http://localhost:5000/products"
+          "https://bud-tulips.onrender.com/products"
         );
         setAllProducts(allProductsResponse.data);
       } catch (error) {
