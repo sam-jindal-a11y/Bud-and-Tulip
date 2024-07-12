@@ -135,6 +135,7 @@ const ProductView = () => {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchProduct = async () => {
       try {
         const response = await axios.get(

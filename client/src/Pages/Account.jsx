@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
+import { Navigate, useNavigate } from 'react-router-dom';
 const Account = () => {
   const [user, setUser] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard'); // State to manage active tab
   const [editAddress, setEditAddress] = useState(null);
+  const Navigate = useNavigate();
+  const  addnewAddress=()=>{
+    // Navigate('/addressform');
+    console.log("heelo")
+  }
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -266,7 +272,9 @@ const Addresses = ({ addresses, onDelete, onUpdate, editAddress, form, onChange,
           </li>
         ))
       ) : (
-        <li>No addresses found</li>
+        <li>No addresses found
+          <button onClick={()=>Navigate("/addressform")}>Add New Adress</button>
+        </li>
       )}
     </ul>
     {editAddress && (

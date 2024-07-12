@@ -5,6 +5,8 @@ import MobileSearchBar from '../Components/MobileSearchBar';
 
 const SearchSection = () => {
   const [products, setProducts] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [colors, setColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 25000 });
@@ -18,9 +20,6 @@ const SearchSection = () => {
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
-  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -36,7 +35,27 @@ const SearchSection = () => {
       }
     };
 
+    const fetchSizes = async () => {
+      try {
+        const response = await axios.get('https://bud-tulips.onrender.com/sizes');
+        setSizes(response.data);
+      } catch (error) {
+        console.error('Error fetching sizes:', error);
+      }
+    };
+
+    const fetchColors = async () => {
+      try {
+        const response = await axios.get('https://bud-tulips.onrender.com/colors');
+        setColors(response.data);
+      } catch (error) {
+        console.error('Error fetching colors:', error);
+      }
+    };
+
     fetchProducts();
+    fetchSizes();
+    fetchColors();
   }, []);
 
   useEffect(() => {
@@ -45,6 +64,10 @@ const SearchSection = () => {
     const category = params.get('category');
     filterProducts(query, category);
   }, [selectedSizes, selectedColors, priceRange, itemsPerPage, sortOption, currentPage, products, location.search, navigate]);
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   const handleSizeChange = (size) => {
     setSelectedSizes((prevSizes) =>
@@ -78,17 +101,11 @@ const SearchSection = () => {
 
   const filterProducts = (query, category) => {
     if (products.length !== 0) {
-      let filteredProducts = products[0];
-      console.log(category);
+      let filteredProducts = [...products[0]]; // Ensure to copy array
       // Filter by category if specified
       if (category && category !== 'All Products') {
-        filteredProducts = filteredProducts.filter((product) => {
-          console.log(product.category.includes(category));
-          return product.category.includes(category);
-        });
+        filteredProducts = filteredProducts.filter((product) => product.category.includes(category));
       }
-
-      console.log(filteredProducts);
 
       // Apply other filters
       filteredProducts = filteredProducts.filter((product) => {
@@ -128,7 +145,7 @@ const SearchSection = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row lg:px-6">
       <MobileSearchBar />
       {/* Sidebar */}
       <div className="w-full lg:w-1/4 p-4 px-20 hidden lg:block">
@@ -136,18 +153,17 @@ const SearchSection = () => {
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-4">Sizes</h2>
           <div>
-            {['4XL', '5XL', 'L', 'M', 'S', 'XL', 'XS', 'XXL', 'XXS', 'XXXL'].map((size) => (
-              <div key={size} className="mb-1">
+            {sizes.map((size) => (
+              <div key={size._id} className="mb-1">
                 <label className="flex items-center">
                   <input
                     type="checkbox"
-                    value={size}
-                    onClick={() => {
-                      handleSizeChange(size);
-                    }}
+                    value={size.name}
+                    onChange={() => handleSizeChange(size.name)}
                     className="mr-2"
+                    checked={selectedSizes.includes(size.name)}
                   />
-                  {size}
+                  {size.name}
                 </label>
               </div>
             ))}
@@ -156,18 +172,17 @@ const SearchSection = () => {
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-4">Colors</h2>
           <div>
-            {['Blue', 'Red', 'Purple', 'Yellow', 'Pink', 'Orange', 'Green'].map((color) => (
-              <div key={color} className="mb-1">
+            {colors.map((color) => (
+              <div key={color._id} className="mb-1">
                 <label className="flex items-center">
                   <input
                     type="checkbox"
-                    value={color}
-                    onChange={() => {
-                      handleColorChange(color);
-                    }}
+                    value={color.name}
+                    onChange={() => handleColorChange(color.name)}
                     className="mr-2"
+                    checked={selectedColors.includes(color.name)}
                   />
-                  {color}
+                  {color.name}
                 </label>
               </div>
             ))}
@@ -181,9 +196,7 @@ const SearchSection = () => {
               type="number"
               name="min"
               value={priceRange.min}
-              onChange={(e) => {
-                handlePriceChange(e);
-              }}
+              onChange={handlePriceChange}
               className="border p-1 w-20"
             />
           </div>
@@ -193,9 +206,7 @@ const SearchSection = () => {
               type="number"
               name="max"
               value={priceRange.max}
-              onChange={(e) => {
-                handlePriceChange(e);
-              }}
+              onChange={handlePriceChange}
               className="border p-1 w-20"
             />
           </div>
@@ -214,73 +225,67 @@ const SearchSection = () => {
           <div className="mt-4">
             {/* Filters Section */}
             <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Sizes</h2>
-              <div>
-                {['4XL', '5XL', 'L', 'M', 'S', 'XL', 'XS', 'XXL', 'XXS', 'XXXL'].map((size) => (
-                  <div key={size} className="mb-1">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        value={size}
-                        onClick={() => {
-                          handleSizeChange(size);
-                        }}
-                        className="mr-2"
-                      />
-                      {size}
-                    </label>
-                  </div>
-                ))}
+          <h2 className="text-xl font-bold mb-4">Sizes</h2>
+          <div>
+            {sizes.map((size) => (
+              <div key={size._id} className="mb-1">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    value={size.name}
+                    onChange={() => handleSizeChange(size.name)}
+                    className="mr-2"
+                    checked={selectedSizes.includes(size.name)}
+                  />
+                  {size.name}
+                </label>
               </div>
-            </div>
-            <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Colors</h2>
-              <div>
-                {['Blue', 'Red', 'Purple', 'Yellow', 'Pink', 'Orange', 'Green'].map((color) => (
-                  <div key={color} className="mb-1">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        value={color}
-                        onChange={() => {
-                          handleColorChange(color);
-                        }}
-                        className="mr-2"
-                      />
-                      {color}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Price</h2>
-              <div className="flex items-center mb-2">
-                <span className="mr-2">From ₹</span>
-                <input
-                  type="number"
-                  name="min"
-                  value={priceRange.min}
-                  onChange={(e) => {
-                    handlePriceChange(e);
-                  }}
-                  className="border p-1 w-20"
-                />
-              </div>
-              <div className="flex items-center">
-                <span className="mr-2">To ₹</span>
-                <input
-                  type="number"
-                  name="max"
-                  value={priceRange.max}
-                  onChange={(e) => {
-                    handlePriceChange(e);
-                  }}
-                  className="border p-1 w-20"
-                />
-              </div>
-            </div>
+            ))}
           </div>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Colors</h2>
+          <div>
+            {colors.map((color) => (
+              <div key={color._id} className="mb-1">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    value={color.name}
+                    onChange={() => handleColorChange(color.name)}
+                    className="mr-2"
+                    checked={selectedColors.includes(color.name)}
+                  />
+                  {color.name}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Price</h2>
+          <div className="flex items-center mb-2">
+            <span className="mr-2">From ₹</span>
+            <input
+              type="number"
+              name="min"
+              value={priceRange.min}
+              onChange={handlePriceChange}
+              className="border p-1 w-20"
+            />
+          </div>
+          <div className="flex items-center">
+            <span className="mr-2">To ₹</span>
+            <input
+              type="number"
+              name="max"
+              value={priceRange.max}
+              onChange={handlePriceChange}
+              className="border p-1 w-20"
+            />
+          </div>
+        </div>
+      </div>
         )}
       </div>
 
@@ -314,89 +319,90 @@ const SearchSection = () => {
             </select>
           </div>
         </div>
-      
-       {/* Product Listing */}
-       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
-      {displayedProducts.length > 0 &&
-        displayedProducts.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white rounded-sm shadow-md overflow-hidden relative cursor-pointer"
-            onClick={() => handleProductClick(product._id)}
-          >
-            {product.hasOffer && (
-              <div className="absolute top-0 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md mx-4 my-4">
-                Sale
-              </div>
-            )}
-            <img
-              src={product.image[0]}
-              alt={product.name}
-              className="w-full h-68 img-product"
-            />
-            <div className="p-4 text-left">
-              <p className="text-sm text-gray-400 mb-1">{product.category}</p>
-              <h3 className="text-md font-semibold mb-2 product-name sm:text-sm md:text-md">{product.name}</h3>
-              <p className="text-gray-500 mb-4">
-                {product.hasOffer ? (
-                  <>
-                    <span className="line-through">₹&nbsp;{product.price}</span>
-                    &nbsp;
-                    <span>₹&nbsp;{product.offerPrice}</span>
-                  </>
-                ) : (
-                  `₹ ${product.price}`
+
+        {/* Product Listing */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+          {displayedProducts.length > 0 &&
+            displayedProducts.map((product) => (
+              <div
+                key={product._id}
+                className="bg-white rounded-sm shadow-md overflow-hidden relative cursor-pointer"
+                onClick={() => handleProductClick(product._id)}
+              >
+                {product.hasOffer && (
+                  <div className="absolute top-0 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md mx-4 my-4">
+                    Sale
+                  </div>
                 )}
-              </p>
-              <div className="flex justify-between items-center">
-                <button className="bg-pink-500 text-white px-3 py-1.5 sm:px-5 sm:py-2 rounded-sm">
-                  <i className="fa-solid fa-cart-shopping"></i> &nbsp;Add to Cart
-                </button>
-                <button className="text-red-500 hover:text-red-600">
-                  <i className="fa fa-heart"></i>
-                </button>
+                {product.image && product.image[0] && (
+                  <img
+                    src={product.image[0]}
+                    alt={product.name}
+                    className="w-full h-68 img-product"
+                  />
+                )}
+                <div className="p-4 text-left">
+                  <p className="text-sm text-gray-400 mb-1">{product.category}</p>
+                  <h3 className="text-md font-semibold mb-2 product-name sm:text-sm md:text-md">{product.name}</h3>
+                  <p className="text-gray-500 mb-4">
+                    {product.hasOffer ? (
+                      <>
+                        <span className="line-through">₹&nbsp;{product.price}</span>
+                        &nbsp;
+                        <span>₹&nbsp;{product.offerPrice}</span>
+                      </>
+                    ) : (
+                      `₹ ${product.price}`
+                    )}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <button className="bg-pink-500 text-white px-3 py-1.5 sm:px-5 sm:py-2 rounded-sm">
+                      <i className="fa-solid fa-cart-shopping"></i> &nbsp;Add to Cart
+                    </button>
+                    <button className="text-red-500 hover:text-red-600">
+                      <i className="fa fa-heart"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-    </div>
+            ))}
+        </div>
 
-      {/* Pagination */}
-<div className="mt-8 flex justify-center flex-wrap">
-  {/* Previous Button */}
-  {currentPage > 1 && (
-    <button
-      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-      onClick={() => handlePageChange(currentPage - 1)}
-    >
-      Prev
-    </button>
-  )}
+        {/* Pagination */}
+        <div className="mt-8 flex justify-center flex-wrap">
+          {/* Previous Button */}
+          {currentPage > 1 && (
+            <button
+              className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              Prev
+            </button>
+          )}
 
-  {/* Page Buttons */}
-  {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => (
-    <button
-      key={index}
-      className={`border px-3 py-1 mr-2 ${
-        currentPage === index + 1 ? 'bg-pink-500 text-white' : ''
-      }`}
-      onClick={() => handlePageChange(index + 1)}
-    >
-      {index + 1}
-    </button>
-  ))}
+          {/* Page Buttons */}
+          {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => (
+            <button
+              key={index}
+              className={`border px-3 py-1 mr-2 ${
+                currentPage === index + 1 ? 'bg-pink-500 text-white' : ''
+              }`}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
 
-  {/* Next Button */}
-  {currentPage < totalPages && (
-    <button
-      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-      onClick={() => handlePageChange(currentPage + 1)}
-    >
-      Next
-    </button>
-  )}
-</div>
-
+          {/* Next Button */}
+          {currentPage < totalPages && (
+            <button
+              className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              Next
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

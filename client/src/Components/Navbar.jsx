@@ -61,81 +61,79 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-md">
-       {upcomingSale && (
+       {/* {upcomingSale && (
         <div className="bg-pinkc text-white text-center py-2">
           <p className="text-md text-black font-bold">
             Upcoming Sale: {upcomingSale.saleName} - {upcomingSale.saleDate}
           </p>
         </div>
-      )}
-      <div className="container mx-auto py-2.5 px-6 md:px-0 flex items-center justify-between">
-        <div className="flex items-center justify-around	 w-full md:w-auto">
-          <button
-            className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none"
-            onClick={toggleSidebar}
-          >
-            <i className="fas fa-bars text-2xl"></i>
-          </button>
-          <Link
-            to="/"
-            className="text-3xl md:text-5xl font-bold text-pinkc ml-2 md:ml-0"
-          >
-            Bud & Tulip
-          </Link>
-        </div>
+      )} */}
+    <div className="container mx-auto py-2.5 px-6 md:px-0 flex items-center justify-between">
+  <div className="flex items-center justify-around w-full md:w-auto">
+    <button
+      className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none mr-4"
+      onClick={toggleSidebar}
+    >
+      <i className="fas fa-bars text-2xl"></i>
+    </button>
+    <Link
+      to="/"
+      className="text-3xl md:text-5xl font-bold text-pinkc ml-2 md:ml-0"
+    >
+      Bud & Tulip
+    </Link>
+  </div>
 
-        <div
-          className={`navbar-desktop ${
-            isMenuOpen ? "block" : "hidden"
-          } md:flex items-center mt-4 md:mt-0`}
+  <div
+    className={`navbar-desktop ${
+      isMenuOpen ? "block" : "hidden"
+    } md:flex items-center mt-4 md:mt-0 flex-grow mx-4`}
+  >
+    <div className="relative md:ml-6 flex flex-col md:flex-row items-start md:items-center w-full">
+      <form onSubmit={handleSubmit} className="flex w-full mx-4">
+        <input
+          type="text"
+          placeholder="Product name..."
+          value={productName}
+          onChange={handleInputChange}
+          className="w-full px-4 py-2 border rounded-l-md focus:outline-none focus:ring-blue-500"
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-pinkc text-white rounded-r-md"
         >
-          <div className="relative md:ml-6 flex flex-col md:flex-row items-start md:items-center">
-            <form onSubmit={handleSubmit} className="flex w-full md:w-96">
-              <input
-                type="text"
-                placeholder="Product name..."
-                value={productName}
-                onChange={handleInputChange}
-                className="w-full md:w-full px-4 py-2 border rounded-l-md focus:outline-none  focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 bg-pinkc text-white rounded-r-md"
-              >
-                <i className="fa fa-search"></i>
-              </button>
-            </form>
-          </div>
-        </div>
+          <i className="fa fa-search"></i>
+        </button>
+      </form>
+    </div>
+  </div>
 
-        <div className="flex items-center mt-4 md:mt-0">
-          <Link
-            to="/Account"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
-          >
-            <i className="far fa-user text-2xl"></i>
-        
-          </Link>
-          <Link
-            to="/Wishlist"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
-          >
-            <i className="hidden md:inline-block far fa-heart text-2xl"></i>
-          
-          </Link>
-          <Link
-            to="/ShoppingCart"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
-          >
-            <i className="fas fa-shopping-cart text-2xl "></i>
-            
-          </Link>
-        </div>
-      </div>
+  <div className="flex items-center mt-4 md:mt-0">
+    <Link
+      to="/Account"
+      className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
+    >
+      <i className="far fa-user text-2xl"></i>
+    </Link>
+    <Link
+      to="/Wishlist"
+      className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
+    >
+      <i className="hidden md:inline-block far fa-heart text-2xl"></i>
+    </Link>
+    <Link
+      to="/ShoppingCart"
+      className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
+    >
+      <i className="fas fa-shopping-cart text-2xl"></i>
+    </Link>
+  </div>
+</div>
+
 
       <div className="navbar-desktop bg-white py-2 border-t px-6 border-gray-300 hidden md:flex md:justify-between md:items-center">
         <div className="container mx-auto">
-          <div className="flex justify-center md:justify-start">
+          <div className="flex justify-center md:justify-center">
             <Link to="/" className="text-gray-700 hover:text-pinkc px-4 py-2">
               Home
             </Link>
