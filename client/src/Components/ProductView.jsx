@@ -5,6 +5,7 @@ import {jwtDecode} from "jwt-decode"; // Corrected import statement
 import ProductCard from "./ProductCard";
 import SizeChartModal from "./SizeChartModal";
 import Modal from 'react-modal';
+import Loading from "./Loading";
 const ProductView = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -162,7 +163,9 @@ const ProductView = () => {
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div>Loading...</div>;
+  if (!product) return <div>
+    <Loading/>
+  </div>;
   if (!product.isActive) return <div>Product not available</div>;
 
   return (

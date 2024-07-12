@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MobileSearchBar from '../Components/MobileSearchBar';
+import Loading from '../Components/Loading';
 
 const SearchSection = () => {
   const [products, setProducts] = useState([]);
@@ -137,7 +138,9 @@ const SearchSection = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>
+      <Loading/>
+    </div>;
   }
 
   if (error) {

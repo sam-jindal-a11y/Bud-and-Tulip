@@ -21,12 +21,14 @@ import SearchSection from "./Pages/SearchSection";
 import Addressform from "./Components/Addressform";
 import CheckoutPage from "./Pages/CheckoutPage";
 import OrderDetails from "./Components/OrderDetails";
-
+import ScrollToTop from "./Components/ScrollToTop.jsx";
 
 const Layout = () => {
+  window.scrollTo(0, 0);
   return (
     <div className="layout">
       <Router>
+        <ScrollToTop />
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

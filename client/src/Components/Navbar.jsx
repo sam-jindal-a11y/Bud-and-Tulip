@@ -12,8 +12,13 @@ const Navbar = () => {
   const [upcomingSale, setUpcomingSale] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+  window.scrollTo(0, 0);
 
   useEffect(() => {
+    
+      
+    
+  
     const params = new URLSearchParams(location.search);
     const query = params.get("query");
     const category = params.get("category");
