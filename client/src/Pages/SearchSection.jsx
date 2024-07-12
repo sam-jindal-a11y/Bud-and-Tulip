@@ -361,20 +361,42 @@ const SearchSection = () => {
         ))}
     </div>
 
-        {/* Pagination */}
-        <div className="mt-8 flex justify-center">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              className={`border px-3 py-1 mr-2 ${
-                currentPage === index + 1 ? 'bg-blue-500 text-white' : ''
-              }`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
+      {/* Pagination */}
+<div className="mt-8 flex justify-center flex-wrap">
+  {/* Previous Button */}
+  {currentPage > 1 && (
+    <button
+      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+      onClick={() => handlePageChange(currentPage - 1)}
+    >
+      Prev
+    </button>
+  )}
+
+  {/* Page Buttons */}
+  {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => (
+    <button
+      key={index}
+      className={`border px-3 py-1 mr-2 ${
+        currentPage === index + 1 ? 'bg-pink-500 text-white' : ''
+      }`}
+      onClick={() => handlePageChange(index + 1)}
+    >
+      {index + 1}
+    </button>
+  ))}
+
+  {/* Next Button */}
+  {currentPage < totalPages && (
+    <button
+      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+      onClick={() => handlePageChange(currentPage + 1)}
+    >
+      Next
+    </button>
+  )}
+</div>
+
       </div>
     </div>
   );

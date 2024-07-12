@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import {jwtDecode} from "jwt-decode"; // Corrected import statement
 import ProductCard from "./ProductCard";
-
+import SizeChartModal from "./SizeChartModal";
 const ProductView = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -13,10 +13,16 @@ const ProductView = () => {
   const [user, setUser] = useState(null);
   const [visibleSection, setVisibleSection] = useState("description");
   const [allProducts, setAllProducts] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const nextImageIndex = selectedImageIndex >= 5 ? 0 : selectedImageIndex + 1;
   const navigate = useNavigate();
 
   const handleThumbnailClick = (index) => {
     setSelectedImageIndex(index);
+  };
+  
+  const toggleSizeChart = () => {
+    setIsModalVisible(!isModalVisible);
   };
 
   const formatInstructions = (instructions) => {
@@ -30,10 +36,6 @@ const ProductView = () => {
 
   const toggleSection = (section) => {
     setVisibleSection(visibleSection === section ? null : section);
-  };
-
-  const toggleSizeChart = () => {
-    navigate("/sizechart");
   };
 
   const addToCart = async () => {
@@ -149,12 +151,19 @@ const ProductView = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row mb-12">
         <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start mb-8 lg:mb-0">
-          <img
+       <div className="flex flex-row gap-2">
+       <img
             src={product.image[selectedImageIndex]}
             alt={product.name}
             className="w-full h-96 object-contain rounded-md mb-4"
           />
-          <div className="flex space-x-2">
+           <img
+            src={product.image[nextImageIndex]}
+            alt={product.name}
+            className="w-full h-96 object-contain rounded-md mb-4 hidden sm:block"
+          />
+       </div>
+          <div className="flex space-x-2 flex space-x-2 overflow-x-auto">
             {product.image.map((img, index) => (
               <img
                 key={index}
@@ -231,12 +240,15 @@ const ProductView = () => {
             >
               Add to Wishlist
             </button>
-            <button
-              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-              onClick={toggleSizeChart}
-            >
-              Size Chart
-            </button>
+            <div>
+      <button
+        className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+        onClick={toggleSizeChart}
+      >
+        Size Chart
+      </button>
+      <SizeChartModal isVisible={isModalVisible} onClose={toggleSizeChart} />
+    </div>
           </div>
           {/* <p className="text-gray-700 mb-6">
             <b>Category : </b>
