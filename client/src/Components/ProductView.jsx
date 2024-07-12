@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {jwtDecode} from "jwt-decode"; // Corrected import statement
 import ProductCard from "./ProductCard";
 import SizeChartModal from "./SizeChartModal";
+import Modal from 'react-modal';
 const ProductView = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -14,11 +15,27 @@ const ProductView = () => {
   const [visibleSection, setVisibleSection] = useState("description");
   const [allProducts, setAllProducts] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const nextImageIndex = selectedImageIndex >= 5 ? 0 : selectedImageIndex + 1;
-  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const navigate = useNavigate();
+  const handleNextImage = () => {
+    setSelectedImageIndex((prevIndex) =>
+      prevIndex === product.image.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handlePrevImage = () => {
+    setSelectedImageIndex((prevIndex) =>
+      prevIndex === 0 ? product.image.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   const handleThumbnailClick = (index) => {
     setSelectedImageIndex(index);
+    // setIsModalOpen(true);
   };
   
   const toggleSizeChart = () => {
@@ -150,33 +167,62 @@ const ProductView = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row mb-12">
-        <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start mb-8 lg:mb-0">
-       <div className="flex flex-row gap-2">
-       <img
+      <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start mb-8 lg:mb-0">
+      <div className="flex flex-row gap-2">
+        <img
+          src={product.image[selectedImageIndex]}
+          alt={product.name}
+          className="w-full h-96 object-contain rounded-md mb-4 cursor-pointer"
+          onClick={() => setIsModalOpen(true)}
+        />
+        <img
+          src={product.image[selectedImageIndex === product.image.length - 1 ? 0 : selectedImageIndex + 1]}
+          alt={product.name}
+          className="w-full h-96 object-contain rounded-md mb-4 hidden sm:block"
+          onClick={() => setIsModalOpen(true)}
+        />
+      </div>
+      <div className="flex space-x-2 overflow-x-auto">
+        {product.image.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`${product.name} thumbnail ${index + 1}`}
+            className={`w-24 h-24 object-cover rounded-md cursor-pointer ${
+              index === selectedImageIndex ? 'border-2 border-blue-500' : ''
+            }`}
+            onClick={() => handleThumbnailClick(index)}
+          />
+        ))}
+      </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={handleCloseModal}
+        className="flex items-center justify-center outline-none"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+      >
+        <div className="relative bg-white p-4 rounded-md shadow-lg max-w-xs w-full sm:max-w-md sm:w-auto">
+          <button
+            onClick={handlePrevImage}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
+          >
+            &lt;
+          </button>
+          <img
             src={product.image[selectedImageIndex]}
             alt={product.name}
-            className="w-full h-96 object-contain rounded-md mb-4"
+            className="w-full h-auto object-contain"
           />
-           <img
-            src={product.image[nextImageIndex]}
-            alt={product.name}
-            className="w-full h-96 object-contain rounded-md mb-4 hidden sm:block"
-          />
-       </div>
-          <div className="flex space-x-2 flex space-x-2 overflow-x-auto">
-            {product.image.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`${product.name} thumbnail ${index + 1}`}
-                className={`w-24 h-24 object-cover rounded-md cursor-pointer ${
-                  index === selectedImageIndex ? "border-2 border-blue-500" : ""
-                }`}
-                onClick={() => handleThumbnailClick(index)}
-              />
-            ))}
-          </div>
+          <button
+            onClick={handleNextImage}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
+          >
+            &gt;
+          </button>
         </div>
+      </Modal>
+    </div>
         <div className="w-full lg:w-1/2 lg:pl-8">
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
           <p className="text-xl text-gray-700 mb-4">
@@ -356,36 +402,37 @@ const ProductView = () => {
         )}
       </div>
 
-      {/* You may also like these section */}
-      <div className="container mx-auto ">
-        <h2 className="text-2xl font-bold mb-4 text-center">You may also like these</h2>
-        <hr />
-        <br />
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-          {allProducts.createdProducts && allProducts.createdProducts.map((product) => (
-            <div key={product._id} className="">
-              <ProductCard
-                productId={product._id}
-                image={product.image[0]}
-                name={product.name}
-                price={product.price}
-                offerPrice={product.offerPrice}
-                category={product.category}
-                isActive={product.isActive}
-                hasOffer={product.hasOffer}
-              />
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center mt-4">
-          <button
-            className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-            onClick={() => navigate("/search?query=&category=All%20Products")}
-          >
-            More
-          </button>
-        </div>
+     {/* You may also like these section */}
+<div className="container mx-auto">
+  <h2 className="text-2xl font-bold mb-4 text-center">You may also like these</h2>
+  <hr />
+  <br />
+  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
+    {allProducts.createdProducts && allProducts.createdProducts.slice(0, 8).map((product) => (
+      <div key={product._id} className="">
+        <ProductCard
+          productId={product._id}
+          image={product.image[0]}
+          name={product.name}
+          price={product.price}
+          offerPrice={product.offerPrice}
+          category={product.category}
+          isActive={product.isActive}
+          hasOffer={product.hasOffer}
+        />
       </div>
+    ))}
+  </div>
+  <div className="flex justify-center mt-4">
+    <button
+      className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+      onClick={() => navigate("/search?query=&category=All%20Products")}
+    >
+      More
+    </button>
+  </div>
+</div>
+
     </div>
   );
 };
