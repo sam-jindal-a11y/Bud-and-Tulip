@@ -291,7 +291,63 @@ const SearchSection = () => {
 
       {/* Main Content */}
       <div className="w-full lg:w-2/3 p-4 mx-auto">
+      
         {/* Top Layer */}
+        
+      {/* Pagination */}
+<div className="mt-8 flex justify-center flex-wrap">
+  {/* Previous Button */}
+  {currentPage > 1 && (
+    <button
+      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+      onClick={() => handlePageChange(currentPage - 1)}
+    >
+      Prev
+    </button>
+  )}
+
+  {/* Page Buttons */}
+  {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 2);
+
+    if (currentPage <= 3) {
+      startPage = 1;
+      endPage = Math.min(totalPages, 5);
+    } else if (currentPage >= totalPages - 2) {
+      startPage = Math.max(1, totalPages - 4);
+      endPage = totalPages;
+    }
+
+    const page = startPage + index;
+
+    if (page > endPage) {
+      return null;
+    }
+
+    return (
+      <button
+        key={page}
+        className={`border px-3 py-1 mr-2 ${
+          currentPage === page ? 'bg-pink-500 text-white' : ''
+        }`}
+        onClick={() => handlePageChange(page)}
+      >
+        {page}
+      </button>
+    );
+  })}
+
+  {/* Next Button */}
+  {currentPage < totalPages && (
+    <button
+      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+      onClick={() => handlePageChange(currentPage + 1)}
+    >
+      Next
+    </button>
+  )}
+</div>
         <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
           <div className="mb-2 sm:mb-0">
             <label className="mr-2">Show</label>
@@ -317,7 +373,9 @@ const SearchSection = () => {
               <option value="priceLowToHigh">Price: Low to High</option>
               <option value="priceHighToLow">Price: High to Low</option>
             </select>
+            
           </div>
+          
         </div>
 
         {/* Product Listing */}
@@ -368,41 +426,62 @@ const SearchSection = () => {
             ))}
         </div>
 
-        {/* Pagination */}
-        <div className="mt-8 flex justify-center flex-wrap">
-          {/* Previous Button */}
-          {currentPage > 1 && (
-            <button
-              className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              Prev
-            </button>
-          )}
+      {/* Pagination */}
+<div className="mt-8 flex justify-center flex-wrap">
+  {/* Previous Button */}
+  {currentPage > 1 && (
+    <button
+      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+      onClick={() => handlePageChange(currentPage - 1)}
+    >
+      Prev
+    </button>
+  )}
 
-          {/* Page Buttons */}
-          {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => (
-            <button
-              key={index}
-              className={`border px-3 py-1 mr-2 ${
-                currentPage === index + 1 ? 'bg-pink-500 text-white' : ''
-              }`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
+  {/* Page Buttons */}
+  {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 2);
 
-          {/* Next Button */}
-          {currentPage < totalPages && (
-            <button
-              className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              Next
-            </button>
-          )}
-        </div>
+    if (currentPage <= 3) {
+      startPage = 1;
+      endPage = Math.min(totalPages, 5);
+    } else if (currentPage >= totalPages - 2) {
+      startPage = Math.max(1, totalPages - 4);
+      endPage = totalPages;
+    }
+
+    const page = startPage + index;
+
+    if (page > endPage) {
+      return null;
+    }
+
+    return (
+      <button
+        key={page}
+        className={`border px-3 py-1 mr-2 ${
+          currentPage === page ? 'bg-pink-500 text-white' : ''
+        }`}
+        onClick={() => handlePageChange(page)}
+      >
+        {page}
+      </button>
+    );
+  })}
+
+  {/* Next Button */}
+  {currentPage < totalPages && (
+    <button
+      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+      onClick={() => handlePageChange(currentPage + 1)}
+    >
+      Next
+    </button>
+  )}
+</div>
+
+
       </div>
     </div>
   );
