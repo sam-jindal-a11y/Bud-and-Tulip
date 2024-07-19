@@ -24,7 +24,7 @@ const Login = () => {
       let response;
       if (password === "") {
         // Login as guest user
-        response = await fetch("http://localhost:5000/api/auth/guest-signup", {
+        response = await fetch("https://bud-tulips.onrender.com/api/auth/guest-signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -33,7 +33,7 @@ const Login = () => {
         });
       } else {
         // Login as regular user
-        response = await fetch("http://localhost:5000/api/auth/login", {
+        response = await fetch("https://bud-tulips.onrender.com/api/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

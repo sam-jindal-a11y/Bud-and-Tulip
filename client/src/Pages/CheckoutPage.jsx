@@ -122,7 +122,7 @@ const CheckoutPage = () => {
     };
   
     try {
-      const response = await axios.post("http://localhost:5000/api/orderHistory", orderData);
+      const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
       if (response.status === 201) {
         alert("Order placed successfully!");
         navigate("/orderSuccess");
