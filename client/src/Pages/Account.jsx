@@ -84,7 +84,7 @@ const Account = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.clear();
-    window.location.href = '/login';
+   navigate('/');
   };
 
   const handleDeleteAddress = async (addressId) => {
