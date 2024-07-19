@@ -4,6 +4,8 @@ import express from "express";
 import OrderHistory from "../models/OrderHistory.js";
 import nodemailer from "nodemailer";
 import User from "../models/User.js";
+import Product from '../models/Product.js'; // Adjust the path as needed
+
 
 const router = express.Router();
 
@@ -73,6 +75,7 @@ router.post("/", async (req, res) => {
       codCharge,
       finalAmount,
       voucherCode,
+    
     });
 
     const savedOrder = await newOrder.save();
@@ -83,13 +86,42 @@ router.post("/", async (req, res) => {
       });
     }
 
-    for (const product of products) {
-      await Product.findByIdAndUpdate(product._id, {
-        $inc: { salesCount: product.quantity }
-      });
+    async function updateSalesCount(products) {
+      for (const product of products) {
+        try {
+          // Retrieve the current product data from the database
+          const currentProduct = await Product.findById(product.productId);
+    
+          if (!currentProduct) {
+            console.error(`Product with ID ${product.productId} not found.`);
+            continue;
+          }
+    
+          // Calculate the new sales count
+          const newSalesCount = currentProduct.salesCount + product.quantity;
+    
+          // Update the product with the new sales count and quantity
+          const result = await Product.findByIdAndUpdate(
+            product.productId,
+            { salesCount: newSalesCount },
+            { new: true } // Return the updated document
+          );
+    
+          if (result) {
+            console.log(`Successfully updated product with ID ${product.productId}:`, result);
+          } else {
+            console.error(`Failed to update product with ID ${product.productId}.`);
+          }
+        } catch (error) {
+          console.error(`Error updating product with ID ${product.productId}:`, error);
+        }
+      }
     }
-
-
+    
+    
+   
+    updateSalesCount(products);
+    console.log(products);
     const user = await User.findById(userId);
 
     if (!user) {
@@ -147,6 +179,7 @@ router.post("/", async (req, res) => {
         return res.status(500).send("Failed to send email");
       }
       console.log("Email sent:", info.response);
+      console.log("sales" , salesCount);
       res.status(201).json(savedOrder);
     });
   } catch (error) {

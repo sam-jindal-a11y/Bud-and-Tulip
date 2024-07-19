@@ -51,6 +51,7 @@ const CheckoutPage = () => {
       );
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         setProducts(data);
       } else {
         console.error("Failed to fetch cart products");
@@ -107,7 +108,7 @@ const CheckoutPage = () => {
       userId: decoded.id,
       ShipDetails: selectedAddress,
       products: products.map(product => ({
-        productId: product._id,
+        productId: product.productId,
         quantity: product.quantity,
         price: product.price,
         size: product.size
@@ -121,7 +122,7 @@ const CheckoutPage = () => {
     };
   
     try {
-      const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
+      const response = await axios.post("http://localhost:5000/api/orderHistory", orderData);
       if (response.status === 201) {
         alert("Order placed successfully!");
         navigate("/orderSuccess");
