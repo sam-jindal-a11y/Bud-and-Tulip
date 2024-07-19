@@ -29,7 +29,7 @@ const Carousel = () => {
         {[0, 1, 2, 3, 4].map((index) => (
           <div key={index} className={`duration-700 ease-in-out ${index === currentSlide ? '' : 'hidden'}`} data-carousel-item>
             <img
-              src={`https://bud-tulips.onrender.com/images/Carousel/${index}.png`}
+              src={`https://ik.imagekit.io/7uve7qsipm/images/Carousel/${index}.png`}
               className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
               alt={`Slide ${index}`}
             />

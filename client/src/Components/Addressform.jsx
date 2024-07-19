@@ -1,6 +1,9 @@
 import React from 'react';
+import {useNavigate } from 'react-router-dom';
 
 const Addressform = () => {
+  const history = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
@@ -30,12 +33,17 @@ const Addressform = () => {
       const result = await response.json();
       if (response.ok) {
         alert('Address added successfully');
+        history(-1); // Navigate back to the previous page
       } else {
         alert('Error: ' + result.error);
       }
     } catch (error) {
       alert('Error: ' + error.message);
     }
+  };
+
+  const handleCancel = () => {
+    history(-1); // Navigate back to the previous page
   };
 
   return (
@@ -102,7 +110,7 @@ const Addressform = () => {
             <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
               Add Address
             </button>
-            <button type="button" className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
+            <button type="button" onClick={handleCancel} className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
               Cancel
             </button>
           </div>

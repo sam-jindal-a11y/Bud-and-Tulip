@@ -125,7 +125,7 @@ const CheckoutPage = () => {
       const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
       if (response.status === 201) {
         alert("Order placed successfully!");
-        navigate("/orderSuccess");
+        navigate("/account");
       }
     } catch (error) {
       console.error("Error placing order:", error);

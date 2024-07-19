@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 const Account = () => {
   const [user, setUser] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard'); // State to manage active tab
   const [editAddress, setEditAddress] = useState(null);
-  const Navigate = useNavigate();
-  const  addnewAddress=()=>{
-    // Navigate('/addressform');
-    console.log("heelo")
-  }
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -24,7 +22,7 @@ const Account = () => {
     province: '',
     postalCode: '',
     phone: '',
-    defaultAddress: false
+    defaultAddress: false,
   });
 
   useEffect(() => {
@@ -37,9 +35,9 @@ const Account = () => {
       fetchOrders(decoded.id); // Fetch orders for the user
       console.log(decoded);
     } else {
-      window.location.href = '/login'; // Redirect to login if no token
+      navigate('/login'); // Redirect to login if no token
     }
-  }, []);
+  }, [navigate]);
 
   const fetchAddresses = async (userId) => {
     try {
@@ -85,6 +83,7 @@ const Account = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.clear();
     window.location.href = '/login';
   };
 
@@ -92,7 +91,7 @@ const Account = () => {
     try {
       const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
       const headers = {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
       };
 
       const response = await axios.delete(`https://bud-tulips.onrender.com/api/address/${addressId}`, { headers });
@@ -100,7 +99,7 @@ const Account = () => {
       if (response.status === 200) {
         // Handle success, e.g., update state or show a success message
         console.log('Address deleted successfully');
-        window.location.reload();
+        setAddresses(addresses.filter((address) => address._id !== addressId));
       } else {
         // Handle other status codes if needed
         console.error('Failed to delete address');
@@ -110,21 +109,19 @@ const Account = () => {
       console.error('Error deleting address:', error);
     }
   };
-  
-  
-  
 
   const handleUpdateAddress = (address) => {
     setEditAddress(address);
     setForm({
-      ...address
+      ...address,
     });
   };
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -135,9 +132,9 @@ const Account = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       });
       if (response.ok) {
         const updatedAddress = await response.json();
@@ -169,6 +166,7 @@ const Account = () => {
             form={form}
             onChange={handleChange}
             onSubmit={handleSubmit}
+            addNewAddress={() => navigate('/addressform')} // Passing the addNewAddress function as prop
           />
         );
       case 'wishlist':
@@ -241,139 +239,168 @@ const Dashboard = ({ orders }) => (
   </div>
 );
 
-const Addresses = ({ addresses, onDelete, onUpdate, editAddress, form, onChange, onSubmit }) => (
+const Addresses = ({ addresses, onDelete, onUpdate, editAddress, form, onChange, onSubmit, addNewAddress }) => (
   <div>
     <h3 className="text-xl font-bold mb-4">Addresses</h3>
     <ul>
-      {addresses.length > 0 ? (
-        addresses.map((address) => (
-          <li key={address._id} className="mb-4 p-4 border rounded-lg shadow">
-            <div className="flex flex-col space-y-2">
-              <div className="font-semibold text-lg flex flex-row justify-between">
-                <div>
-                  {address.firstName} {address.lastName}
-                </div>
-                <div className="flex space-x-4">
-                  <button className="text-red-500 hover:text-red-700" onClick={() => onDelete(address._id)}>
-                    <i className="fa-regular fa-trash-can"></i>
-                  </button>
-                  <button className="text-blue-500 hover:text-blue-700" onClick={() => onUpdate(address)}>
-                    <i className="fa-solid fa-pen-to-square"></i>
-                  </button>
-                </div>
-              </div>
-              <div>{address.address1}</div>
-              {address.address2 && <div>{address.address2}</div>}
-              <div>
-                {address.city}, {address.province}, {address.country}, {address.postalCode}
-              </div>
-              <div>{address.phone}</div>
-            </div>
-          </li>
-        ))
-      ) : (
-        <li>No addresses found
-          <button onClick={()=>Navigate("/addressform")}>Add New Adress</button>
+      {addresses.map((address) => (
+        <li key={address._id} className="border p-4 mb-2">
+          <p>
+            {address.firstName} {address.lastName}
+          </p>
+          <p>{address.company}</p>
+          <p>{address.address1}</p>
+          <p>{address.address2}</p>
+          <p>{address.city}, {address.province}, {address.country}</p>
+          <p>{address.postalCode}</p>
+          <p>{address.phone}</p>
+          <button
+            onClick={() => onDelete(address._id)}
+            className="mt-2 px-4 py-2 border border-black rounded"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => onUpdate(address)}
+            className="mt-2 px-4 py-2 border border-black rounded ml-2"
+          >
+            Edit
+          </button>
         </li>
-      )}
+      ))}
     </ul>
+    <button onClick={addNewAddress} className="mt-4 px-4 py-2 border border-black rounded">
+      Add New Address
+    </button>
     {editAddress && (
-      <div className="mt-6">
-        <h3 className="text-xl font-bold mb-4">Edit Address</h3>
-        <form onSubmit={onSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="firstName"
-            value={form.firstName}
-            onChange={onChange}
-            placeholder="First Name"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="lastName"
-            value={form.lastName}
-            onChange={onChange}
-            placeholder="Last Name"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="company"
-            value={form.company}
-            onChange={onChange}
-            placeholder="Company"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="address1"
-            value={form.address1}
-            onChange={onChange}
-            placeholder="Address 1"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="address2"
-            value={form.address2}
-            onChange={onChange}
-            placeholder="Address 2"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="city"
-            value={form.city}
-            onChange={onChange}
-            placeholder="City"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="country"
-            value={form.country}
-            onChange={onChange}
-            placeholder="Country"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="province"
-            value={form.province}
-            onChange={onChange}
-            placeholder="Province"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="postalCode"
-            value={form.postalCode}
-            onChange={onChange}
-            placeholder="Postal Code"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            name="phone"
-            value={form.phone}
-            onChange={onChange}
-            placeholder="Phone"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <div className="flex items-center">
+      <form onSubmit={onSubmit} className="mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="firstName">First Name</label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={form.firstName}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={form.lastName}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="company">Company</label>
+            <input
+              type="text"
+              id="company"
+              name="company"
+              value={form.company}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="address1">Address 1</label>
+            <input
+              type="text"
+              id="address1"
+              name="address1"
+              value={form.address1}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="address2">Address 2</label>
+            <input
+              type="text"
+              id="address2"
+              name="address2"
+              value={form.address2}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="city">City</label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value={form.city}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="province">Province</label>
+            <input
+              type="text"
+              id="province"
+              name="province"
+              value={form.province}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="country">Country</label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              value={form.country}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="postalCode">Postal Code</label>
+            <input
+              type="text"
+              id="postalCode"
+              name="postalCode"
+              value={form.postalCode}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="phone">Phone</label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              value={form.phone}
+              onChange={onChange}
+              className="border rounded w-full py-2 px-3 mt-1"
+            />
+          </div>
+          <div>
+            <label htmlFor="defaultAddress">Default Address</label>
             <input
               type="checkbox"
+              id="defaultAddress"
               name="defaultAddress"
               checked={form.defaultAddress}
-              // onChange={(e) => setForm({ ...form, defaultAddress: e.target.checked })}
-              className="mr-2"
+              onChange={onChange}
+              className="border rounded mt-1"
             />
-            <label>Default Address</label>
           </div>
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">Save Changes</button>
-        </form>
-      </div>
+        </div>
+        <button type="submit" className="mt-4 px-4 py-2 border border-black rounded">
+          Update Address
+        </button>
+      </form>
     )}
   </div>
 );
@@ -381,14 +408,14 @@ const Addresses = ({ addresses, onDelete, onUpdate, editAddress, form, onChange,
 const Wishlist = () => (
   <div>
     <h3 className="text-xl font-bold mb-4">Wishlist</h3>
-    <p>Wishlist content goes here.</p>
+    <p>Your wishlist is empty.</p>
   </div>
 );
 
 const Wallet = () => (
   <div>
     <h3 className="text-xl font-bold mb-4">Wallet</h3>
-    <p>Wallet content goes here.</p>
+    <p>Your wallet is empty.</p>
   </div>
 );
 

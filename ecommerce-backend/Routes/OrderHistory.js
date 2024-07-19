@@ -179,7 +179,6 @@ router.post("/", async (req, res) => {
         return res.status(500).send("Failed to send email");
       }
       console.log("Email sent:", info.response);
-      console.log("sales" , salesCount);
       res.status(201).json(savedOrder);
     });
   } catch (error) {
