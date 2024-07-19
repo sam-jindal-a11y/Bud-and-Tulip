@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema({
     lastLogin: {
         type: Date,
     },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
     accountType: {
         type: String,
         enum: ['guest', 'user'],

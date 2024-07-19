@@ -9,6 +9,7 @@ dotenv.config();
 const router = express.Router();
 
 // Signup Route
+// Signup Route
 router.post('/signup', async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
     try {
@@ -27,8 +28,14 @@ router.post('/signup', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create a new user
-        const newUser = new User({ firstName, lastName, email, password: hashedPassword });
+        // Create a new user with the current date as the account creation date
+        const newUser = new User({ 
+            firstName, 
+            lastName, 
+            email, 
+            password: hashedPassword, 
+            createdAt: new Date() 
+        });
         const savedUser = await newUser.save();
 
         // Generate token
@@ -42,6 +49,7 @@ router.post('/signup', async (req, res) => {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,
                 email: savedUser.email,
+                createdAt: savedUser.createdAt, // Include account creation date
                 token,
             }
         });
@@ -51,6 +59,8 @@ router.post('/signup', async (req, res) => {
     }
 });
 
+
+// Login Route
 // Login Route
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -114,6 +124,8 @@ router.post('/login', async (req, res) => {
     }
 });
 
+
+// Guest Signup Route
 // Guest Signup Route
 router.post('/guest-signup', async (req, res) => {
     const { email } = req.body;
@@ -129,8 +141,8 @@ router.post('/guest-signup', async (req, res) => {
             return res.status(400).json({ message: 'Email already exists' });
         }
 
-        // Create a new guest user
-        const newGuestUser = new User({ email, accountType: 'guest' });
+        // Create a new guest user with the current date as the account creation date
+        const newGuestUser = new User({ email, accountType: 'guest', createdAt: new Date() });
         const savedGuestUser = await newGuestUser.save();
 
         // Generate token
@@ -143,6 +155,7 @@ router.post('/guest-signup', async (req, res) => {
                 id: savedGuestUser._id,
                 email: savedGuestUser.email,
                 accountType: savedGuestUser.accountType,
+                createdAt: savedGuestUser.createdAt, // Include account creation date
                 token,
             }
         });
@@ -151,6 +164,7 @@ router.post('/guest-signup', async (req, res) => {
         res.status(500).json({ message: 'Error creating guest user', error });
     }
 });
+
 
 router.get('/users', async (req, res) => {
     try {

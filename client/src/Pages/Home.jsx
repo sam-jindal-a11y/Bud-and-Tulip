@@ -48,7 +48,13 @@ const Home = () => {
 
   // Show only 10 products per section to fit in 2 rows (5 per row)
   const displayedProducts = products.slice(0, 10);
-  const displayedSaleProducts = productsOnSale.slice(0, 10);
+  const displayedSaleProducts = productsOnSale.slice(0, 5);
+
+  // Filter and sort best-selling products
+  const bestSellers = products
+    .filter((product) => product.salesCount)
+    .sort((a, b) => b.salesCount - a.salesCount)
+    .slice(0, 10);
 
   return (
     <div>
@@ -75,7 +81,25 @@ const Home = () => {
             ))}
           </div>
         </section>
-
+  {/* Best Sellers Section */}
+  <section className="mb-12 text-center">
+          <h2 className="text-3xl font-bold mb-12">Best Sellers</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap">
+            {bestSellers.map((product) => (
+              <ProductCard
+                key={product._id}
+                productId={product._id}
+                image={product.image[0]}
+                name={product.name}
+                price={product.price}
+                offerPrice={product.offerPrice}
+                category={product.category}
+                isActive={product.isActive}
+                hasOffer={product.hasOffer}
+              />
+            ))}
+          </div>
+        </section>
         {/* Products on Sale Section */}
         <section className="mb-12 text-center">
           <h2 className="text-3xl font-bold mb-6">Products on Sale</h2>
@@ -98,58 +122,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Best Sellers Section */}
-        <section className="mb-12 text-center">
-          <h2 className="text-3xl font-bold mb-12">Best Sellers</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-            {/* Sample Best Sellers */}
-            {[
-              {
-                id: "2",
-                image:
-                  "https://www.budandtulips.com/Content/Pro_Images/BT758iq81.jpg",
-                name: "Heena Sharara Suit",
-                price: "4000.00",
-              },
-              {
-                id: "3",
-                image:
-                  "https://www.budandtulips.com/Content/Pro_Images/BT757iq71.jpg",
-                name: "Falguni Suit",
-                price: "4500.00",
-              },
-              {
-                id: "4",
-                image:
-                  "https://www.budandtulips.com/Content/Pro_Images/BT756iq61.jpg",
-                name: "Ira Suit",
-                price: "5000.00",
-              },
-              {
-                id: "5",
-                image:
-                  "https://www.budandtulips.com/Content/Pro_Images/BT755iq51.jpg",
-                name: "Apple Pear Shirt",
-                price: "5500.00",
-              },
-              {
-                id: "6",
-                image:
-                  "https://www.budandtulips.com/Content/Pro_Images/BT755iq51.jpg",
-                name: "Apple Pear Shirt",
-                price: "5500.00",
-              },
-            ].map((product) => (
-              <ProductCard
-                key={product.id}
-                productId={product.id}
-                image={product.image}
-                name={product.name}
-                price={product.price}
-              />
-            ))}
-          </div>
-        </section>
+      
       </div>
     </div>
   );
