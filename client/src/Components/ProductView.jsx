@@ -17,6 +17,7 @@ const ProductView = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productCat , setProductCat] = useState(null);
 
   const navigate = useNavigate();
   const handleNextImage = () => {
@@ -55,6 +56,59 @@ const ProductView = () => {
   const toggleSection = (section) => {
     setVisibleSection(visibleSection === section ? null : section);
   };
+
+  const buyNow = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login to purchase items.");
+        navigate("/login"); // Redirect to login page if not authenticated
+        return;
+      }
+  
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+  
+      // Optionally, you can create a temporary order or directly pass the product details to the checkout page.
+      await axios.post(
+        "https://bud-tulips.onrender.com/api/temporary-order", // Make sure this endpoint exists or create it in your backend
+        {
+          userId: decoded.id,
+          productId: product._id,
+          productName: product.name,
+          price: product.hasOffer ? product.offerPrice : product.price,
+          image: product.image[0],
+          quantity,
+          size,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Navigate to the checkout page with product details
+      navigate("/checkout", {
+        state: {
+          userId: decoded.id,
+          productId: product._id,
+          productName: product.name,
+          price: product.hasOffer ? product.offerPrice : product.price,
+          image: product.image[0],
+          quantity,
+          size,
+        },
+      });
+    } catch (error) {
+      console.error(
+        "Error processing purchase:",
+        error.response?.data?.message || error.message
+      );
+      alert("Login Expired !!");
+    }
+  };
+  
 
   const addToCart = async () => {
     try {
@@ -144,6 +198,8 @@ const ProductView = () => {
         );
         const productData = response.data;
         setProduct(productData);
+        console.log(productData.category);
+        setProductCat(productData.category); // Set product category
         if (productData.size.length === 1) {
           setSize(productData.size[0]); // Set size to the single available size
         } else {
@@ -278,6 +334,12 @@ const ProductView = () => {
             )}
           </div>
           <div className="flex space-x-4 mb-4">
+          <button
+              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+              onClick={addToCart}
+            >
+              Buy Now
+            </button>
             <button
               className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
               onClick={addToCart}
@@ -412,25 +474,31 @@ const ProductView = () => {
   <hr />
   <br />
   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-    {allProducts.createdProducts && allProducts.createdProducts.slice(0, 8).map((product) => (
-      <div key={product._id} className="">
-        <ProductCard
-          productId={product._id}
-          image={product.image[0]}
-          name={product.name}
-          price={product.price}
-          offerPrice={product.offerPrice}
-          category={product.category}
-          isActive={product.isActive}
-          hasOffer={product.hasOffer}
-        />
-      </div>
-    ))}
+  {allProducts.createdProducts && productCat && allProducts.createdProducts
+  .filter(product => product.category[0] === productCat[0] ) // Filter products by category
+  .slice(0, 8) // Limit to the first 8 products
+  .map((product) => (
+    <div key={product._id} className="">
+      <ProductCard
+        productId={product._id}
+        image={product.image[0]}
+        name={product.name}
+        price={product.price}
+        offerPrice={product.offerPrice}
+        category={product.category}
+        isActive={product.isActive}
+        hasOffer={product.hasOffer}
+      />
+    </div>
+  ))
+}
+
+
   </div>
   <div className="flex justify-center mt-4">
     <button
       className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-      onClick={() => navigate("/search?query=&category=All%20Products")}
+      onClick={() => navigate(`/search?query=&category=${productCat[0]}`)}
     >
       More
     </button>

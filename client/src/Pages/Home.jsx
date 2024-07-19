@@ -43,6 +43,13 @@ const Home = () => {
     return <Loading />;
   }
 
+  // Filter products on sale
+  const productsOnSale = products.filter((product) => product.hasOffer);
+
+  // Show only 10 products per section to fit in 2 rows (5 per row)
+  const displayedProducts = products.slice(0, 10);
+  const displayedSaleProducts = productsOnSale.slice(0, 10);
+
   return (
     <div>
       <Carousel />
@@ -53,7 +60,29 @@ const Home = () => {
           <hr className="mt-0" />
           <br />
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap">
-            {products.map((product) => (
+            {displayedProducts.map((product) => (
+              <ProductCard
+                key={product._id}
+                productId={product._id}
+                image={product.image[0]}
+                name={product.name}
+                price={product.price}
+                offerPrice={product.offerPrice}
+                category={product.category}
+                isActive={product.isActive}
+                hasOffer={product.hasOffer}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Products on Sale Section */}
+        <section className="mb-12 text-center">
+          <h2 className="text-3xl font-bold mb-6">Products on Sale</h2>
+          <hr className="mt-0" />
+          <br />
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap">
+            {displayedSaleProducts.map((product) => (
               <ProductCard
                 key={product._id}
                 productId={product._id}

@@ -55,18 +55,43 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        // Check if all fields are provided
-        if (!email || !password) {
-            return res.status(400).send("All fields are required");
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).send("Email is required");
         }
 
         // Find user by email
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: 'User not found' });
 
+        // Handle guest login if password is not provided
+        if (!password) {
+            if (user.accountType !== 'guest') {
+                return res.status(400).json({ message: 'Invalid credentials' });
+            }
+
+            // Generate token
+            const token = jwt.sign({ id: user._id }, 'shhhh', { expiresIn: '1h' });
+
+            // Send response
+            return res.json({
+                message: 'Guest login successful',
+                user: {
+                    id: user._id,
+                    email: user.email,
+                    accountType: user.accountType,
+                    token,
+                }
+            });
+        }
+
         // Check if password matches
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
 
         // Generate token
         const token = jwt.sign({ id: user._id }, 'shhhh', { expiresIn: '1h' });
@@ -80,6 +105,7 @@ router.post('/login', async (req, res) => {
                 lastName: user.lastName,
                 email: user.email,
                 token,
+                lastLogin: user.lastLogin // Include the last login time in the response
             }
         });
     } catch (error) {
@@ -87,6 +113,45 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Error logging in', error });
     }
 });
+
+// Guest Signup Route
+router.post('/guest-signup', async (req, res) => {
+    const { email } = req.body;
+    try {
+        // Check if email is provided
+        if (!email) {
+            return res.status(400).send("Email is required");
+        }
+
+        // Check if the user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+
+        // Create a new guest user
+        const newGuestUser = new User({ email, accountType: 'guest' });
+        const savedGuestUser = await newGuestUser.save();
+
+        // Generate token
+        const token = jwt.sign({ id: savedGuestUser._id }, 'shhhh', { expiresIn: '1h' });
+
+        // Send response
+        res.status(201).json({
+            message: 'Guest user created successfully',
+            user: {
+                id: savedGuestUser._id,
+                email: savedGuestUser.email,
+                accountType: savedGuestUser.accountType,
+                token,
+            }
+        });
+    } catch (error) {
+        console.error('Error creating guest user:', error);
+        res.status(500).json({ message: 'Error creating guest user', error });
+    }
+});
+
 router.get('/users', async (req, res) => {
     try {
         const users = await User.find({});

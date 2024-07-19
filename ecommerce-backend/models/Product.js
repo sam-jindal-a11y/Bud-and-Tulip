@@ -60,6 +60,10 @@ const ProductSchema = new mongoose.Schema({
     originalHasOffer: {
         type: Boolean,
         default: false,
+    },
+    salesCount: {
+        type: Number,
+        default: 0 // Initialize sales count to 0
     }
 });
 

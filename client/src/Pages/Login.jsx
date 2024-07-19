@@ -21,13 +21,26 @@ const Login = () => {
     };
 
     try {
-      const response = await fetch("https://bud-tulips.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
+      let response;
+      if (password === "") {
+        // Login as guest user
+        response = await fetch("http://localhost:5000/api/auth/guest-signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+      } else {
+        // Login as regular user
+        response = await fetch("https://bud-tulips.onrender.com/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        });
+      }
 
       const result = await response.json();
 
@@ -88,7 +101,6 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              required
             />
           </div>
 

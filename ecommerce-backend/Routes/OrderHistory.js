@@ -83,6 +83,13 @@ router.post("/", async (req, res) => {
       });
     }
 
+    for (const product of products) {
+      await Product.findByIdAndUpdate(product._id, {
+        $inc: { salesCount: product.quantity }
+      });
+    }
+
+
     const user = await User.findById(userId);
 
     if (!user) {
