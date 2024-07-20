@@ -124,7 +124,7 @@ const SearchSection = () => {
           case 'priceHighToLow':
             return b.price - a.price;
           case 'popularity':
-            return b.popularity - a.popularity;
+            return b.salesCount - a.salesCount;
           default:
             return 0;
         }
@@ -150,71 +150,74 @@ const SearchSection = () => {
   return (
     <div className="flex flex-col lg:flex-row lg:px-6">
       <MobileSearchBar />
-      {/* Sidebar */}
-      <div className="w-full lg:w-1/4 p-4 px-20 hidden lg:block">
-        {/* Filters Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Sizes</h2>
-          <div>
-            {sizes.map((size) => (
-              <div key={size._id} className="mb-1">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    value={size.name}
-                    onChange={() => handleSizeChange(size.name)}
-                    className="mr-2"
-                    checked={selectedSizes.includes(size.name)}
-                  />
-                  {size.name}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Colors</h2>
-          <div>
-            {colors.map((color) => (
-              <div key={color._id} className="mb-1">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    value={color.name}
-                    onChange={() => handleColorChange(color.name)}
-                    className="mr-2"
-                    checked={selectedColors.includes(color.name)}
-                  />
-                  {color.name}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Price</h2>
-          <div className="flex items-center mb-2">
-            <span className="mr-2">From ₹</span>
+     {/* Sidebar */}
+<div className=" h-full w-full lg:w-1/4 p-4 mt-5 lg:px-8 bg-white shadow-lg rounded-lg overflow-y-auto hidden lg:block">
+  {/* Filters Section */}
+  <div className="mb-10 border-b pb-6">
+    <h2 className="text-xl font-bold mb-4">Sizes</h2>
+    <div className="space-y-2">
+      {sizes.map((size) => (
+        <div key={size._id}>
+          <label className="flex items-center">
             <input
-              type="number"
-              name="min"
-              value={priceRange.min}
-              onChange={handlePriceChange}
-              className="border p-1 w-20"
+              type="checkbox"
+              value={size.name}
+              onChange={() => handleSizeChange(size.name)}
+              className="mr-3 h-5 w-5"
+              checked={selectedSizes.includes(size.name)}
             />
-          </div>
-          <div className="flex items-center">
-            <span className="mr-2">To ₹</span>
-            <input
-              type="number"
-              name="max"
-              value={priceRange.max}
-              onChange={handlePriceChange}
-              className="border p-1 w-20"
-            />
-          </div>
+            <span className="text-lg">{size.name}</span>
+          </label>
         </div>
-      </div>
+      ))}
+    </div>
+  </div>
+  
+  <div className="mb-10 border-b pb-6">
+    <h2 className="text-xl font-bold mb-4">Colors</h2>
+    <div className="space-y-2">
+      {colors.map((color) => (
+        <div key={color._id}>
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              value={color.name}
+              onChange={() => handleColorChange(color.name)}
+              className="mr-3 h-5 w-5"
+              checked={selectedColors.includes(color.name)}
+            />
+            <span className="text-lg">{color.name}</span>
+          </label>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div className="mb-10">
+    <h2 className="text-xl font-bold mb-4">Price</h2>
+    <div className="flex items-center mb-4">
+      <span className="mr-3">From ₹</span>
+      <input
+        type="number"
+        name="min"
+        value={priceRange.min}
+        onChange={handlePriceChange}
+        className="border p-2 rounded w-24"
+      />
+    </div>
+    <div className="flex items-center">
+      <span className="mr-3">To ₹</span>
+      <input
+        type="number"
+        name="max"
+        value={priceRange.max}
+        onChange={handlePriceChange}
+        className="border p-2 rounded w-24"
+      />
+    </div>
+  </div>
+</div>
+
 
       {/* Mobile Filter Button */}
       <div className="block lg:hidden w-full p-4">
@@ -295,62 +298,7 @@ const SearchSection = () => {
       {/* Main Content */}
       <div className="w-full lg:w-2/3 p-4 mx-auto">
       
-        {/* Top Layer */}
-        
-      {/* Pagination */}
-<div className="mt-8 flex justify-center flex-wrap">
-  {/* Previous Button */}
-  {currentPage > 1 && (
-    <button
-      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-      onClick={() => handlePageChange(currentPage - 1)}
-    >
-      Prev
-    </button>
-  )}
 
-  {/* Page Buttons */}
-  {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, currentPage + 2);
-
-    if (currentPage <= 3) {
-      startPage = 1;
-      endPage = Math.min(totalPages, 5);
-    } else if (currentPage >= totalPages - 2) {
-      startPage = Math.max(1, totalPages - 4);
-      endPage = totalPages;
-    }
-
-    const page = startPage + index;
-
-    if (page > endPage) {
-      return null;
-    }
-
-    return (
-      <button
-        key={page}
-        className={`border px-3 py-1 mr-2 ${
-          currentPage === page ? 'bg-pink-500 text-white' : ''
-        }`}
-        onClick={() => handlePageChange(page)}
-      >
-        {page}
-      </button>
-    );
-  })}
-
-  {/* Next Button */}
-  {currentPage < totalPages && (
-    <button
-      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-      onClick={() => handlePageChange(currentPage + 1)}
-    >
-      Next
-    </button>
-  )}
-</div>
         <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
           <div className="mb-2 sm:mb-0">
             <label className="mr-2">Show</label>

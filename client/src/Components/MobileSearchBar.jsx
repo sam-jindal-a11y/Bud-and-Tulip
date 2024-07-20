@@ -25,26 +25,9 @@ const MobileSearchBar = () => {
   };
 
   return (
-    <div className="block lg:hidden w-full p-4 bg-white">
-      <form onSubmit={handleSearch} className="flex items-center space-x-2">
-      <select
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 md:mb-0 md:mr-2"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-            >
-              <option>All Products</option>
-              <option>Sale</option>
-              <option>Suits</option>
-              <option>Loungewear</option>
-              <option>Co-ords</option>
-              <option>Dresses</option>
-              <option>Saree</option>
-              <option>Kurtas</option>
-              <option>Tops</option>
-              <option>Skirt Sets</option>
-              <option>Blazer</option>
-              <option>Shirts</option>
-            </select>
+    <div className="block lg:hidden w-full   p-4  items-center bg-white">
+      <form onSubmit={handleSearch}>
+    
         <input
          type="text"
          placeholder="Product name..."

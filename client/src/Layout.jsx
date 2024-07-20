@@ -22,6 +22,7 @@ import Addressform from "./Components/Addressform";
 import CheckoutPage from "./Pages/CheckoutPage";
 import OrderDetails from "./Components/OrderDetails";
 import ScrollToTop from "./Components/ScrollToTop.jsx";
+import EditAddressForm from "./Pages/EditAddressForm.jsx";
 
 const Layout = () => {
   window.scrollTo(0, 0);
@@ -50,6 +51,7 @@ const Layout = () => {
           <Route path="/SizeChart" element={<SizeChart />} />
           <Route path="/AddressForm" element={<Addressform />} />
           <Route path="/CheckoutPage" element={<CheckoutPage />} />
+          <Route path="/editaddressform" element={<EditAddressForm />} />
           <Route path="/orderDetails" element={<OrderDetails />} />
         </Routes>
         <Footer />

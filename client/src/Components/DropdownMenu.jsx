@@ -24,7 +24,7 @@ const DropdownMenu = () => {
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef} style={{ zIndex: 9999 }}>
       <button
         onClick={toggleDropdown}
         className="text-gray-700 hover:text-pinkc px-4 py-2"

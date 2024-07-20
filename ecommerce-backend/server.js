@@ -452,19 +452,18 @@ app.delete('/api/address/:id', async (req, res) => {
 });
 
 // Update API
-app.put('/api/address/:id', verifyToken, async (req, res) => {
+app.put('/api/address/:id', async (req, res) => {
   try {
-    const userId = req.user.id;
     const addressId = req.params.id;
 
     const address = await ShipDetails.findOneAndUpdate(
-      { _id: addressId, userId },
+      { _id: addressId },
       { ...req.body },
       { new: true, runValidators: true }
     );
 
     if (!address) {
-      return res.status(404).send({ error: 'Address not found or not authorized' });
+      return res.status(404).send({ error: 'Address not found' });
     }
 
     res.status(200).send(address);
@@ -472,6 +471,7 @@ app.put('/api/address/:id', verifyToken, async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
+
 
 app.get('/api/address/', async (req, res) => {
   const userId = req.query.userId;
