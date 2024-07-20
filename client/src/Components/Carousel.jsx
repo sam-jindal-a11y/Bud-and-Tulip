@@ -1,21 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Carousel = () => {
+  const [images, setImages] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % 5); // Assuming 5 slides
-    }, 3000);
-    return () => clearInterval(interval);
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/upload/banners'); // Replace with your actual API endpoint
+        // Ensure images are sorted by index
+        const sortedImages = response.data.sort((a, b) => a.index - b.index);
+        setImages(sortedImages);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
+    };
+
+    fetchImages();
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
   const nextSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide + 1) % 5); // Assuming 5 slides
+    setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide === 0 ? 4 : prevSlide - 1)); // Assuming 5 slides
+    setCurrentSlide((prevSlide) => (prevSlide === 0 ? images.length - 1 : prevSlide - 1));
   };
 
   const goToSlide = (index) => {
@@ -26,10 +43,10 @@ const Carousel = () => {
     <div id="default-carousel" className="relative w-full" data-carousel="slide">
       <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
         {/* Carousel items */}
-        {[0, 1, 2, 3, 4].map((index) => (
-          <div key={index} className={`duration-700 ease-in-out ${index === currentSlide ? '' : 'hidden'}`} data-carousel-item>
+        {images.map((image, index) => (
+          <div key={image._id} className={`duration-700 ease-in-out ${index === currentSlide ? '' : 'hidden'}`} data-carousel-item>
             <img
-              src={`https://ik.imagekit.io/7uve7qsipm/images/Carousel/${index}.png`}
+              src={image.url}
               className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
               alt={`Slide ${index}`}
             />
@@ -39,7 +56,7 @@ const Carousel = () => {
 
       {/* Slider indicators */}
       <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-        {[0, 1, 2, 3, 4].map((index) => (
+        {images.map((_, index) => (
           <button
             key={index}
             type="button"

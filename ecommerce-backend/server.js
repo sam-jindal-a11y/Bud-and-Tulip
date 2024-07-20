@@ -19,6 +19,7 @@ import orderHistoryRouter from './Routes/OrderHistory.js'
 import Voucher from './models/Voucher.js';
 import User from './models/User.js';
 import Sale from './models/Sale.js';
+import uploadRoutes from './Routes/upload.js';
 dotenv.config();
 
 const app = express();
@@ -29,7 +30,7 @@ app.use(bodyParser.json());
 // Static files
 app.use(express.static('public'));
 app.use('/images', express.static('images'));
-
+app.use('/upload', uploadRoutes);
 // Authentication middleware
 
 
