@@ -1,7 +1,7 @@
 import express from 'express';
 import upload from '../middleware/upload.js';
-import imagekit from '../config/imagekit.js';
-import Image from '../models/imageSchema.js';
+import imagekit from '../config/imageKit.js';
+
 
 const router = express.Router();
 
