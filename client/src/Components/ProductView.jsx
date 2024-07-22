@@ -61,7 +61,6 @@ const ProductView = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please login to purchase items.");
         navigate("/login"); // Redirect to login page if not authenticated
         return;
       }
@@ -69,45 +68,29 @@ const ProductView = () => {
       const decoded = jwtDecode(token);
       setUser(decoded);
   
-      // Optionally, you can create a temporary order or directly pass the product details to the checkout page.
-      await axios.post(
-        "https://bud-tulips.onrender.com/api/temporary-order", // Make sure this endpoint exists or create it in your backend
-        {
-          userId: decoded.id,
-          productId: product._id,
-          productName: product.name,
-          price: product.hasOffer ? product.offerPrice : product.price,
-          image: product.image[0],
-          quantity,
-          size,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const orderDetails = {
+        userId: decoded.id,
+        productId: product._id,
+        productName: product.name,
+        price: product.hasOffer ? product.offerPrice : product.price,
+        image: product.image[0],
+        quantity,
+        size,
+      };
   
-      // Navigate to the checkout page with product details
-      navigate("/checkout", {
-        state: {
-          userId: decoded.id,
-          productId: product._id,
-          productName: product.name,
-          price: product.hasOffer ? product.offerPrice : product.price,
-          image: product.image[0],
-          quantity,
-          size,
-        },
-      });
+      // Save order details to local storage
+      localStorage.setItem("tempOrder", JSON.stringify(orderDetails));
+  
+      navigate("/Tempcheckout"); // Redirect to checkout page
     } catch (error) {
       console.error(
-        "Error processing purchase:",
-        error.response?.data?.message || error.message
+        "Error handling buy now:",
+        error.message
       );
       alert("Login Expired !!");
     }
   };
+  
   
 
   const addToCart = async () => {
@@ -336,7 +319,7 @@ const ProductView = () => {
           <div className="flex space-x-4 mb-4">
           <button
               className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-              onClick={addToCart}
+              onClick={buyNow}
             >
               Buy Now
             </button>

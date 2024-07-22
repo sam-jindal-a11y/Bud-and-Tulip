@@ -136,13 +136,42 @@ router.post('/guest-signup', async (req, res) => {
         }
 
         // Check if the user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Email already exists' });
+        let user = await User.findOne({ email });
+
+        if (user) {
+            // If the user exists and account type is 'guest', log them in
+            if (user.accountType === 'guest') {
+                // Update the lastLogin field
+                user.lastLogin = new Date();
+                await user.save();
+
+                // Generate token
+                const token = jwt.sign({ id: user._id }, 'shhhh', { expiresIn: '1h' });
+
+                // Send response
+                return res.status(200).json({
+                    message: 'Guest user logged in successfully',
+                    user: {
+                        id: user._id,
+                        email: user.email,
+                        accountType: user.accountType,
+                        createdAt: user.createdAt,
+                        lastLogin: user.lastLogin,
+                        token,
+                    }
+                });
+            } else {
+                return res.status(400).json({ message: 'Email already exists with a different account type' });
+            }
         }
 
         // Create a new guest user with the current date as the account creation date
-        const newGuestUser = new User({ email, accountType: 'guest', createdAt: new Date() });
+        const newGuestUser = new User({
+            email,
+            accountType: 'guest',
+            createdAt: new Date(),
+            lastLogin: new Date() // Set lastLogin to current date
+        });
         const savedGuestUser = await newGuestUser.save();
 
         // Generate token
@@ -155,7 +184,8 @@ router.post('/guest-signup', async (req, res) => {
                 id: savedGuestUser._id,
                 email: savedGuestUser.email,
                 accountType: savedGuestUser.accountType,
-                createdAt: savedGuestUser.createdAt, // Include account creation date
+                createdAt: savedGuestUser.createdAt,
+                lastLogin: savedGuestUser.lastLogin,
                 token,
             }
         });
