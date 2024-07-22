@@ -59,17 +59,7 @@ const ProductView = () => {
 
   const buyNow = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login"); // Redirect to login page if not authenticated
-        return;
-      }
-  
-      const decoded = jwtDecode(token);
-      setUser(decoded);
-  
       const orderDetails = {
-        userId: decoded.id,
         productId: product._id,
         productName: product.name,
         price: product.hasOffer ? product.offerPrice : product.price,
@@ -81,15 +71,30 @@ const ProductView = () => {
       // Save order details to local storage
       localStorage.setItem("tempOrder", JSON.stringify(orderDetails));
   
+      const token = localStorage.getItem("token");
+  
+      if (!token) {
+        navigate("/login"); // Redirect to login page if not authenticated
+        return;
+      }
+  
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+  
+      // Update the order details in local storage with user ID
+      const updatedOrderDetails = {
+        ...orderDetails,
+        userId: decoded.id,
+      };
+      localStorage.setItem("tempOrder", JSON.stringify(updatedOrderDetails));
+  
       navigate("/checkAddress"); // Redirect to checkout page
     } catch (error) {
-      console.error(
-        "Error handling buy now:",
-        error.message
-      );
+      console.error("Error handling buy now:", error.message);
       alert("Login Expired !!");
     }
   };
+  
   
   
 
