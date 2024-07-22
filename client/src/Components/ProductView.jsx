@@ -81,7 +81,7 @@ const ProductView = () => {
       // Save order details to local storage
       localStorage.setItem("tempOrder", JSON.stringify(orderDetails));
   
-      navigate("/Tempcheckout"); // Redirect to checkout page
+      navigate("/checkAddress"); // Redirect to checkout page
     } catch (error) {
       console.error(
         "Error handling buy now:",

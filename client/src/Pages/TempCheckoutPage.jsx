@@ -49,7 +49,6 @@ const TempCheckoutPage = () => {
     if (tempOrder) {
       setProduct(JSON.parse(tempOrder));
     } else {
-      alert("No temporary order found. Please try again.");
       navigate("/"); // Redirect to home if no temp order found
     }
   };

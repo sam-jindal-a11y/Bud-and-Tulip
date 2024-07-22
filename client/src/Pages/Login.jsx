@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,6 +10,7 @@ const Login = () => {
   const [guestEmail, setGuestEmail] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
 
   function signinToggle() {
     setShowRegularLogin(true);
@@ -36,7 +37,11 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("token", result.user.token);
-        navigate(-1);
+        if (location.pathname === "/product/669e25a2f66395233e4561ab") {
+          navigate("/tempcheckout");
+        } else {
+          navigate("/checkaddress");
+        }
       } else {
         alert(result.message);
       }
@@ -62,7 +67,11 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("token", result.user.token);
-        navigate(-1);
+        if (location.pathname === "/product/669e25a2f66395233e4561ab") {
+          navigate("/tempcheckout");
+        } else {
+          navigate("/checkaddress");
+        }
       } else {
         alert(result.message);
       }

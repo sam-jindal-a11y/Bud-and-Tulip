@@ -24,6 +24,7 @@ import OrderDetails from "./Components/OrderDetails";
 import ScrollToTop from "./Components/ScrollToTop.jsx";
 import EditAddressForm from "./Pages/EditAddressForm.jsx";
 import TempCheckoutPage from "./Pages/TempCheckoutPage.jsx";
+import CheckAddress from "./Pages/CheckAddress.jsx";
 
 const Layout = () => {
   window.scrollTo(0, 0);
@@ -54,6 +55,7 @@ const Layout = () => {
           <Route path="/CheckoutPage" element={<CheckoutPage />} />
           <Route path="/Tempcheckout" element={<TempCheckoutPage />} />
           <Route path="/editaddressform" element={<EditAddressForm />} />
+          <Route path="/checkAddress" element={<CheckAddress />} />
           <Route path="/orderDetails" element={<OrderDetails />} />
         </Routes>
         <Footer />
