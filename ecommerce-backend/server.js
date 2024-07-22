@@ -20,11 +20,24 @@ import Voucher from './models/Voucher.js';
 import User from './models/User.js';
 import Sale from './models/Sale.js';
 import uploadRoutes from './Routes/upload.js';
+import multer from 'multer';
+import ImageKit from 'imagekit';
+// import imageKit from './config/imageKit.js';
 dotenv.config();
+
+
+const imagekit = new ImageKit({
+  publicKey: 'public_LLDWv3bptPXBwBtpULs2IVv4L14=',
+  privateKey: 'private_sS04v5+phSLOVJdXy2nYnzMm500=',
+  urlEndpoint: 'https://ik.imagekit.io/zfayt6inj'
+});
+
+
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 
 
 // Static files
@@ -50,6 +63,11 @@ app.get('/', (req, res) => {
   res.send('Welcome to the E-commerce API');
 });
 
+
+// Multer configuration (not used for storage, just for handling file uploads)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
 app.get('/products', async (req, res) => {
   try {
     const products = await Product.find();
@@ -60,46 +78,66 @@ app.get('/products', async (req, res) => {
     res.status(500).send(error);
   }
 });
-app.post('/api/products', async (req, res) => {
+app.post('/api/products', upload.array('image', 6), async (req, res) => {
   const {
     name,
     description,
     price,
     stock,
     category,
-    image,
     size,
     color,
     inbox,
     washingInstruction,
     hasOffer,
     offerPrice,
-    isActive
+    isActive,
   } = req.body;
 
+  const files = req.files;
+
+  if (!files || files.length === 0) {
+    return res.status(400).send({ error: 'Please upload at least one image.' });
+  }
+
   try {
+    const imageUploadPromises = files.map(file => {
+      return imagekit.upload({
+        file: file.buffer,
+        fileName: file.originalname,
+      });
+    });
+
+    const imageResponses = await Promise.all(imageUploadPromises);
+    const imageUrls = imageResponses.map(response => response.url);
+
+    // Here you can save the product details along with imageUrls to your database
+    // For demonstration, we are returning the details as the response
+
     const newProduct = new Product({
       name,
       description,
       price,
       stock,
       category,
-      image,
       size,
       color,
       inbox,
       washingInstruction,
       hasOffer,
       offerPrice,
-      isActive
+      isActive,
+      image: imageUrls,
     });
 
+    // Save product to database logic here...
     const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
-  } catch (err) {
-    res.status(400).json({
-      message: err.message
-    });
+    console.log("uploaded");
+
+    res.status(201).send({ message: 'Product created successfully', data: savedProduct });
+  } catch (error) {
+    console.error('Error uploading images to ImageKit:', error);
+    res.status(500).send({ error: 'Error uploading images' });
   }
 });
 app.delete('/products/:id', async (req, res) => {
