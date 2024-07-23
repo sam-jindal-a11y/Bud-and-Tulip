@@ -66,7 +66,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-lg navbar">
-    <div className="container mx-auto pt-2.5 px-6 md:px-0 flex items-center justify-between">
+    <div className="container mx-auto pt-2.5 h-12 px-6 md:px-0 flex items-center justify-between">
       <div className="flex items-center justify-around w-full md:w-auto">
         <button
           className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none mr-4"
@@ -117,13 +117,13 @@ const Navbar = () => {
         </Link>
         <Link
           to="/ShoppingCart"
-          className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
+          className="text-gray-700 hover:text-pinkc text-center  text-base mr-2 md:mr-4 flex flex-col items-center"
         >
           <i className="fas fa-shopping-cart text-2xl"></i>
         </Link>
         <Link
           to="/Search"
-          className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
+          className="text-gray-700 hover:text-pinkc text-center md:hidden text-base mr-2 md:mr-4 flex flex-col items-center"
         >
           <i className="fa fa-search text-2xl"></i>
         </Link>
