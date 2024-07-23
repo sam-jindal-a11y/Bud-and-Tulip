@@ -335,18 +335,19 @@ const ProductView = () => {
               Add to Cart
             </button>
             <button
-              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-              onClick={addToWishlist}
-            >
-              Add to Wishlist
-            </button>
-            <div>
-      <button
         className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
         onClick={toggleSizeChart}
       >
         Size Chart
       </button>
+            <button
+              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+              onClick={addToWishlist}
+            >
+             <i class="fa-solid fa-heart fa-xl "></i>
+            </button>
+            <div>
+     
       <SizeChartModal isVisible={isModalVisible} onClose={toggleSizeChart} />
     </div>
           </div>
