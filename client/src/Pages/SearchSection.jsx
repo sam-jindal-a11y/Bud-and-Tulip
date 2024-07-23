@@ -364,14 +364,7 @@ const SearchSection = () => {
                       `₹ ${product.price}`
                     )}
                   </p>
-                  <div className="flex justify-between items-center">
-                    <button className="bg-pink-500 text-white px-3 py-1.5 sm:px-5 sm:py-2 rounded-sm">
-                      <i className="fa-solid fa-cart-shopping"></i> &nbsp;Add to Cart
-                    </button>
-                    <button className="text-red-500 hover:text-red-600">
-                      <i className="fa fa-heart"></i>
-                    </button>
-                  </div>
+                
                 </div>
               </div>
             ))}

@@ -89,20 +89,7 @@ const ProductCard = ({
             `₹ ${price}`
           )}
         </p>
-        <div className="flex flex-col sm:flex-row justify-between items-center">
-          <button
-            className="button-primary w-full sm:w-auto mb-2 sm:mb-0"
-            onClick={singleProduct}
-          >
-            <i className="fa-solid fa-cart-shopping"></i> &nbsp;Add to Cart
-          </button>
-          <button
-            className="button-secondary w-full sm:w-auto"
-            onClick={addToWishlist}
-          >
-            <i className="fa fa-heart"></i>
-          </button>
-        </div>
+        
       </div>
     </div>
   );

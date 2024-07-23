@@ -66,7 +66,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-lg navbar">
-    <div className="container mx-auto pt-2.5 h-12 px-6 md:px-0 flex items-center justify-between">
+    <div className="container mx-auto py-2.5 h-12 px-6 md:px-0 flex items-center justify-between">
       <div className="flex items-center justify-around w-full md:w-auto">
         <button
           className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none mr-4"
@@ -82,7 +82,7 @@ const Navbar = () => {
         </Link>
       </div>
 
-      <div className="hidden md:flex items-center mt-4 md:mt-0 flex-grow mx-4">
+      <div className="hidden md:flex items-center md:mt-0 flex-grow mx-4">
         <div className="relative md:ml-6 flex flex-col md:flex-row items-start md:items-center w-full">
           <form onSubmit={handleSubmit} className="flex w-full mx-4">
             <input
@@ -130,22 +130,22 @@ const Navbar = () => {
       </div>
     </div>
 
-    <div className="navbar-desktop bg-white py-2 border-t px-6  hidden md:flex md:justify-between md:items-center shadow-lg">
+    <div className="navbar-desktop bg-pinkc py-2.5 border-t px-6  hidden md:flex md:justify-between md:items-center shadow-lg">
       <div className="container mx-auto">
         <div className="flex justify-center md:justify-center">
-          <Link to="/" className="text-gray-700 hover:text-pinkc px-4 py-2">
+          <Link to="/" className="text-white text-semibold hover:text-pink-500 px-4 py-2">
             Home
           </Link>
           <DropdownMenu />
           <Link
             to="/about"
-            className="text-gray-700 hover:text-pinkc px-4 py-2"
+            className="text-white text-semibold hover:text-pink-500 px-4 py-2"
           >
             About Us
           </Link>
           <Link
             to="/contact"
-            className="text-gray-700 hover:text-pinkc px-4 py-2"
+            className="text-white text-semibold hover:text-pink-500 px-4 py-2"
           >
             Contact
           </Link>

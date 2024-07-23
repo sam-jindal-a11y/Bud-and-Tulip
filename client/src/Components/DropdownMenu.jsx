@@ -27,7 +27,7 @@ const DropdownMenu = () => {
     <div className="relative" ref={dropdownRef} style={{ zIndex: 9999 }}>
       <button
         onClick={toggleDropdown}
-        className="text-gray-700 hover:text-pinkc px-4 py-2"
+        className="text-white text-semibold hover:text-pink-500 px-4 py-2"
       >
         Products <i className="fa-solid fa-angle-down"></i>
       </button>
