@@ -13,6 +13,9 @@ const TempCheckoutPage = () => {
   const [maxDiscount, setMaxDiscount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  //for razorpay
+  const [responseId, setResponseId] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -82,34 +85,108 @@ const TempCheckoutPage = () => {
   const totalPrice = product ? product.price * product.quantity : 0;
   const finalPrice = totalPrice - maxDiscount;
 
+  
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+
+      script.onload = () => {
+        resolve(true);
+      };
+
+      script.onerror = () => {
+        resolve(false);
+      };
+
+      document.body.appendChild(script);
+    });
+  };
+
   const handlePayment = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("User not logged in");
-      navigate("/login");
-      return;
-    }
-    const decoded = jwtDecode(token);
-  
-    const orderData = {
-      userId: decoded.id,
-      ShipDetails: selectedAddress,
-      products: [
-        {
-          productId: product.productId,
-          quantity: product.quantity,
-          price: product.price,
-          size: product.size
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("User not logged in");
+    navigate("/login");
+    return;
+  }
+  const decoded = jwtDecode(token);
+  const orderData = {
+    userId: decoded.id,
+    ShipDetails: selectedAddress,
+    products: [
+      {
+        productId: product.productId,
+        quantity: product.quantity,
+        price: product.price,
+        size: product.size
+      }
+    ],
+    paymentMethod,
+    totalAmount: totalPrice,
+    discount: maxDiscount,
+    voucherCode: voucherCode || null,
+    codCharge: paymentMethod === "cod" ? 300 : 0,
+    finalAmount: finalPrice + (paymentMethod === "cod" ? 300 : 0)
+  };
+
+  if (paymentMethod === "razorpay") {
+    try {
+      const razorpayResponse = await axios.post("https://bud-tulips.onrender.com/orders", {
+        amount: orderData.finalAmount,
+        currency: "INR"
+      });
+
+      const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+
+      if (!res) {
+        alert("Failed to load Razorpay SDK. Please check your internet connection.");
+        return;
+      }
+
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+        amount: razorpayResponse.data.amount,
+        currency: razorpayResponse.data.currency,
+        order_id: razorpayResponse.data.order_id,
+        handler: async (response) => {
+          setResponseId(response.razorpay_payment_id);
+          setConfirmationMessage("Payment was successful! Payment ID: " + response.razorpay_payment_id);
+          orderData.paymentMethod = "razorpay";
+          orderData.razorpayPaymentId = response.razorpay_payment_id;
+          try {
+            const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
+            if (response.status === 201) {
+              alert("Order placed successfully!");
+              navigate("/account");
+            }
+          } catch (error) {
+            console.error("Error placing order:", error);
+            console.log(orderData);
+            alert("Failed to place order. Please try again.");
+          }
+        },
+        prefill: {
+          name: "Harshit"
+        },
+        theme: {
+          color: "#EC4899"
+        },
+        modal: {
+          ondismiss: function () {
+            alert("Payment popup closed. Please complete the payment to place your order.");
+          }
         }
-      ],
-      paymentMethod,
-      totalAmount: totalPrice,
-      discount: maxDiscount,
-      voucherCode: voucherCode || null,
-      codCharge: paymentMethod === "cod" ? 300 : 0,
-      finalAmount: finalPrice + (paymentMethod === "cod" ? 300 : 0)
-    };
-  
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+
+    } catch (error) {
+      console.error("Error creating Razorpay order:", error);
+      alert("Failed to initiate payment. Please try again.");
+    }
+  } else {
     try {
       const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
       if (response.status === 201) {
@@ -118,10 +195,11 @@ const TempCheckoutPage = () => {
       }
     } catch (error) {
       console.error("Error placing order:", error);
-      console.log(orderData)
+      console.log(orderData);
       alert("Failed to place order. Please try again.");
     }
-  };
+  }
+};
 
   return (
     <div className="container mx-auto p-4 flex flex-wrap">
@@ -202,7 +280,7 @@ const TempCheckoutPage = () => {
               <input
                 type="radio"
                 id="razorpay"
-                name="payment"
+                name="paymentId"
                 value="razorpay"
                 checked={paymentMethod === "razorpay"}
                 onChange={() => setPaymentMethod("razorpay")}

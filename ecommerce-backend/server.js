@@ -1,7 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import verifyToken from './middleware/verifyToken.js';
 import cors from 'cors';
@@ -22,8 +21,13 @@ import Sale from './models/Sale.js';
 import uploadRoutes from './Routes/upload.js';
 import multer from 'multer';
 import ImageKit from 'imagekit';
+import Razorpay from 'razorpay';
+// import 'dotenv/config';
+import dotenv from 'dotenv';
+// import { config } from 'dotenv';
 // import imageKit from './config/imageKit.js';
 dotenv.config();
+
 
 
 const imagekit = new ImageKit({
@@ -38,7 +42,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-
+// config({path:"./config/config.env"})
 
 // Static files
 app.use(express.static('public'));
@@ -1080,5 +1084,60 @@ app.get('/initialize', async (req, res) => {
     res.status(500).send('Error initializing collections');
   }
 });
-const PORT = process.env.PORT || 5000;
+
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// Create an order
+app.post("/orders", async (req, res) => {
+  const { amount, currency } = req.body;
+
+  if (!amount || !currency) {
+    return res.status(400).json({ error: "Amount and currency are required" });
+  }
+
+  const options = {
+    amount: amount * 100, // Amount is in the smallest currency unit
+    currency,
+    receipt: "receipt#1",
+    payment_capture: 1,
+  };
+
+  try {
+    const response = await razorpay.orders.create(options);
+    res.json({
+      order_id: response.id,
+      currency: response.currency,
+      amount: response.amount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Fetch payment details
+app.get("/payment/:paymentId", async (req, res) => {
+  const { paymentId } = req.params;
+
+  try {
+    const payment = await razorpay.payments.fetch(paymentId);
+    if (!payment) {
+      return res.status(404).json({ error: "Payment not found" });
+    }
+    res.json({
+      status: payment.status,
+      method: payment.method,
+      amount: payment.amount,
+      currency: payment.currency,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Failed to fetch payment details");
+  }
+});
+const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
