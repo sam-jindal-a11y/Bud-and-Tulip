@@ -124,7 +124,7 @@
   /* backdrop-filter: blur(100px) !important; */
   position: fixed;
   top: 0;
-  z-index: 20;
+  z-index: 50;
   width: 100vw;
   height: 60px; /* Set the height of the navbar */
 }

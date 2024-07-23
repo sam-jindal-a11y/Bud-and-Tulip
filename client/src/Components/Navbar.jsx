@@ -130,7 +130,7 @@ const Navbar = () => {
       </div>
     </div>
 
-    <div className="navbar-desktop bg-white py-2 border-t px-6  hidden md:flex md:justify-between md:items-center">
+    <div className="navbar-desktop bg-white py-2 border-t px-6  hidden md:flex md:justify-between md:items-center shadow-lg">
       <div className="container mx-auto">
         <div className="flex justify-center md:justify-center">
           <Link to="/" className="text-gray-700 hover:text-pinkc px-4 py-2">
