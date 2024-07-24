@@ -115,7 +115,7 @@ const ProductView = () => {
       cart.push(newCartItem);
       localStorage.setItem("tempCart", JSON.stringify(cart));
 
-      alert("Product added to cart");
+      // alert("Product added to cart");
       navigate("/ShoppingCart");
     } catch (error) {
       console.error("Error adding product to cart:", error.message);
@@ -127,7 +127,7 @@ const ProductView = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please login to add items to the wishlist.");
+        // alert("Please login to add items to the wishlist.");
         navigate("/login"); // Redirect to login page if not authenticated
         return;
       }
@@ -151,7 +151,7 @@ const ProductView = () => {
         }
       );
 
-      alert("Product added to wishlist");
+      // alert("Product added to wishlist");
     } catch (error) {
       console.error(
         "Error adding product to wishlist:",

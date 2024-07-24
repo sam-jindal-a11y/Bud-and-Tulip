@@ -24,7 +24,7 @@ const ProductCard = ({
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please login to add items to the wishlist.");
+        // alert("Please login to add items to the wishlist.");
         navigate("/login");
         return;
       }
@@ -48,7 +48,7 @@ const ProductCard = ({
         }
       );
 
-      alert("Product added to wishlist");
+      // alert("Product added to wishlist");
     } catch (error) {
       console.error(
         "Error adding product to wishlist:",

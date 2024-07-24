@@ -149,7 +149,6 @@ const SearchSection = () => {
 
   return (
     <div className="flex flex-col lg:flex-row lg:px-6">
-      <MobileSearchBar />
      {/* Sidebar */}
 <div className=" h-full w-full lg:w-1/4 p-4 mt-5 lg:px-8 bg-white shadow-lg rounded-lg overflow-y-auto hidden lg:block">
   {/* Filters Section */}

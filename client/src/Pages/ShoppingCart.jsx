@@ -85,7 +85,7 @@ const ShoppingCart = () => {
             <br />
             <br />
             <button
-                  className="bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 w-full md:w-1/2"
+                  className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
                   onClick={handleContinueShopping}
                 >
                   Continue Shopping
@@ -111,7 +111,7 @@ const ShoppingCart = () => {
                         </h2>
                       </div>
                     </Link>
-                    <div className="flex flex-col md:flex-row items-center w-full">
+                    <div className="flex flex-row my-5 md:flex-row items-center w-full">
                       <div className="flex items-center mr-2 md:mr-4">
                         <p className="text-gray-600 mr-2">Size:</p>
                         <span className="border rounded px-2 py-1">
@@ -125,7 +125,7 @@ const ShoppingCart = () => {
                             onClick={() =>
                               handleDecrementQuantity(item.productId, item.quantity)
                             }
-                            className="text-gray-600 px-2 py-1 rounded-l-md bg-gray-200 hover:bg-gray-400 focus:outline-none"
+                            className="bg-pinkc text-white px-2 py-1 rounded-sm hover:bg-blue-950 focus:outline-none"
                           >
                             -
                           </button>
@@ -140,7 +140,7 @@ const ShoppingCart = () => {
                             onClick={() =>
                               handleIncrementQuantity(item.productId, item.quantity)
                             }
-                            className="text-gray-600 px-2 py-1 rounded-r-md bg-gray-200 hover:bg-gray-400 focus:outline-none"
+                            className="bg-pinkc text-white px-2 py-1 rounded-sm hover:bg-blue-950 focus:outline-none"
                           >
                             +
                           </button>
@@ -148,7 +148,7 @@ const ShoppingCart = () => {
                       </div>
                       <button
                         onClick={() => handleDelete(item.productId)}
-                        className="bg-red-500 text-white py-1 px-2 md:px-3 rounded-lg hover:bg-red-600 mt-2 sm:mt-0"
+                        className="bg-pinkc text-white px-4 py-1 rounded-sm hover:bg-blue-950  sm:mt-0"
                       >
                         Delete
                       </button>
@@ -171,13 +171,13 @@ const ShoppingCart = () => {
               </div>
               <div className="flex flex-col md:flex-row justify-center mt-4 space-y-4 md:space-y-0 md:space-x-4">
                 <button
-                  className="bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 w-full md:w-1/2"
+                  className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 "
                   onClick={handleContinueShopping}
                 >
                   Continue Shopping
                 </button>
                 <button
-                  className="bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 w-full md:w-1/2"
+                  className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 "
                   onClick={handleCheckout}
                 >
                   Checkout

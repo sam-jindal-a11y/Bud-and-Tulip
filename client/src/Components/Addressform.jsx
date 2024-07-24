@@ -32,7 +32,7 @@ const Addressform = () => {
       });
       const result = await response.json();
       if (response.ok) {
-        alert('Address added successfully');
+        // alert('Address added successfully');
         history(-1); // Navigate back to the previous page
       } else {
         alert('Error: ' + result.error);
