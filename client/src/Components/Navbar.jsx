@@ -90,11 +90,11 @@ const Navbar = () => {
               placeholder="Product name..."
               value={productName}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-l-md focus:outline-none focus:ring-blue-500"
+              className="w-full px-4 border rounded-l-md focus:outline-none focus:ring-blue-500"
             />
             <button
               type="submit"
-              className="px-4 py-2 bg-pinkc text-white rounded-r-md"
+              className="px-4 bg-pinkc text-white rounded-r-md"
             >
               <i className="fa fa-search"></i>
             </button>

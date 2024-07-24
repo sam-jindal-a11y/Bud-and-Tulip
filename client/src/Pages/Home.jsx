@@ -70,7 +70,7 @@ const Home = () => {
       <h2 className="text-3xl font-bold mb-6">New Arrivals</h2>
       <hr className="mt-0" />
       <br />
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ">
         {displayedProductslatest.map((product) => (
           <ProductCard
             key={product._id}

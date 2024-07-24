@@ -63,7 +63,7 @@ const ProductCard = ({
   }
 
   return (
-    <div className="bg-white rounded-sm shadow-md overflow-hidden relative m-4">
+    <div className="bg-white rounded-sm shadow-md overflow-hidden relative m-1">
       {hasOffer && (
         <div className="absolute top-0 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md m-4">
           Sale
@@ -78,7 +78,7 @@ const ProductCard = ({
       <div className="p-4 text-left">
         <p className="text-sm text-gray-400 mb-1">{category[0]}</p>
         <h3 className="text-md font-semibold mb-2 product-name">{name}</h3>
-        <p className="text-gray-500 mb-4">
+        <p className="text-gray-500 mb-1">
           {hasOffer ? (
             <>
               <span className="line-through">₹&nbsp;{price}</span>
