@@ -102,7 +102,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="flex items-center mt-4 md:mt-0">
+      <div className="flex items-center  md:mt-0">
         <Link
           to="/Account"
           className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
