@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
+import { CartContext } from '../Components/CartContext';
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const { tempCart, setTempCart } = useContext(CartContext);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -34,10 +35,13 @@ const ShoppingCart = () => {
   };
 
   const handleDelete = (itemId) => {
-    const updatedCart = cartItems.filter((item) => item.productId !== itemId);
-    setCartItems(updatedCart);
+    const updatedCart = tempCart.filter((item) => item.timestamp !== itemId);
+    setTempCart(updatedCart);
     localStorage.setItem("tempCart", JSON.stringify(updatedCart));
-  };
+    
+    setCartItems(updatedCart);
+    
+   };
 
   const handleContinueShopping = () => {
     navigate("/"); // Adjust to your products page route
@@ -147,7 +151,7 @@ const ShoppingCart = () => {
                         </div>
                       </div>
                       <button
-                        onClick={() => handleDelete(item.productId)}
+                        onClick={() => handleDelete(item.timestamp)}
                         className="bg-pinkc text-white px-4 py-1 rounded-sm hover:bg-blue-950  sm:mt-0"
                       >
                         Delete

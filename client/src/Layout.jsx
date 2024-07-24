@@ -25,11 +25,12 @@ import ScrollToTop from "./Components/ScrollToTop.jsx";
 import EditAddressForm from "./Pages/EditAddressForm.jsx";
 import TempCheckoutPage from "./Pages/TempCheckoutPage.jsx";
 import CheckAddress from "./Pages/CheckAddress.jsx";
-
+import { CartProvider } from './Components/CartContext';
 const Layout = () => {
   window.scrollTo(0, 0);
   return (
     <div className="layout">
+       <CartProvider>
       <Router>
         <ScrollToTop />
         <Navbar />
@@ -61,6 +62,7 @@ const Layout = () => {
         </Routes>
         <Footer />
       </Router>
+      </CartProvider>
     </div>
   );
 };

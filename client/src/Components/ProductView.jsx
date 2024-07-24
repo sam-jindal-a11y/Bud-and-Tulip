@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , useContext} from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Corrected import statement
@@ -6,6 +6,7 @@ import ProductCard from "./ProductCard";
 import SizeChartModal from "./SizeChartModal";
 import Modal from "react-modal";
 import Loading from "./Loading";
+import { CartContext } from './CartContext';
 const ProductView = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -18,7 +19,7 @@ const ProductView = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productCat, setProductCat] = useState(null);
-
+  const { addToCartIcon } = useContext(CartContext);
   const navigate = useNavigate();
   const handleNextImage = () => {
     setSelectedImageIndex((prevIndex) =>
@@ -110,10 +111,11 @@ const ProductView = () => {
         timestamp: Date.now(),
         size,
       };
-
+   
       let cart = JSON.parse(localStorage.getItem("tempCart")) || [];
       cart.push(newCartItem);
       localStorage.setItem("tempCart", JSON.stringify(cart));
+         addToCartIcon(newCartItem);
 
       // alert("Product added to cart");
       navigate("/ShoppingCart");
@@ -121,6 +123,7 @@ const ProductView = () => {
       console.error("Error adding product to cart:", error.message);
       alert("An error occurred while adding the product to the cart.");
     }
+    
   };
 
   const addToWishlist = async () => {
@@ -293,7 +296,7 @@ const ProductView = () => {
               className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 mx-2"
               onClick={toggleSizeChart}
             >
-              SizeCart
+              Size Chart
             </button>
             <button
               className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
