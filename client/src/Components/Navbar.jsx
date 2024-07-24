@@ -69,22 +69,22 @@ const Navbar = () => {
     <div className="container mx-auto py-2.5 h-12 px-6 md:px-0 flex items-center justify-between">
       <div className="flex items-center justify-around w-full md:w-auto">
         <button
-          className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none mr-4"
+          className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none"
           onClick={toggleSidebar}
         >
           <i className="fas fa-bars text-2xl"></i>
         </button>
         <Link
           to="/"
-          className="text-3xl md:text-5xl font-bold text-pinkc ml-2 md:ml-0"
+          className="text-xl md:text-5xl font-bold text-pinkc md:ml-0"
         >
           Bud&Tulip
         </Link>
       </div>
 
-      <div className="hidden md:flex items-center md:mt-0 flex-grow mx-4">
+      <div className=" md:flex items-center md:mt-0 flex-grow mx-4">
         <div className="relative md:ml-6 flex flex-col md:flex-row items-start md:items-center w-full">
-          <form onSubmit={handleSubmit} className="flex w-full mx-4">
+          <form onSubmit={handleSubmit} className="flex w-full mx-2">
             <input
               type="text"
               placeholder="Product name..."
@@ -103,30 +103,28 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center  md:mt-0">
+    
+        <Link
+          to="/ShoppingCart"
+          className="text-gray-700 hover:text-pinkc text-center  text-base mr-2 md:mr-4 flex flex-col items-center"
+        >
+       
+          <i className="fa-solid fa-bag-shopping text-xl"></i>
+        </Link>
         <Link
           to="/Account"
           className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
         >
-          <i className="far fa-user text-2xl"></i>
+          <i className="far fa-user text-xl"></i>
         </Link>
         <Link
           to="/Wishlist"
           className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
         >
-          <i className="hidden md:inline-block far fa-heart text-2xl"></i>
+          <i className="hidden md:inline-block far fa-heart text-xl"></i>
         </Link>
-        <Link
-          to="/ShoppingCart"
-          className="text-gray-700 hover:text-pinkc text-center  text-base mr-2 md:mr-4 flex flex-col items-center"
-        >
-          <i className="fas fa-shopping-cart text-2xl"></i>
-        </Link>
-        <Link
-          to="/Search"
-          className="text-gray-700 hover:text-pinkc text-center md:hidden text-base mr-2 md:mr-4 flex flex-col items-center"
-        >
-          <i className="fa fa-search text-2xl"></i>
-        </Link>
+       
+        
       </div>
     </div>
 
