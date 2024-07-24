@@ -158,6 +158,7 @@ const TempCheckoutPage = () => {
             const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
             if (response.status === 201) {
               alert("Order placed successfully!");
+              localStorage.removeItem("tempOrder");
               navigate("/account");
             }
           } catch (error) {
@@ -191,6 +192,7 @@ const TempCheckoutPage = () => {
       const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
       if (response.status === 201) {
         alert("Order placed successfully!");
+        localStorage.removeItem("tempOrder");
         navigate("/account");
       }
     } catch (error) {

@@ -65,11 +65,15 @@ const ProductView = () => {
         price: product.hasOffer ? product.offerPrice : product.price,
         image: product.image[0],
         quantity,
+        timestamp: Date.now(),
         size,
       };
   
-      // Save order details to local storage
-      localStorage.setItem("tempOrder", JSON.stringify(orderDetails));
+      // Create a new array with only the current order
+      const updatedOrders = [orderDetails];
+  
+      // Save the updated orders array to local storage
+      localStorage.setItem("tempOrders", JSON.stringify(updatedOrders));
   
       const token = localStorage.getItem("token");
   
@@ -82,11 +86,11 @@ const ProductView = () => {
       setUser(decoded);
   
       // Update the order details in local storage with user ID
-      const updatedOrderDetails = {
-        ...orderDetails,
+      const ordersWithUserId = updatedOrders.map(order => ({
+        ...order,
         userId: decoded.id,
-      };
-      localStorage.setItem("tempOrder", JSON.stringify(updatedOrderDetails));
+      }));
+      localStorage.setItem("tempOrders", JSON.stringify(ordersWithUserId));
   
       navigate("/checkAddress"); // Redirect to checkout page
     } catch (error) {
@@ -96,48 +100,31 @@ const ProductView = () => {
   };
   
   
-  
 
-  const addToCart = async () => {
+  const addToCart = () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Please login to add items to the cart.");
-        navigate("/login"); // Redirect to login page if not authenticated
-        return;
-      }
-
-      const decoded = jwtDecode(token);
-      setUser(decoded);
-
-      await axios.post(
-        "https://bud-tulips.onrender.com/api/cart",
-        {
-          userId: decoded.id,
-          productId: product._id,
-          productName: product.name,
-          price: product.hasOffer ? product.offerPrice : product.price,
-          image: product.image[0],
-          quantity,
-          size,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const newCartItem = {
+        productId: product._id,
+        productName: product.name,
+        price: product.hasOffer ? product.offerPrice : product.price,
+        image: product.image[0],
+        quantity,
+        timestamp: Date.now(),
+        size,
+      };
+  
+      let cart = JSON.parse(localStorage.getItem("tempCart")) || [];
+      cart.push(newCartItem);
+      localStorage.setItem("tempCart", JSON.stringify(cart));
+  
       alert("Product added to cart");
       navigate("/ShoppingCart");
     } catch (error) {
-      console.error(
-        "Error adding product to cart:",
-        error.response?.data?.message || error.message
-      );
-      alert("Login Expired !!");
+      console.error("Error adding product to cart:", error.message);
+      alert("An error occurred while adding the product to the cart.");
     }
   };
+  
 
   const addToWishlist = async () => {
     try {

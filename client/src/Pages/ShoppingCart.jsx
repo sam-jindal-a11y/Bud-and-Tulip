@@ -1,74 +1,42 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
 
-  const getUserFromToken = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decodedToken = jwtDecode(token);
-        setUser(decodedToken);
-      } catch (error) {
-        console.error("Failed to decode token", error);
-      }
-    }
+  const fetchCartItems = () => {
+    const items = JSON.parse(localStorage.getItem("tempCart")) || [];
+    setCartItems(items);
     setLoading(false);
   };
 
-  const fetchCartItems = async (userId) => {
-    try {
-      const response = await axios.get(`https://bud-tulips.onrender.com/api/cart?userId=${userId}`);
-      setCartItems(response.data);
-    } catch (error) {
-      console.error("Error fetching cart items:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateCartItemQuantity = async (itemId, quantity) => {
-    try {
-      await axios.patch(`https://bud-tulips.onrender.com/api/cart/${itemId}`, { quantity });
-    } catch (error) {
-      console.error("Error updating cart item quantity:", error);
-    }
+  const updateCartItemQuantity = (itemId, quantity) => {
+    const updatedCart = cartItems.map((item) =>
+      item.productId === itemId ? { ...item, quantity } : item
+    );
+    setCartItems(updatedCart);
+    localStorage.setItem("tempCart", JSON.stringify(updatedCart));
   };
 
   useEffect(() => {
-    getUserFromToken();
+    fetchCartItems();
   }, []);
-
-  useEffect(() => {
-    if (user && user.id) {
-      fetchCartItems(user.id);
-    }
-  }, [user]);
 
   const handleQuantityChange = (itemId, quantity) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item._id === itemId ? { ...item, quantity } : item
+        item.productId === itemId ? { ...item, quantity } : item
       )
     );
     updateCartItemQuantity(itemId, quantity);
   };
 
-  const handleDelete = async (itemId) => {
-    try {
-      await axios.delete(`https://bud-tulips.onrender.com/api/cart/${itemId}`);
-      setCartItems((prevItems) =>
-        prevItems.filter((item) => item._id !== itemId)
-      );
-    } catch (error) {
-      console.error("Error deleting cart item:", error);
-    }
+  const handleDelete = (itemId) => {
+    const updatedCart = cartItems.filter((item) => item.productId !== itemId);
+    setCartItems(updatedCart);
+    localStorage.setItem("tempCart", JSON.stringify(updatedCart));
   };
 
   const handleContinueShopping = () => {
@@ -118,7 +86,7 @@ const ShoppingCart = () => {
             <>
               {cartItems.map((item) => (
                 <div
-                  key={item._id}
+                  key={item.productId}
                   className="flex flex-col md:flex-row justify-between items-center border-b py-4 space-y-4 md:space-y-0"
                 >
                   <div className="flex flex-col md:flex-row items-center w-full">
@@ -146,7 +114,7 @@ const ShoppingCart = () => {
                         <div className="flex items-center border border-gray-300 rounded-md">
                           <button
                             onClick={() =>
-                              handleDecrementQuantity(item._id, item.quantity)
+                              handleDecrementQuantity(item.productId, item.quantity)
                             }
                             className="text-gray-600 px-2 py-1 rounded-l-md bg-gray-200 hover:bg-gray-400 focus:outline-none"
                           >
@@ -161,7 +129,7 @@ const ShoppingCart = () => {
                           />
                           <button
                             onClick={() =>
-                              handleIncrementQuantity(item._id, item.quantity)
+                              handleIncrementQuantity(item.productId, item.quantity)
                             }
                             className="text-gray-600 px-2 py-1 rounded-r-md bg-gray-200 hover:bg-gray-400 focus:outline-none"
                           >
@@ -170,7 +138,7 @@ const ShoppingCart = () => {
                         </div>
                       </div>
                       <button
-                        onClick={() => handleDelete(item._id)}
+                        onClick={() => handleDelete(item.productId)}
                         className="bg-red-500 text-white py-1 px-2 md:px-3 rounded-lg hover:bg-red-600 mt-2 sm:mt-0"
                       >
                         Delete

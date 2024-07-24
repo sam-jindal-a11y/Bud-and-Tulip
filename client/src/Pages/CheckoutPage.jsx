@@ -23,7 +23,7 @@ const CheckoutPage = () => {
     if (token) {
       const decoded = jwtDecode(token);
       fetchAddresses(decoded.id);
-      fetchCartProducts(decoded.id);
+      fetchCartOrOrder(decoded.id);
     } else {
       navigate("/login");
     }
@@ -48,22 +48,37 @@ const CheckoutPage = () => {
     }
   };
 
-  const fetchCartProducts = async (userId) => {
+  const fetchCartOrOrder = () => {
     try {
-      const response = await fetch(
-        `https://bud-tulips.onrender.com/api/cart?userId=${userId}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        setProducts(data);
-      } else {
-        console.error("Failed to fetch cart products");
-      }
+      // Retrieve and parse the JSON data from localStorage
+      const storedCart = localStorage.getItem("tempCart");
+      const storedOrder = localStorage.getItem("tempOrders");
+  
+      // Parse data or initialize as empty array
+      const tempCart = storedCart ? JSON.parse(storedCart) : [];
+      const tempOrder = storedOrder ? JSON.parse(storedOrder) : [];
+  
+      // Ensure both are arrays
+      const validTempCart = Array.isArray(tempCart) ? tempCart : [];
+      const validTempOrder = Array.isArray(tempOrder) ? tempOrder : [];
+  
+      // Set latestData to tempOrder if both tempCart and tempOrder are present; otherwise, use tempCart
+      const latestData = validTempOrder.length > 0 ? validTempOrder : validTempCart;
+  
+      // Debugging: Log the latest data
+      console.log("Latest Data:", latestData);
+  
+      // Set products to the latest data
+      setProducts(latestData);
     } catch (error) {
-      console.error("Error fetching cart products:", error);
+      console.error("Error fetching cart or order from local storage:", error);
+      // Optionally set products to an empty array in case of error
+      setProducts([]);
     }
   };
+  
+  
+  
 
   const applyVoucher = async () => {
     try {
@@ -169,6 +184,8 @@ const CheckoutPage = () => {
             const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
             if (response.status === 201) {
               alert("Order placed successfully!");
+              // localStorage.removeItem("tempCart");
+              localStorage.removeItem("tempOrders");
               navigate("/account");
             }
           } catch (error) {
@@ -202,6 +219,8 @@ const CheckoutPage = () => {
       const response = await axios.post("https://bud-tulips.onrender.com/api/orderHistory", orderData);
       if (response.status === 201) {
         alert("Order placed successfully!");
+        // localStorage.removeItem("tempCart");
+        localStorage.removeItem("tempOrders");
         navigate("/account");
       }
     } catch (error) {

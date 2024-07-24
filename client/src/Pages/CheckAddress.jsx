@@ -66,7 +66,7 @@ const CheckAddress = () => {
       const result = await response.json();
       if (response.ok) {
         // alert('Address ' + (address ? 'updated' : 'added') + ' successfully');
-        navigate('/Tempcheckout');
+        navigate('/CheckoutPage');
       } else {
         alert('Error: ' + result.error);
       }
