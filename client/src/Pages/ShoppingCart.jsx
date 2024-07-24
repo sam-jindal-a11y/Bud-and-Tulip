@@ -81,7 +81,16 @@ const ShoppingCart = () => {
       ) : (
         <div className="bg-white shadow-md rounded-lg p-4">
           {cartItems.length === 0 ? (
-            <p className="text-center text-gray-600">Your cart is empty.</p>
+            <p className="text-center text-gray-600">Your cart is empty.
+            <br />
+            <br />
+            <button
+                  className="bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 w-full md:w-1/2"
+                  onClick={handleContinueShopping}
+                >
+                  Continue Shopping
+                </button>
+                </p>
           ) : (
             <>
               {cartItems.map((item) => (

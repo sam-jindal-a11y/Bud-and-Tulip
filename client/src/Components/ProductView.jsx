@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import {jwtDecode} from "jwt-decode"; // Corrected import statement
+import { jwtDecode } from "jwt-decode"; // Corrected import statement
 import ProductCard from "./ProductCard";
 import SizeChartModal from "./SizeChartModal";
-import Modal from 'react-modal';
+import Modal from "react-modal";
 import Loading from "./Loading";
 const ProductView = () => {
   const { id } = useParams();
@@ -17,7 +17,7 @@ const ProductView = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [productCat , setProductCat] = useState(null);
+  const [productCat, setProductCat] = useState(null);
 
   const navigate = useNavigate();
   const handleNextImage = () => {
@@ -39,7 +39,7 @@ const ProductView = () => {
     setSelectedImageIndex(index);
     // setIsModalOpen(true);
   };
-  
+
   const toggleSizeChart = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -68,38 +68,36 @@ const ProductView = () => {
         timestamp: Date.now(),
         size,
       };
-  
+
       // Create a new array with only the current order
       const updatedOrders = [orderDetails];
-  
+
       // Save the updated orders array to local storage
       localStorage.setItem("tempOrders", JSON.stringify(updatedOrders));
-  
+
       const token = localStorage.getItem("token");
-  
+
       if (!token) {
         navigate("/login"); // Redirect to login page if not authenticated
         return;
       }
-  
+
       const decoded = jwtDecode(token);
       setUser(decoded);
-  
+
       // Update the order details in local storage with user ID
-      const ordersWithUserId = updatedOrders.map(order => ({
+      const ordersWithUserId = updatedOrders.map((order) => ({
         ...order,
         userId: decoded.id,
       }));
       localStorage.setItem("tempOrders", JSON.stringify(ordersWithUserId));
-  
+
       navigate("/checkAddress"); // Redirect to checkout page
     } catch (error) {
       console.error("Error handling buy now:", error.message);
       alert("Login Expired !!");
     }
   };
-  
-  
 
   const addToCart = () => {
     try {
@@ -112,11 +110,11 @@ const ProductView = () => {
         timestamp: Date.now(),
         size,
       };
-  
+
       let cart = JSON.parse(localStorage.getItem("tempCart")) || [];
       cart.push(newCartItem);
       localStorage.setItem("tempCart", JSON.stringify(cart));
-  
+
       alert("Product added to cart");
       navigate("/ShoppingCart");
     } catch (error) {
@@ -124,7 +122,6 @@ const ProductView = () => {
       alert("An error occurred while adding the product to the cart.");
     }
   };
-  
 
   const addToWishlist = async () => {
     try {
@@ -194,70 +191,79 @@ const ProductView = () => {
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div>
-    <Loading/>
-  </div>;
+  if (!product)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   if (!product.isActive) return <div>Product not available</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row mb-12">
-      <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start mb-8 lg:mb-0">
-      <div className="flex flex-row gap-2">
-        <img
-          src={product.image[selectedImageIndex]}
-          alt={product.name}
-          className="w-full h-96 object-contain rounded-md mb-4 cursor-pointer"
-          onClick={() => setIsModalOpen(true)}
-        />
-        <img
-          src={product.image[selectedImageIndex === product.image.length - 1 ? 0 : selectedImageIndex + 1]}
-          alt={product.name}
-          className="w-full h-96 object-contain rounded-md mb-4 hidden sm:block"
-          onClick={() => setIsModalOpen(true)}
-        />
-      </div>
-      <div className="flex space-x-2 overflow-x-auto">
-        {product.image.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt={`${product.name} thumbnail ${index + 1}`}
-            className={`w-24 h-24 object-cover rounded-md cursor-pointer ${
-              index === selectedImageIndex ? 'border-2 border-blue-500' : ''
-            }`}
-            onClick={() => handleThumbnailClick(index)}
-          />
-        ))}
-      </div>
+        <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start mb-8 lg:mb-0">
+          <div className="flex flex-row gap-2">
+            <img
+              src={product.image[selectedImageIndex]}
+              alt={product.name}
+              className="w-full h-96 object-contain rounded-md mb-4 cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+            />
+            <img
+              src={
+                product.image[
+                  selectedImageIndex === product.image.length - 1
+                    ? 0
+                    : selectedImageIndex + 1
+                ]
+              }
+              alt={product.name}
+              className="w-full h-96 object-contain rounded-md mb-4 hidden sm:block"
+              onClick={() => setIsModalOpen(true)}
+            />
+          </div>
+          <div className="flex space-x-2 overflow-x-auto">
+            {product.image.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`${product.name} thumbnail ${index + 1}`}
+                className={`w-24 h-24 object-cover rounded-md cursor-pointer ${
+                  index === selectedImageIndex ? "border-2 border-blue-500" : ""
+                }`}
+                onClick={() => handleThumbnailClick(index)}
+              />
+            ))}
+          </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        className="flex items-center justify-center outline-none"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-      >
-        <div className="relative bg-white p-4 rounded-md shadow-lg max-w-xs w-full sm:max-w-md sm:w-auto">
-          <button
-            onClick={handlePrevImage}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
+          <Modal
+            isOpen={isModalOpen}
+            onRequestClose={handleCloseModal}
+            className="flex items-center justify-center outline-none"
+            overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
           >
-            &lt;
-          </button>
-          <img
-            src={product.image[selectedImageIndex]}
-            alt={product.name}
-            className="w-full h-auto object-contain"
-          />
-          <button
-            onClick={handleNextImage}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
-          >
-            &gt;
-          </button>
+            <div className="relative bg-white p-4 rounded-md shadow-lg max-w-xs w-full sm:max-w-md sm:w-auto">
+              <button
+                onClick={handlePrevImage}
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
+              >
+                &lt;
+              </button>
+              <img
+                src={product.image[selectedImageIndex]}
+                alt={product.name}
+                className="w-full h-auto object-contain"
+              />
+              <button
+                onClick={handleNextImage}
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
+              >
+                &gt;
+              </button>
+            </div>
+          </Modal>
         </div>
-      </Modal>
-    </div>
         <div className="w-full lg:w-1/2 lg:pl-8">
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
           <p className="text-xl text-gray-700 mb-4">
@@ -283,7 +289,20 @@ const ProductView = () => {
               onChange={(e) => setQuantity(Number(e.target.value))}
               className="w-20 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <button
+              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 mx-2"
+              onClick={toggleSizeChart}
+            >
+              SizeCart
+            </button>
+            <button
+              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+              onClick={addToWishlist}
+            >
+              <i class="fa-solid fa-heart fa-xl "></i>
+            </button>
           </div>
+
           <div className="mb-4">
             {product.size.length === 1 ? (
               <select
@@ -308,40 +327,28 @@ const ProductView = () => {
               </select>
             )}
           </div>
-          <div className="flex space-x-4 mb-4">
-          <button
-              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+          <div className="space-x-4 mb-4 flex flex-col gap-2">
+            
+            <button
+              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 "
               onClick={buyNow}
             >
               Buy Now
             </button>
             <button
-              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 button-add"
               onClick={addToCart}
             >
               Add to Cart
             </button>
-            <button
-        className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-        onClick={toggleSizeChart}
-      >
-        Size Chart
-      </button>
-            <button
-              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-              onClick={addToWishlist}
-            >
-             <i class="fa-solid fa-heart fa-xl "></i>
-            </button>
+
             <div>
-     
-      <SizeChartModal isVisible={isModalVisible} onClose={toggleSizeChart} />
-    </div>
+              <SizeChartModal
+                isVisible={isModalVisible}
+                onClose={toggleSizeChart}
+              />
+            </div>
           </div>
-          {/* <p className="text-gray-700 mb-6">
-            <b>Category : </b>
-            {product.category[0]}
-          </p> */}
           <p className="text-gray-700 mb-6">
             <b>Include : </b>
             {product.inbox}
@@ -444,43 +451,43 @@ const ProductView = () => {
         )}
       </div>
 
-     {/* You may also like these section */}
-<div className="container mx-auto">
-  <h2 className="text-2xl font-bold mb-4 text-center">You may also like these</h2>
-  <hr />
-  <br />
-  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
-  {allProducts.createdProducts && productCat && allProducts.createdProducts
-  .filter(product => product.category[0] === productCat[0] ) // Filter products by category
-  .slice(0, 8) // Limit to the first 8 products
-  .map((product) => (
-    <div key={product._id} className="">
-      <ProductCard
-        productId={product._id}
-        image={product.image[0]}
-        name={product.name}
-        price={product.price}
-        offerPrice={product.offerPrice}
-        category={product.category}
-        isActive={product.isActive}
-        hasOffer={product.hasOffer}
-      />
-    </div>
-  ))
-}
-
-
-  </div>
-  <div className="flex justify-center mt-4">
-    <button
-      className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-      onClick={() => navigate(`/search?query=&category=${productCat[0]}`)}
-    >
-      More
-    </button>
-  </div>
-</div>
-
+      {/* You may also like these section */}
+      <div className="container mx-auto">
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          You may also like these
+        </h2>
+        <hr />
+        <br />
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
+          {allProducts.createdProducts &&
+            productCat &&
+            allProducts.createdProducts
+              .filter((product) => product.category[0] === productCat[0]) // Filter products by category
+              .slice(0, 8) // Limit to the first 8 products
+              .map((product) => (
+                <div key={product._id} className="">
+                  <ProductCard
+                    productId={product._id}
+                    image={product.image[0]}
+                    name={product.name}
+                    price={product.price}
+                    offerPrice={product.offerPrice}
+                    category={product.category}
+                    isActive={product.isActive}
+                    hasOffer={product.hasOffer}
+                  />
+                </div>
+              ))}
+        </div>
+        <div className="flex justify-center mt-4">
+          <button
+            className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+            onClick={() => navigate(`/search?query=&category=${productCat[0]}`)}
+          >
+            More
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

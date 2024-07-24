@@ -134,3 +134,6 @@
 
 /* Apply top padding or margin to the main content */
 
+.button-add{
+  margin-left: 0px !important;
+}
