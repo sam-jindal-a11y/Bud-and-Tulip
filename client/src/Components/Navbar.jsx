@@ -76,9 +76,9 @@ const Navbar = () => {
           </button>
           <Link
             to="/"
-            className="text-xl md:text-5xl font-bold text-pinkc md:ml-0"
+            className="text-xl md:text-5xl font-bold text-pinkc md:ml-0 navbar-brand"
           >
-            Bud&Tulip
+            <h1  className=" navbar-brand">Bud&Tulip</h1>
           </Link>
         </div>
 

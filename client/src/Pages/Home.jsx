@@ -4,13 +4,13 @@ import Carousel from "../Components/Carousel";
 import ProductCard from "../Components/ProductCard";
 import config from "../config";
 import Loading from "../Components/Loading";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-
+const navigate = useNavigate();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -85,6 +85,12 @@ const Home = () => {
           />
         ))}
       </div>
+      <button
+            className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 mt-5"
+            onClick={() => navigate('/search?query=&category=All%20Products&hasoffer=false&sortorder=new')}
+          >
+            View More <i class="fa-solid fa-arrow-right"></i>
+          </button>
     </section>
   {/* Best Sellers Section */}
   <section className="mb-12 text-center">
@@ -104,6 +110,12 @@ const Home = () => {
               />
             ))}
           </div>
+          <button
+            className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 mt-5"
+            onClick={() => navigate('/search?query=&category=All%20Products')}
+          >
+            View More <i class="fa-solid fa-arrow-right"></i>
+          </button>
         </section>
         {/* Products on Sale Section */}
         <section className="mb-12 text-center">
@@ -125,6 +137,12 @@ const Home = () => {
               />
             ))}
           </div>
+          <button
+            className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 mt-5"
+            onClick={() => navigate('/search?query=&category=All%20Products&hasoffer=true')}
+          >
+            View More <i class="fa-solid fa-arrow-right"></i>
+          </button>
         </section>
 
       

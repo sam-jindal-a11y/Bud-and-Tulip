@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
-import MobileSearchBar from '../Components/MobileSearchBar';
-import Loading from '../Components/Loading';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import MobileSearchBar from "../Components/MobileSearchBar";
+import Loading from "../Components/Loading";
 
 const SearchSection = () => {
   const [products, setProducts] = useState([]);
@@ -12,7 +12,7 @@ const SearchSection = () => {
   const [selectedColors, setSelectedColors] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 25000 });
   const [itemsPerPage, setItemsPerPage] = useState(20);
-  const [sortOption, setSortOption] = useState('popularity');
+  const [sortOption, setSortOption] = useState("popularity");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,31 +26,37 @@ const SearchSection = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://bud-tulips.onrender.com/products');
+        const response = await axios.get(
+          "https://bud-tulips.onrender.com/products"
+        );
         const productArray = Object.values(response.data); // Convert JSON object to array
         setProducts(productArray);
         setLoading(false);
       } catch (error) {
-        setError('Failed to fetch products');
+        setError("Failed to fetch products");
         setLoading(false);
       }
     };
 
     const fetchSizes = async () => {
       try {
-        const response = await axios.get('https://bud-tulips.onrender.com/sizes');
+        const response = await axios.get(
+          "https://bud-tulips.onrender.com/sizes"
+        );
         setSizes(response.data);
       } catch (error) {
-        console.error('Error fetching sizes:', error);
+        console.error("Error fetching sizes:", error);
       }
     };
 
     const fetchColors = async () => {
       try {
-        const response = await axios.get('https://bud-tulips.onrender.com/colors');
+        const response = await axios.get(
+          "https://bud-tulips.onrender.com/colors"
+        );
         setColors(response.data);
       } catch (error) {
-        console.error('Error fetching colors:', error);
+        console.error("Error fetching colors:", error);
       }
     };
 
@@ -61,10 +67,22 @@ const SearchSection = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const query = params.get('query');
-    const category = params.get('category');
-    filterProducts(query, category);
-  }, [selectedSizes, selectedColors, priceRange, itemsPerPage, sortOption, currentPage, products, location.search, navigate]);
+    const query = params.get("query");
+    const category = params.get("category");
+    const hasOffer = params.get("hasoffer") === "true"; // Check for hasoffer param
+    const sortOrder = params.get("sortorder"); // Get sortorder param
+    filterProducts(query, category, hasOffer, sortOrder);
+  }, [
+    selectedSizes,
+    selectedColors,
+    priceRange,
+    itemsPerPage,
+    sortOption,
+    currentPage,
+    products,
+    location.search,
+    navigate,
+  ]);
 
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
@@ -72,13 +90,17 @@ const SearchSection = () => {
 
   const handleSizeChange = (size) => {
     setSelectedSizes((prevSizes) =>
-      prevSizes.includes(size) ? prevSizes.filter((s) => s !== size) : [...prevSizes, size]
+      prevSizes.includes(size)
+        ? prevSizes.filter((s) => s !== size)
+        : [...prevSizes, size]
     );
   };
 
   const handleColorChange = (color) => {
     setSelectedColors((prevColors) =>
-      prevColors.includes(color) ? prevColors.filter((c) => c !== color) : [...prevColors, color]
+      prevColors.includes(color)
+        ? prevColors.filter((c) => c !== color)
+        : [...prevColors, color]
     );
   };
 
@@ -100,36 +122,56 @@ const SearchSection = () => {
     setCurrentPage(newPage);
   };
 
-  const filterProducts = (query, category) => {
+  const filterProducts = (query, category ,hasOffer,sortOrder) => {
     if (products.length !== 0) {
       let filteredProducts = [...products[0]]; // Ensure to copy array
       // Filter by category if specified
-      if (category && category !== 'All Products') {
-        filteredProducts = filteredProducts.filter((product) => product.category.includes(category));
+      if (category && category !== "All Products") {
+        filteredProducts = filteredProducts.filter((product) =>
+          product.category.includes(category)
+        );
+      }
+      if (hasOffer) {
+        filteredProducts = filteredProducts.filter((product) => product.hasOffer);
+        setSortOption("");
+      }
+      if (sortOrder === "new") {
+        filteredProducts = filteredProducts.reverse();
+        setSortOption("");
       }
 
       // Apply other filters
       filteredProducts = filteredProducts.filter((product) => {
-        const sizeMatch = selectedSizes.length === 0 || product.size.some((size) => selectedSizes.includes(size));
-        const colorMatch = selectedColors.length === 0 || product.color.some((color) => selectedColors.includes(color));
-        const priceMatch = product.price >= priceRange.min && product.price <= priceRange.max;
-        const queryMatch = !query || product.name.toLowerCase().includes(query.toLowerCase());
+        const sizeMatch =
+          selectedSizes.length === 0 ||
+          product.size.some((size) => selectedSizes.includes(size));
+        const colorMatch =
+          selectedColors.length === 0 ||
+          product.color.some((color) => selectedColors.includes(color));
+        const priceMatch =
+          product.price >= priceRange.min && product.price <= priceRange.max;
+        const queryMatch =
+          !query || product.name.toLowerCase().includes(query.toLowerCase());
         return sizeMatch && colorMatch && priceMatch && queryMatch;
       });
 
       const sortedProducts = [...filteredProducts].sort((a, b) => {
         switch (sortOption) {
-          case 'priceLowToHigh':
+          case "priceLowToHigh":
             return a.price - b.price;
-          case 'priceHighToLow':
+          case "priceHighToLow":
             return b.price - a.price;
-          case 'popularity':
+          case "popularity":
             return b.salesCount - a.salesCount;
           default:
             return 0;
         }
       });
-
+    
+  if (sortOption === "oldest") {
+    sortedProducts.reverse();
+  }
+  const productsOnSale = products.filter((product) => product.hasOffer);
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
       setDisplayedProducts(sortedProducts.slice(startIndex, endIndex));
@@ -138,9 +180,11 @@ const SearchSection = () => {
   };
 
   if (loading) {
-    return <div>
-      <Loading/>
-    </div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
@@ -149,74 +193,73 @@ const SearchSection = () => {
 
   return (
     <div className="flex flex-col lg:flex-row lg:px-6">
-     {/* Sidebar */}
-<div className=" h-full w-full lg:w-1/4 p-4 mt-5 lg:px-8 bg-white shadow-lg rounded-lg overflow-y-auto hidden lg:block">
-  {/* Filters Section */}
-  <div className="mb-10 border-b pb-6">
-    <h2 className="text-xl font-bold mb-4">Sizes</h2>
-    <div className="space-y-2">
-      {sizes.map((size) => (
-        <div key={size._id}>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              value={size.name}
-              onChange={() => handleSizeChange(size.name)}
-              className="mr-3 h-5 w-5"
-              checked={selectedSizes.includes(size.name)}
-            />
-            <span className="text-lg">{size.name}</span>
-          </label>
+      {/* Sidebar */}
+      <div className=" h-full w-full lg:w-1/4 p-4 mt-5 lg:px-8 bg-white shadow-lg rounded-lg overflow-y-auto hidden lg:block">
+        {/* Filters Section */}
+        <div className="mb-10 border-b pb-6">
+          <h2 className="text-xl font-bold mb-4">Sizes</h2>
+          <div className="space-y-2">
+            {sizes.map((size) => (
+              <div key={size._id}>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    value={size.name}
+                    onChange={() => handleSizeChange(size.name)}
+                    className="mr-3 h-5 w-5"
+                    checked={selectedSizes.includes(size.name)}
+                  />
+                  <span className="text-lg">{size.name}</span>
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
-  
-  <div className="mb-10 border-b pb-6">
-    <h2 className="text-xl font-bold mb-4">Colors</h2>
-    <div className="space-y-2">
-      {colors.map((color) => (
-        <div key={color._id}>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              value={color.name}
-              onChange={() => handleColorChange(color.name)}
-              className="mr-3 h-5 w-5"
-              checked={selectedColors.includes(color.name)}
-            />
-            <span className="text-lg">{color.name}</span>
-          </label>
+
+        <div className="mb-10 border-b pb-6">
+          <h2 className="text-xl font-bold mb-4">Colors</h2>
+          <div className="space-y-2">
+            {colors.map((color) => (
+              <div key={color._id}>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    value={color.name}
+                    onChange={() => handleColorChange(color.name)}
+                    className="mr-3 h-5 w-5"
+                    checked={selectedColors.includes(color.name)}
+                  />
+                  <span className="text-lg">{color.name}</span>
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
 
-  <div className="mb-10">
-    <h2 className="text-xl font-bold mb-4">Price</h2>
-    <div className="flex items-center mb-4">
-      <span className="mr-3">From ₹</span>
-      <input
-        type="number"
-        name="min"
-        value={priceRange.min}
-        onChange={handlePriceChange}
-        className="border p-2 rounded w-24"
-      />
-    </div>
-    <div className="flex items-center">
-      <span className="mr-3">To ₹</span>
-      <input
-        type="number"
-        name="max"
-        value={priceRange.max}
-        onChange={handlePriceChange}
-        className="border p-2 rounded w-24"
-      />
-    </div>
-  </div>
-</div>
-
+        <div className="mb-10">
+          <h2 className="text-xl font-bold mb-4">Price</h2>
+          <div className="flex items-center mb-4">
+            <span className="mr-3">From ₹</span>
+            <input
+              type="number"
+              name="min"
+              value={priceRange.min}
+              onChange={handlePriceChange}
+              className="border p-2 rounded w-24"
+            />
+          </div>
+          <div className="flex items-center">
+            <span className="mr-3">To ₹</span>
+            <input
+              type="number"
+              name="max"
+              value={priceRange.max}
+              onChange={handlePriceChange}
+              className="border p-2 rounded w-24"
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Mobile Filter Button */}
       <div className="block lg:hidden w-full p-4">
@@ -224,80 +267,78 @@ const SearchSection = () => {
           onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
           className="bg-pinkc text-white px-4 py-2 rounded"
         >
-          {isFilterDropdownOpen ? 'Hide Filters' : 'Show Filters'}
+          {isFilterDropdownOpen ? "Hide Filters" : "Show Filters"}
         </button>
         {isFilterDropdownOpen && (
           <div className="mt-4">
             {/* Filters Section */}
             <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Sizes</h2>
-          <div>
-            {sizes.map((size) => (
-              <div key={size._id} className="mb-1">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    value={size.name}
-                    onChange={() => handleSizeChange(size.name)}
-                    className="mr-2"
-                    checked={selectedSizes.includes(size.name)}
-                  />
-                  {size.name}
-                </label>
+              <h2 className="text-xl font-bold mb-4">Sizes</h2>
+              <div>
+                {sizes.map((size) => (
+                  <div key={size._id} className="mb-1">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value={size.name}
+                        onChange={() => handleSizeChange(size.name)}
+                        className="mr-2"
+                        checked={selectedSizes.includes(size.name)}
+                      />
+                      {size.name}
+                    </label>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Colors</h2>
-          <div>
-            {colors.map((color) => (
-              <div key={color._id} className="mb-1">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    value={color.name}
-                    onChange={() => handleColorChange(color.name)}
-                    className="mr-2"
-                    checked={selectedColors.includes(color.name)}
-                  />
-                  {color.name}
-                </label>
+            </div>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Colors</h2>
+              <div>
+                {colors.map((color) => (
+                  <div key={color._id} className="mb-1">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value={color.name}
+                        onChange={() => handleColorChange(color.name)}
+                        className="mr-2"
+                        checked={selectedColors.includes(color.name)}
+                      />
+                      {color.name}
+                    </label>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Price</h2>
+              <div className="flex items-center mb-2">
+                <span className="mr-2">From ₹</span>
+                <input
+                  type="number"
+                  name="min"
+                  value={priceRange.min}
+                  onChange={handlePriceChange}
+                  className="border p-1 w-20"
+                />
+              </div>
+              <div className="flex items-center">
+                <span className="mr-2">To ₹</span>
+                <input
+                  type="number"
+                  name="max"
+                  value={priceRange.max}
+                  onChange={handlePriceChange}
+                  className="border p-1 w-20"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Price</h2>
-          <div className="flex items-center mb-2">
-            <span className="mr-2">From ₹</span>
-            <input
-              type="number"
-              name="min"
-              value={priceRange.min}
-              onChange={handlePriceChange}
-              className="border p-1 w-20"
-            />
-          </div>
-          <div className="flex items-center">
-            <span className="mr-2">To ₹</span>
-            <input
-              type="number"
-              name="max"
-              value={priceRange.max}
-              onChange={handlePriceChange}
-              className="border p-1 w-20"
-            />
-          </div>
-        </div>
-      </div>
         )}
       </div>
 
       {/* Main Content */}
       <div className="w-full lg:w-2/3 p-4 mx-auto">
-      
-
         <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
           <div className="mb-2 sm:mb-0">
             <label className="mr-2">Show</label>
@@ -313,19 +354,20 @@ const SearchSection = () => {
             <label className="ml-2">items per page</label>
           </div>
           <div>
-            <label className="mr-2">Sort by:</label>
-            <select
-              value={sortOption}
-              onChange={handleSortChange}
-              className="border p-1"
-            >
-              <option value="popularity">Popularity</option>
-              <option value="priceLowToHigh">Price: Low to High</option>
-              <option value="priceHighToLow">Price: High to Low</option>
-            </select>
-            
-          </div>
-          
+  <label className="mr-2">Sort by:</label>
+  <select
+    value={sortOption}
+    onChange={handleSortChange}
+    className="border p-1"
+  >
+    <option value="popularity">Popularity</option>
+    <option value="priceLowToHigh">Price: Low to High</option>
+    <option value="priceHighToLow">Price: High to Low</option>
+    <option value="newest">Newest First</option>  {/* New option for newest first */}
+    <option value="oldest">Oldest First</option>  {/* New option for oldest first */}
+  </select>
+</div>
+
         </div>
 
         {/* Product Listing */}
@@ -350,12 +392,18 @@ const SearchSection = () => {
                   />
                 )}
                 <div className="p-4 text-left">
-                  <p className="text-sm text-gray-400 mb-1">{product.category}</p>
-                  <h3 className="text-md font-semibold mb-2 product-name sm:text-sm md:text-md">{product.name}</h3>
+                  <p className="text-sm text-gray-400 mb-1">
+                    {product.category}
+                  </p>
+                  <h3 className="text-md font-semibold mb-2 product-name sm:text-sm md:text-md">
+                    {product.name}
+                  </h3>
                   <p className="text-gray-500 mb-4">
                     {product.hasOffer ? (
                       <>
-                        <span className="line-through">₹&nbsp;{product.price}</span>
+                        <span className="line-through">
+                          ₹&nbsp;{product.price}
+                        </span>
                         &nbsp;
                         <span>₹&nbsp;{product.offerPrice}</span>
                       </>
@@ -363,68 +411,65 @@ const SearchSection = () => {
                       `₹ ${product.price}`
                     )}
                   </p>
-                
                 </div>
               </div>
             ))}
         </div>
 
-      {/* Pagination */}
-<div className="mt-8 flex justify-center flex-wrap">
-  {/* Previous Button */}
-  {currentPage > 1 && (
-    <button
-      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-      onClick={() => handlePageChange(currentPage - 1)}
-    >
-      Prev
-    </button>
-  )}
+        {/* Pagination */}
+        <div className="mt-8 flex justify-center flex-wrap">
+          {/* Previous Button */}
+          {currentPage > 1 && (
+            <button
+              className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              Prev
+            </button>
+          )}
 
-  {/* Page Buttons */}
-  {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, currentPage + 2);
+          {/* Page Buttons */}
+          {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
 
-    if (currentPage <= 3) {
-      startPage = 1;
-      endPage = Math.min(totalPages, 5);
-    } else if (currentPage >= totalPages - 2) {
-      startPage = Math.max(1, totalPages - 4);
-      endPage = totalPages;
-    }
+            if (currentPage <= 3) {
+              startPage = 1;
+              endPage = Math.min(totalPages, 5);
+            } else if (currentPage >= totalPages - 2) {
+              startPage = Math.max(1, totalPages - 4);
+              endPage = totalPages;
+            }
 
-    const page = startPage + index;
+            const page = startPage + index;
 
-    if (page > endPage) {
-      return null;
-    }
+            if (page > endPage) {
+              return null;
+            }
 
-    return (
-      <button
-        key={page}
-        className={`border px-3 py-1 mr-2 ${
-          currentPage === page ? 'bg-pink-500 text-white' : ''
-        }`}
-        onClick={() => handlePageChange(page)}
-      >
-        {page}
-      </button>
-    );
-  })}
+            return (
+              <button
+                key={page}
+                className={`border px-3 py-1 mr-2 ${
+                  currentPage === page ? "bg-pink-500 text-white" : ""
+                }`}
+                onClick={() => handlePageChange(page)}
+              >
+                {page}
+              </button>
+            );
+          })}
 
-  {/* Next Button */}
-  {currentPage < totalPages && (
-    <button
-      className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-      onClick={() => handlePageChange(currentPage + 1)}
-    >
-      Next
-    </button>
-  )}
-</div>
-
-
+          {/* Next Button */}
+          {currentPage < totalPages && (
+            <button
+              className="border px-3 py-1 mr-2 bg-pink-500 text-white"
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              Next
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
