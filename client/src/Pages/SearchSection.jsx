@@ -27,7 +27,7 @@ const SearchSection = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:5000/products"
+          "http://apex.3axys.com:5000/products"
         );
         const productArray = Object.values(response.data); // Convert JSON object to array
         setProducts(productArray);
@@ -41,7 +41,7 @@ const SearchSection = () => {
     const fetchSizes = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/sizes"
+          "http://apex.3axys.com:5000/sizes"
         );
         setSizes(response.data);
       } catch (error) {
@@ -52,7 +52,7 @@ const SearchSection = () => {
     const fetchColors = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/colors"
+          "http://apex.3axys.com:5000/colors"
         );
         setColors(response.data);
       } catch (error) {

@@ -13,7 +13,7 @@ const CheckAddress = () => {
       const userId = decoded.id;
 
       try {
-        const response = await fetch(`http://localhost:5000/api/address/?userId=${userId}`, {
+        const response = await fetch(`http://apex.3axys.com:5000/api/address/?userId=${userId}`, {
           headers: {
             'Authorization': token
           }
@@ -54,7 +54,7 @@ const CheckAddress = () => {
     try {
       const addressId = address ? address._id : '';
       const method = address ? 'PUT' : 'POST';
-      const url = address ? `http://localhost:5000/api/address/${addressId}` : 'http://localhost:5000/api/address';
+      const url = address ? `http://apex.3axys.com:5000/api/address/${addressId}` : 'http://apex.3axys.com:5000/api/address';
       const response = await fetch(url, {
         method,
         headers: {

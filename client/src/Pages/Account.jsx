@@ -27,7 +27,7 @@ const Account = () => {
 
   const fetchAddresses = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/address?userId=${userId}`);
+      const response = await fetch(`http://apex.3axys.com:5000/api/address?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setAddresses(data);
@@ -41,7 +41,7 @@ const Account = () => {
 
   const fetchUserDetails = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/users/${userId}`);
+      const response = await fetch(`http://apex.3axys.com:5000/api/auth/users/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setUser(data);
@@ -55,7 +55,7 @@ const Account = () => {
 
   const fetchOrders = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orderHistory/orders/user/${userId}`);
+      const response = await fetch(`http://apex.3axys.com:5000/api/orderHistory/orders/user/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setOrders(data);
@@ -80,7 +80,7 @@ const Account = () => {
         Authorization: `Bearer ${token}`,
       };
 
-      const response = await axios.delete(`http://localhost:5000/api/address/${addressId}`, { headers });
+      const response = await axios.delete(`http://apex.3axys.com:5000/api/address/${addressId}`, { headers });
 
       if (response.status === 200) {
         setAddresses(addresses.filter((address) => address._id !== addressId));

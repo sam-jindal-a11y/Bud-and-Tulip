@@ -1,4 +1,4 @@
 
-const config = 'http://localhost:5000'
+const config = 'http://apex.3axys.com:5000'
 
 export default config

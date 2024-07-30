@@ -33,7 +33,7 @@ const ProductCard = ({
       setUser(decoded);
 
       await axios.post(
-        "http://localhost:5000/api/wishlist",
+        "http://apex.3axys.com:5000/api/wishlist",
         {
           userId: decoded.id,
           productId: productId,
