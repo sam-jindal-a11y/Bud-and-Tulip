@@ -139,7 +139,7 @@ const ProductView = () => {
       setUser(decoded);
 
       await axios.post(
-        "https://bud-tulips.onrender.com/api/wishlist",
+        "http://localhost:5000/api/wishlist",
         {
           userId: decoded.id,
           productId: product._id,
@@ -169,7 +169,7 @@ const ProductView = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `https://bud-tulips.onrender.com/products/${id}`
+          `http://localhost:5000/products/${id}`
         );
         const productData = response.data;
         setProduct(productData);
@@ -183,7 +183,7 @@ const ProductView = () => {
 
         // Fetch all products
         const allProductsResponse = await axios.get(
-          "https://bud-tulips.onrender.com/products"
+          "http://localhost:5000/products"
         );
         setAllProducts(allProductsResponse.data);
       } catch (error) {

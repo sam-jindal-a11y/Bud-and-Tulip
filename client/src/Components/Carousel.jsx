@@ -8,7 +8,7 @@ const Carousel = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get('https://bud-tulips.onrender.com/upload/banners'); // Replace with your actual API endpoint
+        const response = await axios.get('http://localhost:5000/upload/banners'); // Replace with your actual API endpoint
         // Ensure images are sorted by index
         const sortedImages = response.data.sort((a, b) => a.index - b.index);
         setImages(sortedImages);

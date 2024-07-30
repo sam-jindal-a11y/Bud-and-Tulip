@@ -33,7 +33,7 @@ const ProductCard = ({
       setUser(decoded);
 
       await axios.post(
-        "https://bud-tulips.onrender.com/api/wishlist",
+        "http://localhost:5000/api/wishlist",
         {
           userId: decoded.id,
           productId: productId,

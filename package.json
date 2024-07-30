@@ -1,0 +1,12 @@
+{
+  "name": "your-project",
+  "version": "1.0.0",
+  "scripts": {
+    "client": "npm start --prefix client",
+    "server": "npm start --prefix ecommerce-backend",
+    "dev": "concurrently \"npm run client\" \"npm run server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,4 +1,4 @@
 
-const config = 'https://bud-tulips.onrender.com'
+const config = 'http://localhost:5000'
 
 export default config
