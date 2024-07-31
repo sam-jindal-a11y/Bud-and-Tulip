@@ -1,4 +1,4 @@
 
-const config = 'http://localhost:5000'
+const config = 'http://103.209.144.220:5000'
 
 export default config
