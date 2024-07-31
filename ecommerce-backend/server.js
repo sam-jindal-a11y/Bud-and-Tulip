@@ -52,10 +52,10 @@ app.use('/upload', uploadRoutes);
 
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://harshil:harsh@cluster0.cbh4pcf.mongodb.net/', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
+mongoose.connect('mongodb://127.0.0.1:27017/myDatabase', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
