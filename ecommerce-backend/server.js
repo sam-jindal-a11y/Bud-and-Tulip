@@ -59,7 +59,7 @@ app.use(express.static('public'));
 // app.use('/images', express.static('images'));
 app.use('/upload', uploadRoutes);
 // Authentication middleware
-app.use('/images', express.static(path.join(__dirname, '../Content/Pro_Images')));
+app.use('/images', express.static(pathimageschange));
 
 // MongoDB connection
 mongoose.connect('mongodb://103.209.144.220:27017/myDatabase', {
