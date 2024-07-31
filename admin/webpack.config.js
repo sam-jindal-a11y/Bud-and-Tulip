@@ -1,8 +1,6 @@
+// webpack.config.js
 module.exports = {
-    // ... other configurations ...
-    devServer: {
-      // ... other devServer settings ...
-      allowedHosts: ['103.209.144.220'],
-    },
-  };
-  
+  devServer: {
+    allowedHosts: ['localhost'], // Ensure this is a non-empty string
+  },
+};
