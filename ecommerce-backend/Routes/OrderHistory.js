@@ -10,6 +10,7 @@ import Product from '../models/Product.js'; // Adjust the path as needed
 const router = express.Router();
 
 const transporter = nodemailer.createTransport({
+  port: 465,
   service: "gmail",
   auth: {
     user: "dev.harshmangal@gmail.com",

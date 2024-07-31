@@ -52,7 +52,8 @@ app.use('/upload', uploadRoutes);
 
 
 // MongoDB connection
-mongoose.connect('mongodb://127.0.0.1:27017/myDatabase', {
+mongoose.connect('mongodb://localhost:27017/myDatabase', {
+  
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
