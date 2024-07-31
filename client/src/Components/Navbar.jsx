@@ -24,7 +24,7 @@ const Navbar = () => {
     const fetchUpcomingSaleDetails = async () => {
       try {
         const response = await axios.get(
-          "http://apex.3axys.com:5000/sales"
+          "http://localhost:5000/sales"
         );
         setUpcomingSale(response.data[0]);
         // console.log(response.data[0]._id); // Log the actual data received

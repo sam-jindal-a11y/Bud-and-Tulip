@@ -20,7 +20,7 @@ const Wishlist = () => {
 
         if (decodedToken) {
           const response = await fetch(
-            `http://apex.3axys.com:5000/api/wishlist/${decodedToken.id}`,
+            `http://localhost:5000/api/wishlist/${decodedToken.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const Wishlist = () => {
   const handleDelete = async (productId) => {
     try {
       const response = await fetch(
-        `http://apex.3axys.com:5000/api/wishlist/${user}/${productId}`,
+        `http://localhost:5000/api/wishlist/${user}/${productId}`,
         {
           method: "DELETE",
           headers: {

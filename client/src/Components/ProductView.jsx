@@ -139,7 +139,7 @@ const ProductView = () => {
       setUser(decoded);
 
       await axios.post(
-        "http://apex.3axys.com:5000/api/wishlist",
+        "http://localhost:5000/api/wishlist",
         {
           userId: decoded.id,
           productId: product._id,
@@ -169,7 +169,7 @@ const ProductView = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://apex.3axys.com:5000/products/${id}`
+          `http://localhost:5000/products/${id}`
         );
         const productData = response.data;
         setProduct(productData);
@@ -183,7 +183,7 @@ const ProductView = () => {
 
         // Fetch all products
         const allProductsResponse = await axios.get(
-          "http://apex.3axys.com:5000/products"
+          "http://localhost:5000/products"
         );
         setAllProducts(allProductsResponse.data);
       } catch (error) {
