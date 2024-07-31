@@ -20,10 +20,12 @@ import User from './models/User.js';
 import Sale from './models/Sale.js';
 import uploadRoutes from './Routes/upload.js';
 import multer from 'multer';
+import path from 'path';
 import ImageKit from 'imagekit';
 import Razorpay from 'razorpay';
 // import 'dotenv/config';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
 // import { config } from 'dotenv';
 // import imageKit from './config/imageKit.js';
 dotenv.config();
@@ -38,7 +40,13 @@ const imagekit = new ImageKit({
 
 
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+
 const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -46,10 +54,10 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 // Static files
 app.use(express.static('public'));
-app.use('/images', express.static('images'));
+// app.use('/images', express.static('images'));
 app.use('/upload', uploadRoutes);
 // Authentication middleware
-
+app.use('/images', express.static(path.join(__dirname, '../Content/Pro_Images')));
 
 // MongoDB connection
 mongoose.connect('mongodb://103.209.144.220:27017/myDatabase', {
