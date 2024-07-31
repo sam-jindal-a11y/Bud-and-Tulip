@@ -20,7 +20,7 @@ import User from './models/User.js';
 import Sale from './models/Sale.js';
 import uploadRoutes from './Routes/upload.js';
 import multer from 'multer';
-import path from 'path';
+import path, { dirname } from 'path';
 import ImageKit from 'imagekit';
 import Razorpay from 'razorpay';
 // import 'dotenv/config';
@@ -42,7 +42,7 @@ const imagekit = new ImageKit({
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+console.log(__dirname);
 
 
 const app = express();
