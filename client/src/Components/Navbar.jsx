@@ -135,7 +135,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="navbar-desktop bg-pinkc py-2.5 border-t px-6  hidden md:flex md:justify-between md:items-center shadow-lg">
+      <div className="navbar-desktop bg-pinkc py-1 border-t px-6  hidden md:flex md:justify-between md:items-center shadow-sm">
         <div className="container mx-auto">
           <div className="flex justify-center md:justify-center">
             <Link
