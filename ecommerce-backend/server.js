@@ -44,7 +44,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 console.log("hello");
 console.log(__dirname+ 'hello');
-
+const pathimageschange = path.join(__dirname,'../../../Content/Pro_Images');
+console.log(pathimageschange);
 
 const app = express();
 
