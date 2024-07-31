@@ -18,7 +18,7 @@ const navigate = useNavigate();
         const products = response.data.createdProducts;
         setProducts(products);
         window.scrollTo(0, 0); // Scroll to top after setting products
-        console.log("Products Loaded:", products);
+        // console.log("Products Loaded:", products);
       } catch (error) {
         console.error("Error fetching product data:", error);
       } finally {

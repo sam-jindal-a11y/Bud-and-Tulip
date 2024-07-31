@@ -27,7 +27,7 @@ const Navbar = () => {
           "http://apex.3axys.com:5000/sales"
         );
         setUpcomingSale(response.data[0]);
-        console.log(response.data[0]._id); // Log the actual data received
+        // console.log(response.data[0]._id); // Log the actual data received
       } catch (error) {
         console.error("Error fetching upcoming sale details:", error);
       }

@@ -32,7 +32,7 @@ const Register = () => {
       const result = await response.json();
 
       if (response.ok) {
-        console.log("Registration successful:", result);
+        // console.log("Registration successful:", result);
         navigate('/Login');
       } else {
         setError(result.message || 'Registration failed. Please try again.');

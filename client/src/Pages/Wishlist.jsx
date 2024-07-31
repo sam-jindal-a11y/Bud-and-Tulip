@@ -63,14 +63,14 @@ const Wishlist = () => {
       setWishlist(
         wishlist.filter((product) => product.productId !== productId)
       );
-      console.log(`Deleted product with ID: ${productId}`);
+      // console.log(`Deleted product with ID: ${productId}`);
     } catch (error) {
       console.error("Error deleting wishlist item:", error);
     }
   };
 
   const handleAddToCart = (productId) => {
-    console.log(`Add to cart: ${productId}`);
+    // console.log(`Add to cart: ${productId}`);
   };
 
   const handleRedirect = (productId) => {

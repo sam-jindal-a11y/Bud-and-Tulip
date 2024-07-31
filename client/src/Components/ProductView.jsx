@@ -173,7 +173,7 @@ const ProductView = () => {
         );
         const productData = response.data;
         setProduct(productData);
-        console.log(productData.category);
+        // console.log(productData.category);
         setProductCat(productData.category); // Set product category
         if (productData.size.length === 1) {
           setSize(productData.size[0]); // Set size to the single available size

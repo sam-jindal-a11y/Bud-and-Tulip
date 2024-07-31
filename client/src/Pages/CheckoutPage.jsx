@@ -66,7 +66,7 @@ const CheckoutPage = () => {
       const latestData = validTempOrder.length > 0 ? validTempOrder : validTempCart;
   
       // Debugging: Log the latest data
-      console.log("Latest Data:", latestData);
+      // console.log("Latest Data:", latestData);
   
       // Set products to the latest data
       setProducts(latestData);
@@ -190,7 +190,7 @@ const CheckoutPage = () => {
             }
           } catch (error) {
             console.error("Error placing order:", error);
-            console.log(orderData);
+            // console.log(orderData);
             alert("Failed to place order. Please try again.");
           }
         },
@@ -225,7 +225,7 @@ const CheckoutPage = () => {
       }
     } catch (error) {
       console.error("Error placing order:", error);
-      console.log(orderData);
+      // console.log(orderData);
       alert("Failed to place order. Please try again.");
     }
   }

@@ -163,7 +163,7 @@ const TempCheckoutPage = () => {
             }
           } catch (error) {
             console.error("Error placing order:", error);
-            console.log(orderData);
+            // console.log(orderData);
             alert("Failed to place order. Please try again.");
           }
         },
@@ -197,7 +197,7 @@ const TempCheckoutPage = () => {
       }
     } catch (error) {
       console.error("Error placing order:", error);
-      console.log(orderData);
+      // console.log(orderData);
       alert("Failed to place order. Please try again.");
     }
   }
