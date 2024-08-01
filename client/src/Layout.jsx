@@ -5,7 +5,7 @@ import Footer from "./Components/Footer";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
-import Products from "./Pages/Products";
+// import Products from "./Pages/Products";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import Terms from "./Pages/Terms";
 import ShippingPolicy from "./Pages/ShippingPolicy";
@@ -39,7 +39,7 @@ const Layout = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/products" element={<Products />} />
+          {/* <Route path="/products" element={<Products />} /> */}
           <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/shippingPolicy" element={<ShippingPolicy />} />

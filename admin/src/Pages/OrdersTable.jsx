@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import config from "../config";
 const OrdersTable = () => {
   const [orders, setOrders] = useState([]);
   const [userEmails, setUserEmails] = useState({});
@@ -13,7 +13,7 @@ const OrdersTable = () => {
 
   useEffect(() => {
     // Fetch the orders from your backend
-    axios.get('http://103.209.144.220:5000/api/orderHistory/orders')
+    axios.get(`${config}/api/orderHistory/orders`)
       .then(async response => {
         const ordersData = response.data;
         setOrders(ordersData);
@@ -36,7 +36,7 @@ const OrdersTable = () => {
     const emails = {};
     for (const order of orders) {
       if (!emails[order.userId]) {
-        const response = await axios.get(`http://103.209.144.220:5000/api/auth/users/${order.userId}`);
+        const response = await axios.get(`${config}/api/auth/users/${order.userId}`);
         emails[order.userId] = response.data.email;
       }
     }

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import config from "../config";
 const CategoriesTable = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    axios.get('http://103.209.144.220:5000/categories')
+    axios.get(`${config}/categories`)
       .then(response => setCategories(response.data))
       .catch(error => console.error('Error fetching categories:', error));
   }, []);
 
   const deleteCategory = (id) => {
-    axios.delete(`http://103.209.144.220:5000/categories/${id}`)
+    axios.delete(`${config}/categories/${id}`)
       .then(() => {
         setCategories(categories.filter(category => category.category_id !== id));
       })

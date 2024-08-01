@@ -3,7 +3,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import MobileSearchBar from "../Components/MobileSearchBar";
 import Loading from "../Components/Loading";
-
+import config from "../config";
 const SearchSection = () => {
   const [products, setProducts] = useState([]);
   const [sizes, setSizes] = useState([]);
@@ -27,7 +27,7 @@ const SearchSection = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://103.209.144.220:5000/products"
+          `${config}/products`
         );
         const productArray = Object.values(response.data); // Convert JSON object to array
         setProducts(productArray);
@@ -41,7 +41,7 @@ const SearchSection = () => {
     const fetchSizes = async () => {
       try {
         const response = await axios.get(
-          "http://103.209.144.220:5000/sizes"
+          `${config}/sizes`
         );
         setSizes(response.data);
       } catch (error) {
@@ -52,7 +52,7 @@ const SearchSection = () => {
     const fetchColors = async () => {
       try {
         const response = await axios.get(
-          "http://103.209.144.220:5000/colors"
+          `${config}/colors`
         );
         setColors(response.data);
       } catch (error) {

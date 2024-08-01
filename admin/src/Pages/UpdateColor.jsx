@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import ColorsTable from "./ColorsTable";
-
+import config from "../config";
 const UpdateColor = () => {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
@@ -9,7 +9,7 @@ const UpdateColor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put(`http://103.209.144.220:5000/colors/${id}`, { name })
+      .put(`${config}/colors/${id}`, { name })
       .then(() => {
         setId("");
         setName("");

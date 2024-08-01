@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import config from "../config";
 const UsersTable = () => {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch the users from your backend
-    axios.get('http://103.209.144.220:5000/api/auth/users')
+    axios.get(`${config}/api/auth/users`)
       .then(response => {
         setUsers(response.data);
       })

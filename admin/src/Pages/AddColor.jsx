@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import ColorsTable from './ColorsTable';
-
+import config from "../config";
 const AddColor = () => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://103.209.144.220:5000/colors', { name })
+    axios.post(`${config}/colors`, { name })
       .then(() => {
         setName('');
         alert('Color added successfully');

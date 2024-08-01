@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import SizesTable from './SizesTable';
-
+import config from "../config";
 const AddSize = () => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://103.209.144.220:5000/sizes', { name })
+    axios.post(`${config}/sizes`, { name })
       .then(() => {
         
         setName('');

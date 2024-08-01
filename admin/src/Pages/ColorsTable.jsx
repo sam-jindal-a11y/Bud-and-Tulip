@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import config from "../config";
 const ColorsTable = () => {
   const [colors, setColors] = useState([]);
 
   useEffect(() => {
-    axios.get('http://103.209.144.220:5000/colors')
+    axios.get(`${config}/colors`)
       .then(response => setColors(response.data))
       .catch(error => console.error('Error fetching colors:', error));
   }, []);
 
   const deleteColor = (id) => {
-    axios.delete(`http://103.209.144.220:5000/colors/${id}`)
+    axios.delete(`${config}/colors/${id}`)
       .then(() => {
         setColors(colors.filter(color => color.color_id !== id));
       })

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import CategoriesTable from './CategoriesTable';
-
+import config from "../config";
 const UpdateCategory = () => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://103.209.144.220:5000/categories/${id}`, { name })
+    axios.put(`${config}/categories/${id}`, { name })
       .then(() => {
         setId('');
         setName('');

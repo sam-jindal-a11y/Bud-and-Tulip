@@ -1,7 +1,7 @@
 // src/components/VoucherList.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import config from "../config";
 const VoucherList = () => {
   const [vouchers, setVouchers] = useState([]);
 
@@ -11,7 +11,7 @@ const VoucherList = () => {
 
   const fetchVouchers = async () => {
     try {
-      const response = await axios.get('http://103.209.144.220:5000/api/vouchers');
+      const response = await axios.get(`${config}/api/vouchers`);
       setVouchers(response.data);
     } catch (error) {
       console.error(error);
@@ -20,7 +20,7 @@ const VoucherList = () => {
 
   const deleteVoucher = async (id) => {
     try {
-      await axios.delete(`http://103.209.144.220:5000/api/vouchers/${id}`);
+      await axios.delete(`${config}/api/vouchers/${id}`);
       setVouchers(vouchers.filter((voucher) => voucher._id !== id));
     } catch (error) {
       console.error(error);

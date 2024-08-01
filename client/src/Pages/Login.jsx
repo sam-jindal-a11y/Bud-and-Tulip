@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import config from "../config";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +25,7 @@ const Login = () => {
     };
 
     try {
-      const response = await fetch("http://103.209.144.220:5000/api/auth/login", {
+      const response = await fetch(`${config}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://103.209.144.220:5000/api/auth/guest-signup", {
+      const response = await fetch(`${config}/api/auth/guest-signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

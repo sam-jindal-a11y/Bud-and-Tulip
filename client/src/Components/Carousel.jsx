@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import config from "../config";
 const Carousel = () => {
   const [images, setImages] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -8,7 +8,7 @@ const Carousel = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get('http://103.209.144.220:5000/upload/banners'); // Replace with your actual API endpoint
+        const response = await axios.get(`${config}/upload/banners`); // Replace with your actual API endpoint
         // Ensure images are sorted by index
         const sortedImages = response.data.sort((a, b) => a.index - b.index);
         setImages(sortedImages);

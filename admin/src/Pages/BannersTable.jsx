@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import config from "../config";
 const BannersTable = () => {
   const [banners, setBanners] = useState([]);
 
@@ -10,7 +10,7 @@ const BannersTable = () => {
 
   const fetchBanners = async () => {
     try {
-      const response = await axios.get('http://103.209.144.220:5000/upload/banners');
+      const response = await axios.get(`${config}/upload/banners`);
       setBanners(response.data);
     } catch (error) {
       console.error('Error fetching banners:', error);
@@ -19,7 +19,7 @@ const BannersTable = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://103.209.144.220:5000/upload/banners/${id}`);
+      await axios.delete(`${config}/upload/banners/${id}`);
       setBanners(banners.filter(banner => banner._id !== id));
       alert('Banner deleted successfully.');
     } catch (error) {

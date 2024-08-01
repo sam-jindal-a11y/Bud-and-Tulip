@@ -1,7 +1,7 @@
 // src/components/SalesTablePage.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import config from "../config";
 const SalesTablePage = () => {
   const [sales, setSales] = useState([]);
 
@@ -9,7 +9,7 @@ const SalesTablePage = () => {
     // Fetch sales from the backend API
     const fetchSales = async () => {
       try {
-        const response = await axios.get('http://103.209.144.220:5000/sales'); // Update this URL to your backend endpoint
+        const response = await axios.get(`${config}/sales`); // Update this URL to your backend endpoint
         setSales(response.data);
       } catch (error) {
         console.error('Error fetching sales:', error);
@@ -21,7 +21,7 @@ const SalesTablePage = () => {
 
   const handleDeleteSale = async (saleId) => {
     try {
-      await axios.delete(`http://103.209.144.220:5000/sales/${saleId}`); // Update this URL to your backend endpoint
+      await axios.delete(`${config}/sales/${saleId}`); // Update this URL to your backend endpoint
       setSales(sales.filter(sale => sale._id !== saleId));
     } catch (error) {
       console.error('Error deleting sale:', error);

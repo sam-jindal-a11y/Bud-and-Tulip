@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import SizesTable from './SizesTable';
-
+import config from "../config";
 const UpdateSize = () => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://103.209.144.220:5000/sizes/${id}`, { name })
+    axios.put(`${config}/sizes/${id}`, { name })
       .then(() => {
         setId('');
         setName('');

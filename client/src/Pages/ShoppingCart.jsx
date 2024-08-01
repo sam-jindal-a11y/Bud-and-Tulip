@@ -1,5 +1,6 @@
 import React, { useEffect, useState ,useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import config from "../config";
 import { CartContext } from '../Components/CartContext';
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);

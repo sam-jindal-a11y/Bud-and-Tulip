@@ -3,7 +3,7 @@ import axios from 'axios';
 import Select from 'react-select';
 import { useNavigate, useParams } from 'react-router-dom';
 import ProductsTable from './ProductsTable';
-
+import config from "../config";
 const AddProduct = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -43,10 +43,10 @@ const AddProduct = () => {
     const fetchOptions = async () => {
       try {
         const [sizeResponse, colorResponse, categoryResponse, productResponse] = await Promise.all([
-          axios.get('http://103.209.144.220:5000/sizes'),
-          axios.get('http://103.209.144.220:5000/colors'),
-          axios.get('http://103.209.144.220:5000/categories'),
-          axios.get('http://103.209.144.220:5000/products'),
+          axios.get(`${config}/sizes`),
+          axios.get(`${config}/colors`),
+          axios.get(`${config}/categories`),
+          axios.get(`${config}/products`),
         ]);
 
         setSizes(sizeResponse.data);
@@ -96,7 +96,7 @@ const AddProduct = () => {
     });
 
     try {
-      const response = await axios.post('http://103.209.144.220:5000/api/products', submitFormData, {
+      const response = await axios.post(`${config}/api/products`, submitFormData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

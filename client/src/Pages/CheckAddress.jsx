@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
-
+import config from "../config";
 const CheckAddress = () => {
   const [address, setAddress] = useState(null);
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const CheckAddress = () => {
       const userId = decoded.id;
 
       try {
-        const response = await fetch(`http://103.209.144.220:5000/api/address/?userId=${userId}`, {
+        const response = await fetch(`${config}/api/address/?userId=${userId}`, {
           headers: {
             'Authorization': token
           }
@@ -54,7 +54,7 @@ const CheckAddress = () => {
     try {
       const addressId = address ? address._id : '';
       const method = address ? 'PUT' : 'POST';
-      const url = address ? `http://103.209.144.220:5000/api/address/${addressId}` : 'http://103.209.144.220:5000/api/address';
+      const url = address ? `${config}/api/address/${addressId}` : `${config}/api/address`;
       const response = await fetch(url, {
         method,
         headers: {

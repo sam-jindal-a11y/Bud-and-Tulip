@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
-
+import config from "../config";
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [user, setUser] = useState(null);
@@ -20,7 +20,7 @@ const Wishlist = () => {
 
         if (decodedToken) {
           const response = await fetch(
-            `http://103.209.144.220:5000/api/wishlist/${decodedToken.id}`,
+            `${config}/api/wishlist/${decodedToken.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const Wishlist = () => {
   const handleDelete = async (productId) => {
     try {
       const response = await fetch(
-        `http://103.209.144.220:5000/api/wishlist/${user}/${productId}`,
+        `${config}/api/wishlist/${user}/${productId}`,
         {
           method: "DELETE",
           headers: {

@@ -4,7 +4,7 @@ import DropdownMenu from "./DropdownMenu";
 import Sidebar from "./Sidebar";
 import axios from "axios";
 import { CartContext } from "./CartContext";
-
+import config from "../config";
 const Navbar = () => {
   const [productName, setProductName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Products");
@@ -24,7 +24,7 @@ const Navbar = () => {
     const fetchUpcomingSaleDetails = async () => {
       try {
         const response = await axios.get(
-          "http://103.209.144.220:5000/sales"
+          `${config}/sales`
         );
         setUpcomingSale(response.data[0]);
         // console.log(response.data[0]._id); // Log the actual data received

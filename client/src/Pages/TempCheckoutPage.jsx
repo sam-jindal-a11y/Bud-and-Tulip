@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
-
+import config from "../config";
 const TempCheckoutPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [product, setProduct] = useState(null);
@@ -31,7 +31,7 @@ const TempCheckoutPage = () => {
   const fetchAddresses = async (userId) => {
     try {
       const response = await fetch(
-        `http://103.209.144.220:5000/api/address?userId=${userId}`
+        `${config}/api/address?userId=${userId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -66,12 +66,12 @@ const TempCheckoutPage = () => {
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.id;
   
-      const response = await axios.post('http://103.209.144.220:5000/api/validate', { code: voucherCode, userId });
+      const response = await axios.post(`${config}/api/validate`, { code: voucherCode, userId });
       const voucher = response.data;
       const discountAmount = (voucher.discount / 100) * totalPrice;
       setMaxDiscount(discountAmount);
   
-      await axios.post('http://103.209.144.220:5000/api/apply-voucher', { code: voucherCode, userId });
+      await axios.post(`${config}/api/apply-voucher`, { code: voucherCode, userId });
     } catch (error) {
       console.error('Error applying voucher:', error.response ? error.response.data.message : error.message);
       setErrorMessage(error.response ? error.response.data.message : 'An error occurred');
@@ -132,7 +132,7 @@ const TempCheckoutPage = () => {
 
   if (paymentMethod === "razorpay") {
     try {
-      const razorpayResponse = await axios.post("http://103.209.144.220:5000/orders", {
+      const razorpayResponse = await axios.post(`${config}/orders`, {
         amount: orderData.finalAmount,
         currency: "INR"
       });
@@ -155,7 +155,7 @@ const TempCheckoutPage = () => {
           orderData.paymentMethod = "razorpay";
           orderData.razorpayPaymentId = response.razorpay_payment_id;
           try {
-            const response = await axios.post("http://103.209.144.220:5000/api/orderHistory", orderData);
+            const response = await axios.post(`${config}/api/orderHistory`, orderData);
             if (response.status === 201) {
               alert("Order placed successfully!");
               localStorage.removeItem("tempOrder");
@@ -189,7 +189,7 @@ const TempCheckoutPage = () => {
     }
   } else {
     try {
-      const response = await axios.post("http://103.209.144.220:5000/api/orderHistory", orderData);
+      const response = await axios.post(`${config}/api/orderHistory`, orderData);
       if (response.status === 201) {
         alert("Order placed successfully!");
         localStorage.removeItem("tempOrder");

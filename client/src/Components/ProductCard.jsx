@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
-
+import config from "../config";
 const ProductCard = ({
   image,
   name,
@@ -33,7 +33,7 @@ const ProductCard = ({
       setUser(decoded);
 
       await axios.post(
-        "http://103.209.144.220:5000/api/wishlist",
+        `${config}/api/wishlist`,
         {
           userId: decoded.id,
           productId: productId,

@@ -1,6 +1,6 @@
 import React from 'react';
 import {useNavigate } from 'react-router-dom';
-
+import config from "../config";
 const Addressform = () => {
   const history = useNavigate();
 
@@ -22,7 +22,7 @@ const Addressform = () => {
     };
 
     try {
-      const response = await fetch('http://103.209.144.220:5000/api/address', {
+      const response = await fetch(`${config}/api/address`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import VoucherList from './VoucherList';
-
+import config from "../config";
 const VoucherForm = () => {
   const [voucher, setVoucher] = useState({
     code: '',
@@ -20,7 +20,7 @@ const VoucherForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://103.209.144.220:5000/api/vouchers', voucher);
+      await axios.post(`${config}/api/vouchers`, voucher);
       alert('Voucher created successfully!');
       // window.location.reload();
     } catch (error) {

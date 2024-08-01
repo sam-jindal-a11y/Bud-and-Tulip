@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import config from "../config";
 const SizesTable = () => {
   const [sizes, setSizes] = useState([]);
 
   useEffect(() => {
-    axios.get('http://103.209.144.220:5000/sizes')
+    axios.get(`${config}/sizes`)
       .then(response => setSizes(response.data))
       .catch(error => console.error('Error fetching sizes:', error));
   }, []);
 
   
 const deleteSize = (id) => {
-    axios.delete(`http://103.209.144.220:5000/sizes/${id}`)
+    axios.delete(`${config}/sizes/${id}`)
       .then(() => {
         // Assuming 'sizes' and 'setSizes' are properly managed state variables
         setSizes(sizes.filter(size => size.size_id !== id));

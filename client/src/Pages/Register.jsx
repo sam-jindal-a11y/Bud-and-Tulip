@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import config from "../config";
 const Register = () => {
   const navigate = useNavigate();
   
@@ -21,7 +21,7 @@ const Register = () => {
     };
 
     try {
-      const response = await fetch("http://103.209.144.220:5000/api/auth/signup", {
+      const response = await fetch(`${config}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

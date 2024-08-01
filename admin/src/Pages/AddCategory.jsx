@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import CategoriesTable from './CategoriesTable';
-
+import config from "../config";
 const AddCategory = () => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://103.209.144.220:5000/categories', { name })
+    axios.post(`${config}/categories`, { name })
       .then(() => {
         setName('');
         alert('Category added successfully');

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-
+import config from "../config";
 const OrderDetail = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ const OrderDetail = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await axios.get(`http://103.209.144.220:5000/api/orderHistory/${id}`);
+        const response = await axios.get(`${config}/api/orderHistory/${id}`);
         const fetchedOrder = response.data;
         const user = await fetchUserData(fetchedOrder.userId._id);
 
@@ -37,7 +37,7 @@ const OrderDetail = () => {
 
   const handleStatusChange = async () => {
     try {
-      await axios.put(`http://103.209.144.220:5000/api/orderHistory/${id}/status`, {
+      await axios.put(`${config}/api/orderHistory/${id}/status`, {
         status: newStatus,
       });
       alert('Status updated successfully and email sent to the customer');
@@ -49,7 +49,7 @@ const OrderDetail = () => {
 
   const fetchUserData = async (userId) => {
     try {
-      const response = await axios.get(`http://103.209.144.220:5000/api/auth/users/${userId}`);
+      const response = await axios.get(`${config}/api/auth/users/${userId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -59,7 +59,7 @@ const OrderDetail = () => {
 
   const fetchProductData = async (productId) => {
     try {
-      const response = await axios.get(`http://103.209.144.220:5000/products/${productId}`);
+      const response = await axios.get(`${config}/products/${productId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching product data:', error);

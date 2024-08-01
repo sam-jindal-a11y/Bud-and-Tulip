@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import config from "../config";
 const ProductsTable = ({ products }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -14,7 +14,7 @@ const ProductsTable = ({ products }) => {
   // Ensure products.createdProducts is an array
   const createdProducts = Array.isArray(products.createdProducts) ? products.createdProducts : [];
   useEffect(() => {
-    axios.get('http://103.209.144.220:5000/categories')
+    axios.get(`${config}/categories`)
       .then(response => setCategories(response.data))
       .catch(error => console.error('Error fetching categories:', error));
   }, []);
