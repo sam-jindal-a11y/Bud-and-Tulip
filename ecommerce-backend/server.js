@@ -62,7 +62,7 @@ app.use('/upload', uploadRoutes);
 app.use('/images', express.static(pathimageschange));
 
 // MongoDB connection
-mongoose.connect('mongodb://103.209.144.220:27017/myDatabase', {
+mongoose.connect('mongodb://127.0.0.1:27017/myDatabase', {
   
   useNewUrlParser: true,
   useUnifiedTopology: true

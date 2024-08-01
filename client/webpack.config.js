@@ -2,7 +2,7 @@ module.exports = {
     // ... other configurations ...
     devServer: {
       // ... other devServer settings ...
-      allowedHosts: ['103.209.144.220'],
+      allowedHosts: ['127.0.0.1'],
     },
   };
   

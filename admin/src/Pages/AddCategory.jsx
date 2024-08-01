@@ -7,7 +7,7 @@ const AddCategory = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://103.209.144.220:5000/categories', { name })
+    axios.post('http://127.0.0.1:5000/categories', { name })
       .then(() => {
         setName('');
         alert('Category added successfully');

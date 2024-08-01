@@ -50,7 +50,7 @@ const EditAddressForm = () => {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      const response = await axios.put(`http://103.209.144.220:5000/api/address/${address._id}`, form, { headers });
+      const response = await axios.put(`http://127.0.0.1:5000/api/address/${address._id}`, form, { headers });
 
       if (response.status === 200) {
         navigate('/account'); // Navigate back to account page

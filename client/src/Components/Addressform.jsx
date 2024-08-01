@@ -22,7 +22,7 @@ const Addressform = () => {
     };
 
     try {
-      const response = await fetch('http://103.209.144.220:5000/api/address', {
+      const response = await fetch('http://127.0.0.1:5000/api/address', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

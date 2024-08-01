@@ -139,7 +139,7 @@ const ProductView = () => {
       setUser(decoded);
 
       await axios.post(
-        "http://103.209.144.220:5000/api/wishlist",
+        "http://127.0.0.1:5000/api/wishlist",
         {
           userId: decoded.id,
           productId: product._id,
@@ -169,7 +169,7 @@ const ProductView = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://103.209.144.220:5000/products/${id}`
+          `http://127.0.0.1:5000/products/${id}`
         );
         const productData = response.data;
         setProduct(productData);
@@ -183,7 +183,7 @@ const ProductView = () => {
 
         // Fetch all products
         const allProductsResponse = await axios.get(
-          "http://103.209.144.220:5000/products"
+          "http://127.0.0.1:5000/products"
         );
         setAllProducts(allProductsResponse.data);
       } catch (error) {

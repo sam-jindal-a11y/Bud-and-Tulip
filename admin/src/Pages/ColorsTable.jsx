@@ -5,13 +5,13 @@ const ColorsTable = () => {
   const [colors, setColors] = useState([]);
 
   useEffect(() => {
-    axios.get('http://103.209.144.220:5000/colors')
+    axios.get('http://127.0.0.1:5000/colors')
       .then(response => setColors(response.data))
       .catch(error => console.error('Error fetching colors:', error));
   }, []);
 
   const deleteColor = (id) => {
-    axios.delete(`http://103.209.144.220:5000/colors/${id}`)
+    axios.delete(`http://127.0.0.1:5000/colors/${id}`)
       .then(() => {
         setColors(colors.filter(color => color.color_id !== id));
       })

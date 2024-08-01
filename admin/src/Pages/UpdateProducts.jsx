@@ -33,10 +33,10 @@ const UpdateProduct = () => {
     const fetchProductData = async () => {
       try {
         const [sizeResponse, colorResponse, categoryResponse, productResponse] = await Promise.all([
-          axios.get('http://103.209.144.220:5000/sizes'),
-          axios.get('http://103.209.144.220:5000/colors'),
-          axios.get('http://103.209.144.220:5000/categories'),
-          axios.get(`http://103.209.144.220:5000/products/${id}`),
+          axios.get('http://127.0.0.1:5000/sizes'),
+          axios.get('http://127.0.0.1:5000/colors'),
+          axios.get('http://127.0.0.1:5000/categories'),
+          axios.get(`http://127.0.0.1:5000/products/${id}`),
         ]);
 
         setSizes(sizeResponse.data);
@@ -74,7 +74,7 @@ const UpdateProduct = () => {
     setLoading(true);
 
     try {
-      const response = await axios.put(`http://103.209.144.220:5000/products/${id}`, formData);
+      const response = await axios.put(`http://127.0.0.1:5000/products/${id}`, formData);
 
       console.log('Product updated successfully:', response.data);
       alert('Product updated successfully!');

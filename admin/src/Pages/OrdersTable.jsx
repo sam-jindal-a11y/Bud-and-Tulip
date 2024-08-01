@@ -13,7 +13,7 @@ const OrdersTable = () => {
 
   useEffect(() => {
     // Fetch the orders from your backend
-    axios.get('http://103.209.144.220:5000/api/orderHistory/orders')
+    axios.get('http://127.0.0.1:5000/api/orderHistory/orders')
       .then(async response => {
         const ordersData = response.data;
         setOrders(ordersData);
@@ -36,7 +36,7 @@ const OrdersTable = () => {
     const emails = {};
     for (const order of orders) {
       if (!emails[order.userId]) {
-        const response = await axios.get(`http://103.209.144.220:5000/api/auth/users/${order.userId}`);
+        const response = await axios.get(`http://127.0.0.1:5000/api/auth/users/${order.userId}`);
         emails[order.userId] = response.data.email;
       }
     }
