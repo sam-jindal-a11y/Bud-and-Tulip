@@ -43,10 +43,10 @@ const AddProduct = () => {
     const fetchOptions = async () => {
       try {
         const [sizeResponse, colorResponse, categoryResponse, productResponse] = await Promise.all([
-          axios.get('http://127.0.0.1:5000/sizes'),
-          axios.get('http://127.0.0.1:5000/colors'),
-          axios.get('http://127.0.0.1:5000/categories'),
-          axios.get('http://127.0.0.1:5000/products'),
+          axios.get('http://103.209.144.220:5000/sizes'),
+          axios.get('http://103.209.144.220:5000/colors'),
+          axios.get('http://103.209.144.220:5000/categories'),
+          axios.get('http://103.209.144.220:5000/products'),
         ]);
 
         setSizes(sizeResponse.data);
@@ -96,7 +96,7 @@ const AddProduct = () => {
     });
 
     try {
-      const response = await axios.post('http://127.0.0.1:5000/api/products', submitFormData, {
+      const response = await axios.post('http://103.209.144.220:5000/api/products', submitFormData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

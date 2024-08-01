@@ -8,7 +8,7 @@ const UsersTable = () => {
 
   useEffect(() => {
     // Fetch the users from your backend
-    axios.get('http://127.0.0.1:5000/api/auth/users')
+    axios.get('http://103.209.144.220:5000/api/auth/users')
       .then(response => {
         setUsers(response.data);
       })

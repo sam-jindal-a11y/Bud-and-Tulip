@@ -13,7 +13,7 @@ const CheckAddress = () => {
       const userId = decoded.id;
 
       try {
-        const response = await fetch(`http://127.0.0.1:5000/api/address/?userId=${userId}`, {
+        const response = await fetch(`http://103.209.144.220:5000/api/address/?userId=${userId}`, {
           headers: {
             'Authorization': token
           }
@@ -54,7 +54,7 @@ const CheckAddress = () => {
     try {
       const addressId = address ? address._id : '';
       const method = address ? 'PUT' : 'POST';
-      const url = address ? `http://127.0.0.1:5000/api/address/${addressId}` : 'http://127.0.0.1:5000/api/address';
+      const url = address ? `http://103.209.144.220:5000/api/address/${addressId}` : 'http://103.209.144.220:5000/api/address';
       const response = await fetch(url, {
         method,
         headers: {

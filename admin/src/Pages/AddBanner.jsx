@@ -12,7 +12,7 @@ const AddBanner = () => {
     files.forEach(file => formData.append('images', file));
 
     try {
-      const response = await axios.post('http://127.0.0.1:5000/upload/upload', formData, {
+      const response = await axios.post('http://103.209.144.220:5000/upload/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -29,7 +29,7 @@ const AddBanner = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:5000/upload/upload', {
+      const response = await axios.post('http://103.209.144.220:5000/upload/upload', {
         images: images
       });
 

@@ -8,7 +8,7 @@ const UpdateCategory = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://127.0.0.1:5000/categories/${id}`, { name })
+    axios.put(`http://103.209.144.220:5000/categories/${id}`, { name })
       .then(() => {
         setId('');
         setName('');

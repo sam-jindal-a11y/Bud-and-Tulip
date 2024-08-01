@@ -22,7 +22,7 @@ const SalePage = () => {
     // Fetch categories from the backend API
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/categories'); // Update this URL to your backend endpoint
+        const response = await axios.get('http://103.209.144.220:5000/categories'); // Update this URL to your backend endpoint
         const categories = response.data.map(category => ({
           value: category.category_id,
           label: category.name,
@@ -45,7 +45,7 @@ const SalePage = () => {
         try {
           const categoryNames = selectedCategories.map(category => category.label); // Assuming 'value' contains category names
           console.log(categoryNames)
-          const response = await axios.post('http://127.0.0.1:5000/products/by-categories', { categoryNames });
+          const response = await axios.post('http://103.209.144.220:5000/products/by-categories', { categoryNames });
           const productsWithCategory = response.data.map(product => {
             const categoryName = product.categoryName || 'Unknown'; // Ensure categoryName is handled if not returned from backend
             return { ...product, categoryName };
@@ -122,7 +122,7 @@ const SalePage = () => {
     };
   
     try {
-      const response = await axios.post('http://127.0.0.1:5000/sales', saleData); // Update this URL to your backend endpoint
+      const response = await axios.post('http://103.209.144.220:5000/sales', saleData); // Update this URL to your backend endpoint
       console.log('Sale created successfully:', response.data);
       alert('sale created successfully')
       window.location.reload();

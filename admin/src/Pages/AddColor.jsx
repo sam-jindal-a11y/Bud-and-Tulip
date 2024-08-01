@@ -7,7 +7,7 @@ const AddColor = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://127.0.0.1:5000/colors', { name })
+    axios.post('http://103.209.144.220:5000/colors', { name })
       .then(() => {
         setName('');
         alert('Color added successfully');

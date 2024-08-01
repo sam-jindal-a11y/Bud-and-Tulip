@@ -14,7 +14,7 @@ const ProductsTable = ({ products }) => {
   // Ensure products.createdProducts is an array
   const createdProducts = Array.isArray(products.createdProducts) ? products.createdProducts : [];
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/categories')
+    axios.get('http://103.209.144.220:5000/categories')
       .then(response => setCategories(response.data))
       .catch(error => console.error('Error fetching categories:', error));
   }, []);

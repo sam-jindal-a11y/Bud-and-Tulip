@@ -11,7 +11,7 @@ const VoucherList = () => {
 
   const fetchVouchers = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:5000/api/vouchers');
+      const response = await axios.get('http://103.209.144.220:5000/api/vouchers');
       setVouchers(response.data);
     } catch (error) {
       console.error(error);
@@ -20,7 +20,7 @@ const VoucherList = () => {
 
   const deleteVoucher = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:5000/api/vouchers/${id}`);
+      await axios.delete(`http://103.209.144.220:5000/api/vouchers/${id}`);
       setVouchers(vouchers.filter((voucher) => voucher._id !== id));
     } catch (error) {
       console.error(error);
