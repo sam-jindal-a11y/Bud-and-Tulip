@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import BannersTable from './BannersTable';
-import config from "../";
+import config from "../config";
 const AddBanner = () => {
   const [images, setImages] = useState([]);
 
