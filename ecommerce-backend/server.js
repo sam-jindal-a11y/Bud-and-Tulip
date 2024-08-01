@@ -49,7 +49,14 @@ console.log(pathimageschange);
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: 'https://payasvinimilk.com', // Your client domain
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 // config({path:"./config/config.env"})
