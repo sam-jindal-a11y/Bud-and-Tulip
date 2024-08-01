@@ -50,10 +50,7 @@ console.log(pathimageschange);
 const app = express();
 
 const corsOptions = {
-  origin: 'https://payasvinimilk.com', // Your client domain
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  optionsSuccessStatus: 204
+  origin: 'http://payasvinimilk.com', // Your client domain
 };
 
 app.use(cors(corsOptions));
