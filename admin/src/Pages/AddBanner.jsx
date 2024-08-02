@@ -29,7 +29,7 @@ const AddBanner = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('${config}/upload/upload', {
+      const response = await axios.post(`${config}/upload/upload`, {
         images: images
       });
 
