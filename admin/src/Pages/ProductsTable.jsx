@@ -28,7 +28,8 @@ const ProductsTable = ({ products }) => {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`/products/${id}`)
+    // `/api/wishlist/${user}/${productId}
+    axios.delete(`${config}/products/${id}`)
       .then(response => {
         console.log(response.data.message);
       
