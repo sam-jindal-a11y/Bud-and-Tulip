@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import InstagramPost from "./InstagramPost";
-import WebSocketClientComponent from "./WebSocketClientComponent";
+
 
 const Footer = () => {
   return (
@@ -108,7 +108,7 @@ const Footer = () => {
           Coders
         </p>
       </div>
-      <WebSocketClientComponent/>
+      
     </div>
   );
 };

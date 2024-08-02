@@ -5,7 +5,7 @@
     "client": "npm start --prefix client",
     "client1": "npm start --prefix admin",
     "server": "npm start --prefix ecommerce-backend",
-     "dev": "concurrently \"npm run client\" \"npm run client1\" \"npm run server\""
+    "dev": "concurrently \"npm run client\" \"npm run client1\" \"npm run server\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
