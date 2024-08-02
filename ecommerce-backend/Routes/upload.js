@@ -1,11 +1,17 @@
 import express from 'express';
 import upload from '../middleware/upload.js';
-import imagekit from '../config/imageKit.js';
 import Image from '../models/imageSchema.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const pathImagesChange = path.join(__dirname, '../../../Content/Banners');
 
 // Upload route
+const baseURL = 'https://api.payasvinimilk.com/images/Banners';
+
 router.post('/upload', upload.array('images'), async (req, res) => {
   try {
     const files = req.files;
@@ -32,19 +38,18 @@ router.post('/upload', upload.array('images'), async (req, res) => {
         throw new Error('No available index for additional images.');
       }
 
-      const response = await imagekit.upload({
-        file: file.buffer,
-        fileName: file.originalname,
-      });
+      // Construct the file path and URL
+      const filePath = path.join(pathImagesChange, file.filename);
+      const fileURL = `${baseURL}${file.filename}`;
 
       // Save to MongoDB with the incremental index
       const image = new Image({
-        url: response.url,
+        url: fileURL,
         index: nextAvailableIndex + index
       });
       await image.save();
 
-      return response;
+      return { url: fileURL };
     });
 
     const uploadResponses = await Promise.all(uploadPromises);
