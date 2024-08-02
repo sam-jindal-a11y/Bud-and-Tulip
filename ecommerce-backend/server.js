@@ -125,7 +125,7 @@ app.post('/api/products', upload.array('image', 6), async (req, res) => {
 
   try {
     // Base URL for images
-    const baseURL = 'https://api.payasvinimilk.com/images/';
+    const baseURL = 'https://api.budandtulips.com/images/';
 
     // Extract image paths from the uploaded files and prepend base URL
     const imageUrls = files.map(file => `${baseURL}${file.originalname}`);

@@ -1,4 +1,4 @@
 
-const config = 'https://api.payasvinimilk.com'
+const config = 'https://api.budandtulips.com'
 
 export default config

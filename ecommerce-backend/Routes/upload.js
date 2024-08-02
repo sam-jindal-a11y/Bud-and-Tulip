@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 const pathImagesChange = path.join(__dirname, '../../../Content/Banners');
 
 // Upload route
-const baseURL = 'https://api.payasvinimilk.com/images/Banners';
+const baseURL = 'https://api.budandtulips.com/images/Banners';
 
 router.post('/upload', upload.array('images'), async (req, res) => {
   try {
