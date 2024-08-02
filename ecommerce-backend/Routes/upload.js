@@ -45,6 +45,7 @@ router.post('/upload', upload.array('images'), async (req, res) => {
       // Save to MongoDB with the incremental index
       const image = new Image({
         url: fileURL,
+        path : filePath,
         index: nextAvailableIndex + index
       });
       await image.save();
