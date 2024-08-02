@@ -62,8 +62,8 @@ app.use('/upload', uploadRoutes);
 app.use('/images', express.static(pathimageschange));
 
 // MongoDB connection
-mongoose.connect('mongodb://103.209.144.220:27017/myDatabase', {
-  
+mongoose.connect('mongodb://127.0.0.1:27017/myDatabase', {
+
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -80,9 +80,17 @@ app.get('/', (req, res) => {
 
 
 // Multer configuration (not used for storage, just for handling file uploads)
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname,'../../../Content/Pro_Images')); // Destination folder for images
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.originalname); // Unique filename
+  }
+});
 
+const upload = multer({ storage: storage });
 app.get('/products', async (req, res) => {
   try {
     const products = await Product.find();
@@ -116,19 +124,13 @@ app.post('/api/products', upload.array('image', 6), async (req, res) => {
   }
 
   try {
-    const imageUploadPromises = files.map(file => {
-      return imagekit.upload({
-        file: file.buffer,
-        fileName: file.originalname,
-      });
-    });
+    // Base URL for images
+    const baseURL = 'https://api.payasvinimilk.com/images/';
 
-    const imageResponses = await Promise.all(imageUploadPromises);
-    const imageUrls = imageResponses.map(response => response.url);
+    // Extract image paths from the uploaded files and prepend base URL
+    const imageUrls = files.map(file => `${baseURL}${file.originalname}`);
 
-    // Here you can save the product details along with imageUrls to your database
-    // For demonstration, we are returning the details as the response
-
+    // Create and save the product with image URLs
     const newProduct = new Product({
       name,
       description,
@@ -145,13 +147,12 @@ app.post('/api/products', upload.array('image', 6), async (req, res) => {
       image: imageUrls,
     });
 
-    // Save product to database logic here...
     const savedProduct = await newProduct.save();
-    console.log("uploaded");
+    console.log("Product uploaded");
 
     res.status(201).send({ message: 'Product created successfully', data: savedProduct });
   } catch (error) {
-    console.error('Error uploading images to ImageKit:', error);
+    console.error('Error uploading images:', error);
     res.status(500).send({ error: 'Error uploading images' });
   }
 });
