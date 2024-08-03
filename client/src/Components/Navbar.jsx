@@ -65,8 +65,12 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg navbar">
+    
+    <nav className="bg-white shadow-lg navbar mt-0">
+     
+
       <div className="container mx-auto py-2.5 h-12 px-6 md:px-0 flex items-center justify-between">
+        
         <div className="flex items-center justify-around w-full md:w-auto">
           <button
             className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none"

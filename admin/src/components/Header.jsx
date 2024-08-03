@@ -18,9 +18,16 @@ const Header = ({ onToggleSidebar }) => {
         </button>
         <h1 className="text-2xl font-semibold" onClick={sendHome}>Bud&Tulip</h1>
       </div>
-      <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-2 rounded-lg focus:outline-none transition duration-300">
-      <i class="fa-solid fa-right-from-bracket fa-lg"></i>
-      </button>
+      <button
+  className="bg-red-500 hover:bg-red-600 text-white py-2 px-2 rounded-lg focus:outline-none transition duration-300"
+  onClick={() => {
+    localStorage.clear();
+    window.location.reload();
+  }}
+>
+  <i className="fa-solid fa-right-from-bracket fa-lg"></i>
+</button>
+
     </header>
   );
 };

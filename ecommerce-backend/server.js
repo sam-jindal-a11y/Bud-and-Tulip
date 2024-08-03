@@ -22,6 +22,7 @@ import uploadRoutes from './Routes/upload.js';
 import multer from 'multer';
 import path, { dirname } from 'path';
 import ImageKit from 'imagekit';
+import authenticationRoutes from './middleware/authentication.js';
 import Razorpay from 'razorpay';
 // import 'dotenv/config';
 import dotenv from 'dotenv';
@@ -74,6 +75,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/myDatabase', {
 app.get('/api/seed', seedRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/orderHistory', orderHistoryRouter);
+app.use('/admin', authenticationRoutes);
 app.get('/', (req, res) => {
   res.send('Welcome to the E-commerce API');
 });
