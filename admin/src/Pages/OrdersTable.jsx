@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import config from "../config";
+
 const OrdersTable = () => {
   const [orders, setOrders] = useState([]);
   const [userEmails, setUserEmails] = useState({});
   const [filteredOrders, setFilteredOrders] = useState([]);
-  const [orderStatus, setOrderStatus] = useState('all');
+  const [orderStatus, setOrderStatus] = useState('pending');
   const [paymentMethod, setPaymentMethod] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Fetch the orders from your backend
@@ -17,20 +19,26 @@ const OrdersTable = () => {
       .then(async response => {
         const ordersData = response.data;
         setOrders(ordersData);
-        setFilteredOrders(ordersData);
-
-        // Fetch user emails
         const emails = await fetchUserEmails(ordersData);
         setUserEmails(emails);
+        // Fetch URL parameters and apply filters
+        const queryParams = new URLSearchParams(location.search);
+        const status = queryParams.get('status') || 'pending';
+        const payment = queryParams.get('paymentMethod') || 'all';
+        const date = queryParams.get('date') || 'all';
+        setOrderStatus(status);
+        setPaymentMethod(payment);
+        setDateFilter(date);
+        filterOrders(status, payment, date, ordersData);
       })
       .catch(error => {
         console.error("There was an error fetching the orders!", error);
       });
-  }, []);
+  }, [location.search]);
 
   useEffect(() => {
-    filterOrders();
-  }, [orderStatus, paymentMethod, dateFilter]);
+    filterOrders(orderStatus, paymentMethod, dateFilter, orders);
+  }, [orderStatus, paymentMethod, dateFilter, orders]);
 
   const fetchUserEmails = async (orders) => {
     const emails = {};
@@ -43,21 +51,21 @@ const OrdersTable = () => {
     return emails;
   };
 
-  const filterOrders = () => {
-    let filtered = [...orders];
+  const filterOrders = (status, payment, date, allOrders) => {
+    let filtered = [...allOrders];
 
     // Filter by order status
-    if (orderStatus !== 'all') {
-      filtered = filtered.filter(order => order.status === orderStatus);
+    if (status !== 'all') {
+      filtered = filtered.filter(order => order.status.toLowerCase() === status.toLowerCase());
     }
 
     // Filter by payment method
-    if (paymentMethod !== 'all') {
-      filtered = filtered.filter(order => order.paymentMethod === paymentMethod);
+    if (payment !== 'all') {
+      filtered = filtered.filter(order => order.paymentMethod.toLowerCase() === payment.toLowerCase());
     }
 
     // Filter by date range
-    switch (dateFilter) {
+    switch (date) {
       case 'today':
         filtered = filtered.filter(order => isToday(order.createdAt));
         break;
@@ -102,7 +110,9 @@ const OrdersTable = () => {
   const viewOrder = (orderId) => {
     navigate(`/orderdetails/${orderId}`);
   };
-
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Order History</h1>
@@ -128,6 +138,7 @@ const OrdersTable = () => {
             className="p-2 border border-gray-300 rounded w-full sm:w-auto"
           >
             <option value="all">All</option>
+            <option value="pending">Pending</option>
             <option value="Cancelled">Cancelled</option>
             <option value="Delivered">Delivered</option>
           </select>
@@ -153,6 +164,7 @@ const OrdersTable = () => {
               <th className="py-2 px-4 border-b">User Email</th>
               <th className="py-2 px-4 border-b">Total Amount</th>
               <th className="py-2 px-4 border-b">Order Date</th>
+              <th className="py-2 px-4 border-b">Order Status</th>
               <th className="py-2 px-4 border-b">Actions</th>
             </tr>
           </thead>
@@ -163,6 +175,7 @@ const OrdersTable = () => {
                 <td className="py-2 px-4 border-b">{userEmails[order.userId]}</td>
                 <td className="py-2 px-4 border-b">₹ {order.finalAmount.toFixed(2)}</td>
                 <td className="py-2 px-4 border-b">{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td className="py-2 px-4 border-b">{capitalizeFirstLetter(order.status)}</td>
                 <td className="py-2 px-4 border-b">
                   <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => viewOrder(order._id)}>View Order</button>
                 </td>
@@ -178,6 +191,7 @@ const OrdersTable = () => {
             <p><strong>User Email:</strong> {userEmails[order.userId]}</p>
             <p><strong>Total Amount:</strong> ₹ {order.finalAmount.toFixed(2)}</p>
             <p><strong>Order Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</p>
+            <p><strong>Order Status:</strong> {order.status}</p>
             <button className="bg-blue-500 text-white px-4 py-2 rounded mt-2" onClick={() => viewOrder(order._id)}>View Order</button>
           </div>
         ))}

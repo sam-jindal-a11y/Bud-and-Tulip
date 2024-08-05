@@ -1,8 +1,8 @@
-// EditAddressForm.js
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from "../config";
+
 const EditAddressForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ const EditAddressForm = () => {
     postalCode: '',
     phone: '',
   });
+  const [countries, setCountries] = useState([]);
 
   useEffect(() => {
     if (address) {
@@ -37,6 +38,20 @@ const EditAddressForm = () => {
       });
     }
   }, [address]);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch('https://restcountries.com/v3.1/all'); // Example API endpoint
+        const data = await response.json();
+        setCountries(data);
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -96,7 +111,20 @@ const EditAddressForm = () => {
         </div>
         <div>
           <label className="block">Country</label>
-          <input type="text" name="country" value={form.country} onChange={handleInputChange} className="w-full border p-2 rounded" required />
+          <select
+            name="country"
+            value={form.country}
+            onChange={handleInputChange}
+            className="w-full border p-2 rounded"
+            required
+          >
+            <option value="">Select Country</option>
+            {countries.map((country) => (
+              <option key={country.cca3} value={country.name.common}>
+                {country.name.common}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block">Postal Code</label>

@@ -12,21 +12,29 @@ const CheckoutPage = () => {
   const [voucherCode, setVoucherCode] = useState("");
   const [maxDiscount, setMaxDiscount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
+  const [international , setInternaiotnal] = useState('outoff'); 
   const navigate = useNavigate();
 
   //for razorpay
   const [responseId, setResponseId] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
-
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode(token);
-      fetchAddresses(decoded.id);
-      fetchCartOrOrder(decoded.id);
-    } else {
-      navigate("/login");
-    }
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          await fetchAddresses(decoded.id);
+          await fetchCartOrOrder(decoded.id);
+        } catch (error) {
+          console.error("Error during data fetching:", error);
+        }
+      } else {
+        navigate("/login");
+      }
+    };
+
+    fetchData();
   }, [navigate]);
 
   const fetchAddresses = async (userId) => {
@@ -47,6 +55,7 @@ const CheckoutPage = () => {
       console.error("Error fetching addresses:", error);
     }
   };
+
 
   const fetchCartOrOrder = () => {
     try {
@@ -153,7 +162,7 @@ const CheckoutPage = () => {
     discount: maxDiscount,
     voucherCode: voucherCode || null, // Include voucher code if used
     codCharge: paymentMethod === "cod" ? 300 : 0,
-    finalAmount: finalPrice + (paymentMethod === "cod" ? 300 : 0)
+    finalAmount: shippingCharge+finalPrice + (paymentMethod === "cod" ? 300 : 0)
   };
 
   if (paymentMethod === "razorpay") {
@@ -231,6 +240,20 @@ const CheckoutPage = () => {
   }
 };
 
+const getShippingCharge = (quantity) => {
+  if (quantity === 1) {
+    return 3000;
+  } else if (quantity <= 3) {
+    return 3500;
+  } else if (quantity <= 5) {
+    return 5500;
+  } else {
+    // Handle cases where quantity is more than 5, if needed
+    return 0; // Or another default value if applicable
+  }
+};
+const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
+const shippingCharge = addresses.find(addr => addr._id === selectedAddress)?.country === 'India' ? 0 : getShippingCharge(totalQuantity);
 
   return (
     <div className="container mx-auto p-4 flex flex-wrap">
@@ -278,60 +301,36 @@ const CheckoutPage = () => {
         </div>
         <div className="mb-4">
           <h2 className="text-2xl font-bold mb-2">Select Payment Method</h2>
-          <div className="mb-2">
-            <label htmlFor="cod" className="cursor-pointer flex items-center">
+          <div className=" p-4 border border-gray-200 rounded-md mr-2">
+          {selectedAddress && addresses.find(addr => addr._id === selectedAddress)?.country === 'India' && (
+              <label className="flex items-center mb-2">
+                <input
+                  type="radio"
+                  value="cod"
+                  checked={paymentMethod === "cod"}
+                  onChange={() => setPaymentMethod("cod")}
+                  className="mr-2"
+                />
+                Cash on Delivery (COD)
+              </label>
+            )}
+            <label className="flex items-center mb-2">
               <input
                 type="radio"
-                id="cod"
-                name="payment"
-                value="cod"
-                checked={paymentMethod === "cod"}
-                onChange={() => setPaymentMethod("cod")}
-                className="hidden"
-              />
-              <div className="bg-white border rounded-md p-4 w-full">
-                <div className="flex items-center mb-2">
-                  <div className="w-4 h-4 border border-gray-500 rounded-full mr-2">
-                    {paymentMethod === "cod" && (
-                      <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                    )}
-                  </div>
-                  <label htmlFor="cod" className="text-gray-700">
-                    Cash on Delivery
-                  </label>
-                </div>
-              </div>
-            </label>
-          </div>
-
-          <div className="mb-2">
-            <label
-              htmlFor="razorpay"
-              className="cursor-pointer flex items-center"
-            >
-              <input
-                type="radio"
-                id="razorpay"
-                name="paymentId"
                 value="razorpay"
                 checked={paymentMethod === "razorpay"}
                 onChange={() => setPaymentMethod("razorpay")}
-                className="hidden"
+                className="mr-2"
               />
-              <div className="bg-white border rounded-md p-4 w-full">
-                <div className="flex items-center mb-2">
-                  <div className="w-4 h-4 border border-gray-500 rounded-full mr-2">
-                    {paymentMethod === "razorpay" && (
-                      <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                    )}
-                  </div>
-                  <label htmlFor="razorpay" className="text-gray-700">
-                    Razorpay
-                  </label>
-                </div>
-              </div>
+              Razorpay
             </label>
           </div>
+          <div className="mb-2 ">
+            
+        
+          </div>
+
+          
         </div>
       </div>
 
@@ -395,13 +394,22 @@ const CheckoutPage = () => {
             <span>Total Price:</span>
             <span>₹ {totalPrice.toFixed(2)}</span>
           </div>
+          <div className="flex justify-between items-center font-light mt-2">
+            <span>Total Quantity:</span>
+            <span>{totalQuantity}</span>
+          </div>
           {maxDiscount > 0 && (
             <div className="flex justify-between items-center font-light mt-2">
               <span>Discount ( - ) :</span>
               <span>₹ {maxDiscount.toFixed(2)}</span>
             </div>
           )}
-
+ {shippingCharge > 0 &&
+            <div className="flex justify-between items-center font-light mt-2">
+              <span>Shipping Charges ( + ) :</span>
+              <span>₹ {shippingCharge}</span>
+            </div>
+          }
           {paymentMethod === "cod" && (
             <div className="flex justify-between items-center font-light mt-2">
               <span>COD Charge ( + ) :</span>
@@ -411,15 +419,18 @@ const CheckoutPage = () => {
           <div className="flex justify-between items-center font-semibold mt-4">
             <span>Final Price:</span>
             <span>
-              ₹ {(finalPrice + (paymentMethod === "cod" ? 300 : 0)).toFixed(2)}
+              ₹ {shippingCharge + finalPrice + (paymentMethod === "cod" ? 300 : 0)}
             </span>
           </div>
           <button
             onClick={handlePayment}
             className="w-full bg-pink-500 text-white py-2 rounded-lg mt-4 hover:bg-pink-600 focus:outline-none"
           >
-            Pay Now ₹ {(finalPrice + (paymentMethod === "cod" ? 300 : 0)).toFixed(2)}
+            Pay Now ₹ {shippingCharge + finalPrice + (paymentMethod === "cod" ? 300 : 0)}
           </button>
+          {confirmationMessage && (
+            <p className="mt-4 text-green-500">{confirmationMessage}</p>
+          )}
         </div>
       </div>
     </div>
