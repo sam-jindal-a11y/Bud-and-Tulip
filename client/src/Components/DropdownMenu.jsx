@@ -45,7 +45,7 @@ const DropdownMenu = () => {
             </li>
             <li>
               <Link
-                to="/search?query=&category=Sale"
+                to="/search?query=&category=All%20Products&hasoffer=true"
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                 onClick={() => setIsOpen(false)} // Close dropdown on link click
               >

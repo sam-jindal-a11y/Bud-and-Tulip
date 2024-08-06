@@ -17,7 +17,7 @@ const CheckAddress = () => {
       try {
         const response = await fetch(`${config}/api/address/?userId=${userId}`, {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `${token}`
           }
         });
         const result = await response.json();
@@ -72,7 +72,7 @@ const CheckAddress = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `${token}`
         },
         body: JSON.stringify(addressData)
       });

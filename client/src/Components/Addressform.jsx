@@ -1,8 +1,24 @@
-import React from 'react';
-import {useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import config from "../config";
+
 const Addressform = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch('https://restcountries.com/v3.1/all'); // Example API endpoint
+        const data = await response.json();
+        setCountries(data);
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +49,7 @@ const Addressform = () => {
       const result = await response.json();
       if (response.ok) {
         // alert('Address added successfully');
-        history(-1); // Navigate back to the previous page
+        navigate(-1); // Navigate back to the previous page
       } else {
         alert('Error: ' + result.error);
       }
@@ -43,7 +59,7 @@ const Addressform = () => {
   };
 
   const handleCancel = () => {
-    history(-1); // Navigate back to the previous page
+    navigate(-1); // Navigate back to the previous page
   };
 
   return (
@@ -83,7 +99,14 @@ const Addressform = () => {
 
           <div>
             <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
-            <input type="text" id="country" placeholder="Country" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+            <select id="country" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option value="">Select Country</option>
+              {countries.map((country) => (
+                <option key={country.cca3} value={country.name.common}>
+                  {country.name.common}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
