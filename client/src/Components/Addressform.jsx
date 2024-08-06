@@ -97,17 +97,7 @@ const Addressform = () => {
             <input type="text" id="city" placeholder="City" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
           </div>
 
-          <div>
-            <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
-            <select id="country" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="">Select Country</option>
-              {countries.map((country) => (
-                <option key={country.cca3} value={country.name.common}>
-                  {country.name.common}
-                </option>
-              ))}
-            </select>
-          </div>
+         
 
           <div>
             <label htmlFor="province" className="block text-sm font-medium text-gray-700">Province</label>
@@ -123,7 +113,17 @@ const Addressform = () => {
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
             <input type="text" id="phone" placeholder="Phone" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
           </div>
-
+          <div>
+            <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
+            <select id="country" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option value="">Select Country</option>
+              {countries.map((country) => (
+                <option key={country.cca3} value={country.name.common}>
+                  {country.name.common}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="flex items-center">
             <input type="checkbox" id="default-address" className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"/>
             <label htmlFor="default-address" className="ml-2 block text-sm text-gray-900">Set as default address</label>
