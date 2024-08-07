@@ -42,6 +42,10 @@ const saleSchema = new mongoose.Schema({
         ref: 'Product',
         required: true,
       },
+      originalPrice: {
+        type: Number,
+        required: true,
+      },
       offerPrice: {
         type: Number,
         required: true,
@@ -52,6 +56,10 @@ const saleSchema = new mongoose.Schema({
       },
     },
   ],
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const Sale = mongoose.model('Sale', saleSchema);

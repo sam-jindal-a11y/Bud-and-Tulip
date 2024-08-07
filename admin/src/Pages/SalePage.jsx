@@ -12,7 +12,6 @@ const SalePage = () => {
   const [discount, setDiscount] = useState('');
   const [flatDiscount, setFlatDiscount] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -26,7 +25,6 @@ const SalePage = () => {
           value: category.category_id,
           label: category.name,
         }));
-        setCategories(response.data);
         setCategoryOptions(categories);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -40,15 +38,14 @@ const SalePage = () => {
     if (selectedCategories.length > 0) {
       const fetchProducts = async () => {
         try {
-          const categoryNames = selectedCategories.map(category => category.label);
-          const response = await axios.post('http://localhost:5000/products/by-categories', { categoryNames });
+          const categoryNames = selectedCategories.map(category => category.label); // Assuming 'value' contains category names
+          console.log(categoryNames)
+          const response = await axios.post(`${config}/products/by-categories', { categoryNames }`);
           const productsWithCategory = response.data.map(product => {
-            const categoryName = product.categoryName || 'Unknown';
+            const categoryName = product.categoryName || 'Unknown'; // Ensure categoryName is handled if not returned from backend
             return { ...product, categoryName };
           });
           setProducts(productsWithCategory);
-          setSelectedProducts([]);
-          setSelectAll(false);
         } catch (error) {
           console.error('Error fetching products:', error);
         }
@@ -60,7 +57,16 @@ const SalePage = () => {
       setSelectedProducts([]);
       setSelectAll(false);
     }
-  }, [selectedCategories, categories]);
+  }, [selectedCategories]);
+
+  useEffect(() => {
+    const filteredProducts = products.filter(product => !product.hasOffer);
+    if (selectAll) {
+      setSelectedProducts(filteredProducts.map(product => product._id));
+    } else {
+      setSelectedProducts([]);
+    }
+  }, [selectAll, products]);
 
   const handleCategoryChange = (selectedOptions) => {
     setSelectedCategories(selectedOptions || []);
@@ -72,8 +78,7 @@ const SalePage = () => {
     } else {
       setSelectedProducts([...selectedProducts, productId]);
     }
-    const filteredProducts = products.filter(product => !product.hasOffer);
-    if (selectedProducts.length + 1 === filteredProducts.length) {
+    if (selectedProducts.length + 1 === products.length) {
       setSelectAll(true);
     } else {
       setSelectAll(false);
@@ -81,18 +86,17 @@ const SalePage = () => {
   };
 
   const handleSelectAll = () => {
-    const filteredProducts = products.filter(product => !product.hasOffer);
     if (selectAll) {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(filteredProducts.map(product => product._id));
+      setSelectedProducts(products.map(product => product.id));
     }
     setSelectAll(!selectAll);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const updatedProducts = products.map(product => {
       let offerPrice = product.price;
       if (discount) {
@@ -106,7 +110,7 @@ const SalePage = () => {
         hasOffer: selectedProducts.includes(product._id),
       };
     });
-
+  
     const saleData = {
       saleName,
       startDate,
@@ -116,7 +120,7 @@ const SalePage = () => {
       discount,
       flatDiscount,
       categories: selectedCategories.map(option => option.value),
-      products: updatedProducts,
+      products: updatedProducts.filter(product => selectedProducts.includes(product._id)),
     };
 
     try {
@@ -229,7 +233,7 @@ const SalePage = () => {
                         <input
                           type="checkbox"
                           checked={selectAll}
-                          onChange={handleSelectAll}
+                          onChange={handleSelectAllChange}
                           className="form-checkbox"
                         />
                       </th>
@@ -237,7 +241,6 @@ const SalePage = () => {
                       <th className="p-3 border-b text-left">Category</th>
                       <th className="p-3 border-b text-left">Price</th>
                       <th className="p-3 border-b text-left">Offer Price</th>
-                      <th className="p-3 border-b text-left">Has Offer</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -252,10 +255,15 @@ const SalePage = () => {
                           />
                         </td>
                         <td className="p-3 border-b">{product.name}</td>
-                        <td className="p-3 border-b">{product.category}</td>
-                        <td className="p-3 border-b">{product.price}</td>
-                        <td className="p-3 border-b">{product.offerPrice}</td>
-                        <td className="p-3 border-b">{product.hasOffer ? 'Yes' : 'No'}</td>
+                        <td className="p-3 border-b">{product.categoryName}</td>
+                        <td className="p-3 border-b">{product.originalPrice}</td>
+                        <td className="p-3 border-b">
+                          {discount
+                            ? product.originalPrice - (product.originalPrice * (discount / 100))
+                            : flatDiscount
+                            ? product.originalPrice - flatDiscount
+                            : product.originalPrice}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -266,14 +274,14 @@ const SalePage = () => {
           <div className="flex justify-end mt-6">
             <button
               type="submit"
-              className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-blue-500 text-white p-2 rounded-md"
             >
               Start Sale
             </button>
           </div>
         </form>
-        <SalesTablePage/>
       </div>
+     
     </div>
   );
 };
