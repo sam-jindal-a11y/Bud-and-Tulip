@@ -63,7 +63,7 @@ app.use('/upload', uploadRoutes);
 app.use('/images', express.static(pathimageschange));
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://nilesh:nilesh@cluster0.cbh4pcf.mongodb.net/', {
+mongoose.connect('mongodb://localhost:27017/myDatabase', {
 
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -274,11 +274,13 @@ app.post('/sales', async (req, res) => {
 
           // Update product for the current sale
           product.offerPrice = discount
-            ? product.price - (product.price * (discount / 100))
-            : flatDiscount
-            ? product.price - flatDiscount
-            : product.price;
-          product.hasOffer = true;
+          ? Math.round(product.price - (product.price * (parseFloat(discount) / 100)))
+          : flatDiscount
+          ? Math.round(product.price - parseFloat(flatDiscount))
+          : Math.round(product.price);
+        product.hasOffer = true;
+        
+        
           
           return product.save();
         }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
 import SalesTablePage from './SalesTablePage';
+import config from '../config';
 
 const SalePage = () => {
   const [saleName, setSaleName] = useState('');
@@ -20,7 +21,7 @@ const SalePage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/categories');
+        const response = await axios.get(`${config}}/categories`);
         const categories = response.data.map(category => ({
           value: category.category_id,
           label: category.name,
@@ -39,7 +40,7 @@ const SalePage = () => {
       const fetchProducts = async () => {
         try {
           const categoryNames = selectedCategories.map(category => category.label);
-          const response = await axios.post('http://localhost:5000/products/by-categories', { categoryNames });
+          const response = await axios.post(`${config}}/products/by-categories`, { categoryNames });
           const productsWithCategory = response.data.map(product => ({
             ...product,
             originalPrice: product.price,
@@ -91,13 +92,15 @@ const SalePage = () => {
       ...product,
       offerPrice: selectedProducts.includes(product._id)
         ? discount
-          ? product.originalPrice - (product.originalPrice * (discount / 100))
+          ? Math.round(product.originalPrice - (product.originalPrice * (parseFloat(discount) / 100)))
           : flatDiscount
-          ? product.originalPrice - flatDiscount
-          : product.originalPrice
-        : product.originalPrice,
+          ? Math.round(product.originalPrice - parseFloat(flatDiscount))
+          : Math.round(product.originalPrice)
+        : Math.round(product.originalPrice),
       hasOffer: selectedProducts.includes(product._id),
-    }));
+    }));    
+    
+
 
     const saleData = {
       saleName,
@@ -112,7 +115,7 @@ const SalePage = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/sales', saleData);
+      const response = await axios.post(`${config}}/sales`, saleData);
       console.log('Sale created successfully:', response.data);
       alert('Sale created successfully');
       window.location.reload();
@@ -246,12 +249,14 @@ const SalePage = () => {
                         <td className="p-3 border-b">{product.categoryName}</td>
                         <td className="p-3 border-b">{product.originalPrice}</td>
                         <td className="p-3 border-b">
-                          {discount
-                            ? product.originalPrice - (product.originalPrice * (discount / 100))
-                            : flatDiscount
-                            ? product.originalPrice - flatDiscount
-                            : product.originalPrice}
-                        </td>
+  {discount
+    ? Math.round(product.originalPrice - (product.originalPrice * (parseFloat(discount) / 100)))
+    : flatDiscount
+    ? Math.round(product.originalPrice - parseFloat(flatDiscount))
+    : Math.round(product.originalPrice)}
+</td>
+
+
                       </tr>
                     ))}
                   </tbody>
