@@ -38,13 +38,13 @@ const SalePage = () => {
     if (selectedCategories.length > 0) {
       const fetchProducts = async () => {
         try {
-          const categoryNames = selectedCategories.map(category => category.label); // Assuming 'value' contains category names
-          console.log(categoryNames)
-          const response = await axios.post(`${config}/products/by-categories', { categoryNames }`);
-          const productsWithCategory = response.data.map(product => {
-            const categoryName = product.categoryName || 'Unknown'; // Ensure categoryName is handled if not returned from backend
-            return { ...product, categoryName };
-          });
+          const categoryNames = selectedCategories.map(category => category.label);
+          const response = await axios.post('http://localhost:5000/products/by-categories', { categoryNames });
+          const productsWithCategory = response.data.map(product => ({
+            ...product,
+            originalPrice: product.price,
+            categoryName: product.categoryName || 'Unknown',
+          }));
           setProducts(productsWithCategory);
         } catch (error) {
           console.error('Error fetching products:', error);
@@ -78,39 +78,27 @@ const SalePage = () => {
     } else {
       setSelectedProducts([...selectedProducts, productId]);
     }
-    if (selectedProducts.length + 1 === products.length) {
-      setSelectAll(true);
-    } else {
-      setSelectAll(false);
-    }
   };
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedProducts([]);
-    } else {
-      setSelectedProducts(products.map(product => product.id));
-    }
+  const handleSelectAllChange = () => {
     setSelectAll(!selectAll);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const updatedProducts = products.map(product => {
-      let offerPrice = product.price;
-      if (discount) {
-        offerPrice = product.price - (product.price * (discount / 100));
-      } else if (flatDiscount) {
-        offerPrice = product.price - flatDiscount;
-      }
-      return {
-        ...product,
-        offerPrice,
-        hasOffer: selectedProducts.includes(product._id),
-      };
-    });
-  
+
+    const updatedProducts = products.map(product => ({
+      ...product,
+      offerPrice: selectedProducts.includes(product._id)
+        ? discount
+          ? product.originalPrice - (product.originalPrice * (discount / 100))
+          : flatDiscount
+          ? product.originalPrice - flatDiscount
+          : product.originalPrice
+        : product.originalPrice,
+      hasOffer: selectedProducts.includes(product._id),
+    }));
+
     const saleData = {
       saleName,
       startDate,
@@ -271,17 +259,15 @@ const SalePage = () => {
               </div>
             </div>
           )}
-          <div className="flex justify-end mt-6">
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-2 rounded-md"
-            >
-              Start Sale
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Create Sale
+          </button>
         </form>
       </div>
-     
+      <SalesTablePage />
     </div>
   );
 };
