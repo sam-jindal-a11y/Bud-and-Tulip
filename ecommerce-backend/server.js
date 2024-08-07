@@ -51,8 +51,8 @@ console.log(pathimageschange);
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // config({path:"./config/config.env"})
 
 // Static files
@@ -63,7 +63,7 @@ app.use('/upload', uploadRoutes);
 app.use('/images', express.static(pathimageschange));
 
 // MongoDB connection
-mongoose.connect('mongodb://127.0.0.1:27017/myDatabase', {
+mongoose.connect('mongodb+srv://nilesh:nilesh@cluster0.cbh4pcf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
 
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -265,13 +265,24 @@ app.post('/sales', async (req, res) => {
 
     await newSale.save();
 
-    const updatePromises = products.map(product => 
-      Product.findByIdAndUpdate(product._id, {
-        originalPrice: product.price,
-        originalHasOffer: product.hasOffer,
-        offerPrice: product.offerPrice,
-        hasOffer: product.hasOffer,
-      }, { new: true })
+    const updatePromises = products.map(productId =>
+      Product.findById(productId).then(product => {
+        if (product) {
+          // Save the original state of the product
+          product.originalPrice = product.price;
+          product.originalHasOffer = product.hasOffer;
+
+          // Update product for the current sale
+          product.offerPrice = discount
+            ? product.price - (product.price * (discount / 100))
+            : flatDiscount
+            ? product.price - flatDiscount
+            : product.price;
+          product.hasOffer = true;
+          
+          return product.save();
+        }
+      })
     );
 
     await Promise.all(updatePromises);
@@ -279,11 +290,14 @@ app.post('/sales', async (req, res) => {
     // Schedule a task to revert products to their original state after the sale ends
     const saleEndTime = new Date(`${endDate}T${endTime}`);
     setTimeout(async () => {
-      const revertPromises = products.map(product =>
-        Product.findByIdAndUpdate(product._id, {
-          offerPrice: product.originalPrice,
-          hasOffer: product.originalHasOffer,
-        }, { new: true })
+      const revertPromises = products.map(productId =>
+        Product.findById(productId).then(product => {
+          if (product) {
+            product.offerPrice = product.originalPrice;
+            product.hasOffer = product.originalHasOffer;
+            return product.save();
+          }
+        })
       );
       await Promise.all(revertPromises);
     }, saleEndTime - Date.now());
@@ -294,6 +308,7 @@ app.post('/sales', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 // GET all sales
 app.get('/sales', async (req, res) => {
   try {
