@@ -21,7 +21,7 @@ const SalePage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${config}}/categories`);
+        const response = await axios.get(`${config}/categories`);
         const categories = response.data.map(category => ({
           value: category.category_id,
           label: category.name,
@@ -40,7 +40,7 @@ const SalePage = () => {
       const fetchProducts = async () => {
         try {
           const categoryNames = selectedCategories.map(category => category.label);
-          const response = await axios.post(`${config}}/products/by-categories`, { categoryNames });
+          const response = await axios.post(`${config}/products/by-categories`, { categoryNames });
           const productsWithCategory = response.data.map(product => ({
             ...product,
             originalPrice: product.price,
@@ -115,7 +115,7 @@ const SalePage = () => {
     };
 
     try {
-      const response = await axios.post(`${config}}/sales`, saleData);
+      const response = await axios.post(`${config}/sales`, saleData);
       console.log('Sale created successfully:', response.data);
       alert('Sale created successfully');
       window.location.reload();
