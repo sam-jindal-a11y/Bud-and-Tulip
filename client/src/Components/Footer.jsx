@@ -56,7 +56,7 @@ const Footer = () => {
           >
             All Products
           </Link>
-          <Link to="/search?query=&category=Sale" className="block mb-1">
+          <Link to="/search?query=&category=All%20Products&hasoffer=true" className="block mb-1">
             Sale
           </Link>
           <Link to="/search?query=&category=Suits" className="block mb-1">
