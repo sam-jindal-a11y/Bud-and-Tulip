@@ -12,7 +12,7 @@ const SalePage = () => {
   const [endTime, setEndTime] = useState('');
   const [discount, setDiscount] = useState('');
   const [flatDiscount, setFlatDiscount] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [ selectedCategories, setSelectedCategories] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -246,7 +246,7 @@ const SalePage = () => {
                           />
                         </td>
                         <td className="p-3 border-b">{product.name}</td>
-                        <td className="p-3 border-b">{product.categoryName}</td>
+                        <td className="p-3 border-b">{product.category}</td>
                         <td className="p-3 border-b">{product.originalPrice}</td>
                         <td className="p-3 border-b">
   {discount
