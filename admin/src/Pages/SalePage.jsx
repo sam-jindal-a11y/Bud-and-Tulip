@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
 import SalesTablePage from './SalesTablePage';
-import config from "../config";
+
 const SalePage = () => {
   const [saleName, setSaleName] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -19,17 +19,15 @@ const SalePage = () => {
   const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
-    // Fetch categories from the backend API
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${config}/categories`); // Update this URL to your backend endpoint
+        const response = await axios.get('http://localhost:5000/categories');
         const categories = response.data.map(category => ({
           value: category.category_id,
           label: category.name,
         }));
         setCategories(response.data);
         setCategoryOptions(categories);
-        console.log(categories);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -40,14 +38,12 @@ const SalePage = () => {
 
   useEffect(() => {
     if (selectedCategories.length > 0) {
-      // Fetch products based on the selected categories from the backend API
       const fetchProducts = async () => {
         try {
-          const categoryNames = selectedCategories.map(category => category.label); // Assuming 'value' contains category names
-          console.log(categoryNames)
-          const response = await axios.post(`${config}/products/by-categories', { categoryNames }`);
+          const categoryNames = selectedCategories.map(category => category.label);
+          const response = await axios.post('http://localhost:5000/products/by-categories', { categoryNames });
           const productsWithCategory = response.data.map(product => {
-            const categoryName = product.categoryName || 'Unknown'; // Ensure categoryName is handled if not returned from backend
+            const categoryName = product.categoryName || 'Unknown';
             return { ...product, categoryName };
           });
           setProducts(productsWithCategory);
@@ -67,7 +63,7 @@ const SalePage = () => {
   }, [selectedCategories, categories]);
 
   const handleCategoryChange = (selectedOptions) => {
-    setSelectedCategories(selectedOptions || []); // Ensure selectedOptions is always an array
+    setSelectedCategories(selectedOptions || []);
   };
 
   const handleProductChange = (productId) => {
@@ -76,7 +72,8 @@ const SalePage = () => {
     } else {
       setSelectedProducts([...selectedProducts, productId]);
     }
-    if (selectedProducts.length + 1 === products.length) {
+    const filteredProducts = products.filter(product => !product.hasOffer);
+    if (selectedProducts.length + 1 === filteredProducts.length) {
       setSelectAll(true);
     } else {
       setSelectAll(false);
@@ -84,17 +81,18 @@ const SalePage = () => {
   };
 
   const handleSelectAll = () => {
+    const filteredProducts = products.filter(product => !product.hasOffer);
     if (selectAll) {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(products.map(product => product.id));
+      setSelectedProducts(filteredProducts.map(product => product._id));
     }
     setSelectAll(!selectAll);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const updatedProducts = products.map(product => {
       let offerPrice = product.price;
       if (discount) {
@@ -108,7 +106,7 @@ const SalePage = () => {
         hasOffer: selectedProducts.includes(product._id),
       };
     });
-  
+
     const saleData = {
       saleName,
       startDate,
@@ -120,32 +118,19 @@ const SalePage = () => {
       categories: selectedCategories.map(option => option.value),
       products: updatedProducts,
     };
-  
+
     try {
-      const response = await axios.post(`${config}/sales`, saleData); // Update this URL to your backend endpoint
+      const response = await axios.post('http://localhost:5000/sales', saleData);
       console.log('Sale created successfully:', response.data);
-      alert('sale created successfully')
+      alert('Sale created successfully');
       window.location.reload();
-      // Optionally, reset the form fields
-      setSaleName('');
-      setStartDate('');
-      setStartTime('');
-      setEndDate('');
-      setEndTime('');
-      setDiscount('');
-      setFlatDiscount('');
-      setSelectedCategories([]);
-      setProducts([]);
-      setSelectedProducts([]);
-      setSelectAll(false);
     } catch (error) {
       console.error('Error creating sale:', error);
     }
   };
-  
 
   return (
-    <div className="min-h-screen text-start">
+    <div className="min-h-screen bg-gray-100 p-6 text-start">
       <div className="max-w-full mx-auto bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-6">Create Sale</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -256,13 +241,13 @@ const SalePage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map(product => (
+                    {products.filter(product => !product.hasOffer).map(product => (
                       <tr key={product._id}>
                         <td className="p-3 border-b">
                           <input
                             type="checkbox"
                             checked={selectedProducts.includes(product._id)}
-                            onChange={() => handleProductChange(product._id )}
+                            onChange={() => handleProductChange(product._id)}
                             className="form-checkbox"
                           />
                         </td>
@@ -281,7 +266,7 @@ const SalePage = () => {
           <div className="flex justify-end mt-6">
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white p-2 rounded-md"
+              className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Start Sale
             </button>
@@ -289,7 +274,6 @@ const SalePage = () => {
         </form>
         <SalesTablePage/>
       </div>
-     
     </div>
   );
 };

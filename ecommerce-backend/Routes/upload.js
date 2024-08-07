@@ -40,7 +40,7 @@ router.post('/upload', upload.array('images'), async (req, res) => {
 
       // Construct the file path and URL
       const filePath = path.join(pathImagesChange, file.filename);
-      const fileURL = `${baseURL}${file.filename}`;
+      const fileURL = `${baseURL}${file.originalname}`;
 
       // Save to MongoDB with the incremental index
       const image = new Image({

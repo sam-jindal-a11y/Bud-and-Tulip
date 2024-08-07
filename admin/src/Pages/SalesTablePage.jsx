@@ -36,29 +36,29 @@ const SalesTablePage = () => {
 
   const renderSalesTable = (sales, title) => (
     <div className="mt-6">
-      <h2 className="text-xl font-bold mb-4">{title}</h2>
+      <h2 className="text-xl font-semibold mb-4">{title}</h2>
       {/* Table for larger screens */}
       <div className="hidden md:block">
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-            <thead className="bg-gray-100">
+            <thead className="bg-gray-300">
               <tr>
-                <th className="p-4 border-b text-left">Sale Name</th>
-                <th className="p-4 border-b text-left">Start Date</th>
-                <th className="p-4 border-b text-left">End Date</th>
-                <th className="p-4 border-b text-left">Discount (%)</th>
-                <th className="p-4 border-b text-left">Flat Discount (₹)</th>
-                <th className="p-4 border-b text-left">Actions</th>
+                <th className="p-4 border-b text-left font-medium">Sale Name</th>
+                <th className="p-4 border-b text-left font-medium">Start Date</th>
+                <th className="p-4 border-b text-left font-medium">End Date</th>
+                <th className="p-4 border-b text-left font-medium">Discount (%)</th>
+                <th className="p-4 border-b text-left font-medium">Flat Discount (₹)</th>
+                <th className="p-4 border-b text-left font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody >
               {sales.map(sale => (
-                <tr key={sale._id} className="hover:bg-gray-50">
-                  <td className="p-4 border-b">{sale.saleName}</td>
-                  <td className="p-4 border-b">{new Date(sale.startDate).toLocaleDateString()}</td>
-                  <td className="p-4 border-b">{new Date(sale.endDate).toLocaleDateString()}</td>
-                  <td className="p-4 border-b">{sale.discount}</td>
-                  <td className="p-4 border-b">{sale.flatDiscount}</td>
+                <tr key={sale._id} className="hover:bg-gray-100 bg-gray-50">
+                  <td className="p-4 border-b text-gray-700">{sale.saleName}</td>
+                  <td className="p-4 border-b text-gray-700">{new Date(sale.startDate).toLocaleDateString()}</td>
+                  <td className="p-4 border-b text-gray-700">{new Date(sale.endDate).toLocaleDateString()}</td>
+                  <td className="p-4 border-b text-gray-700">{sale.discount}</td>
+                  <td className="p-4 border-b text-gray-700">{sale.flatDiscount}</td>
                   <td className="p-4 border-b">
                     <button
                       onClick={() => handleDeleteSale(sale._id)}
@@ -96,8 +96,8 @@ const SalesTablePage = () => {
 
   return (
     <div className="min-h-screen text-start mt-5">
-      <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6">Sales Overview</h1>
+      <div className="max-w-6xl mx-auto bg-white  rounded-lg ">
+        {/* <h1 className="text-2xl font-bold mb-6">Sales Overview</h1> */}
         {renderSalesTable(ongoingSales, 'Ongoing Sales')}
         {renderSalesTable(upcomingSales, 'Upcoming Sales')}
         {renderSalesTable(finishedSales, 'Finished Sales')}

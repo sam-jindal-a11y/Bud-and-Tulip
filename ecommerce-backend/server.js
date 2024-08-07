@@ -51,8 +51,8 @@ console.log(pathimageschange);
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // config({path:"./config/config.env"})
 
 // Static files
@@ -63,7 +63,7 @@ app.use('/upload', uploadRoutes);
 app.use('/images', express.static(pathimageschange));
 
 // MongoDB connection
-mongoose.connect('mongodb://127.0.0.1:27017/myDatabase', {
+mongoose.connect('mongodb+srv://nilesh:nilesh@cluster0.cbh4pcf.mongodb.net/', {
 
   useNewUrlParser: true,
   useUnifiedTopology: true
