@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // Corrected import statement
@@ -6,7 +6,7 @@ import ProductCard from "./ProductCard";
 import SizeChartModal from "./SizeChartModal";
 import Modal from "react-modal";
 import Loading from "./Loading";
-import { CartContext } from './CartContext';
+import { CartContext } from "./CartContext";
 import config from "../config";
 const ProductView = () => {
   const { id } = useParams();
@@ -112,11 +112,11 @@ const ProductView = () => {
         timestamp: Date.now(),
         size,
       };
-   
+
       let cart = JSON.parse(localStorage.getItem("tempCart")) || [];
       cart.push(newCartItem);
       localStorage.setItem("tempCart", JSON.stringify(cart));
-         addToCartIcon(newCartItem);
+      addToCartIcon(newCartItem);
 
       // alert("Product added to cart");
       navigate("/ShoppingCart");
@@ -124,7 +124,6 @@ const ProductView = () => {
       console.error("Error adding product to cart:", error.message);
       alert("An error occurred while adding the product to the cart.");
     }
-    
   };
 
   const addToWishlist = async () => {
@@ -169,9 +168,7 @@ const ProductView = () => {
     window.scrollTo(0, 0);
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(
-          `${config}/products/${id}`
-        );
+        const response = await axios.get(`${config}/products/${id}`);
         const productData = response.data;
         setProduct(productData);
         // console.log(productData.category);
@@ -183,9 +180,7 @@ const ProductView = () => {
         }
 
         // Fetch all products
-        const allProductsResponse = await axios.get(
-          `${config}/products`
-        );
+        const allProductsResponse = await axios.get(`${config}/products`);
         setAllProducts(allProductsResponse.data);
       } catch (error) {
         console.error("Error fetching product details:", error);
@@ -332,7 +327,6 @@ const ProductView = () => {
             )}
           </div>
           <div className="space-x-4 mb-4 flex flex-col gap-2">
-            
             <button
               className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 "
               onClick={buyNow}
@@ -416,7 +410,8 @@ const ProductView = () => {
                     </td>
                     <td className="py-2 px-4">
                       The order will take 5-18 working days to deliver. Free
-                      delivery within India.
+                      delivery within India. In case of International order, it
+                      will take 20-25 working days to deliver.
                     </td>
                   </tr>
                   <tr className="border-b">
