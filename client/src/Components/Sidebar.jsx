@@ -37,7 +37,7 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
             ALL PRODUCTS
           </Link>
           <Link
-            to="/search?query=&category=Sale"
+            to="/search?query=&category=All%20Products&hasoffer=true"
             className="block text-gray-700 hover:text-pinkc py-2"
             onClick={closeMenu} // Close sidebar when this link is clicked
           >
