@@ -185,7 +185,7 @@ const UpdateProduct = () => {
             value={formData.size.map(sz => ({ value: sz, label: sz }))}
             onChange={handleSelectChange}
             className="mt-1"
-            
+            required
           />
         </div>
         <div className="mb-4">

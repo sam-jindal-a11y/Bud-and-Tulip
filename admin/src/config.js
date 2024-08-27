@@ -1,4 +1,4 @@
 
-const config = 'http://localhost:5000'
+const config = 'https://api.budandtulips.com'
 
 export default config
