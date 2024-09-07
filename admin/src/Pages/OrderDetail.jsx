@@ -82,7 +82,7 @@ const OrderDetail = () => {
       </h1>
       <div className="flex flex-col md:flex-row justify-between mb-6 gap-6">
         <div className="flex-1">
-          <p><strong>Name:</strong> {order.user.firstName} {order.user.lastName}</p>
+          <p><strong>Name:</strong> {order.ShipDetails.firstName} {order.ShipDetails.lastName}</p>
           <p><strong>Mobile:</strong> {order.ShipDetails.phone}</p>
           <p><strong>Email:</strong> {order.user.email}</p>
           <p><strong>City:</strong> {order.ShipDetails.city}</p>
