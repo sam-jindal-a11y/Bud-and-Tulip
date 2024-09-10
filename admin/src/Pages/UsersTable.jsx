@@ -47,8 +47,8 @@ const UsersTable = () => {
                 <td className="py-2 px-4 border-b">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}</td>
                 <td className="py-2 px-4 border-b">{new Date(user.createdAt).toLocaleDateString()}</td>
                 <td className="py-2 px-4 border-b">
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => viewUser(user._id)} disabled>
-                    <i className="fa-regular fa-envelope"></i>
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => viewUser(user._id)}>
+                  <i class="fa-solid fa-circle-info"></i>
                   </button>
                 </td>
               </tr>
@@ -67,9 +67,8 @@ const UsersTable = () => {
             <p><strong>Last Login:</strong> {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}</p>
             <p><strong>Account Created:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+              className="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-white"
               onClick={() => viewUser(user._id)}
-              disabled
             >
               <i className="fa-regular fa-envelope"></i>
             </button>
