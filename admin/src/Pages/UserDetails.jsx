@@ -3,10 +3,11 @@ import { useParams } from 'react-router-dom';
 import config from '../config';
 
 const UserDetails = () => {
-  const { userId } = useParams(); // Get the userId from the URL
+  const { userId } = useParams();
   const [shippingDetails, setShippingDetails] = useState(null);
   const [previousOrders, setPreviousOrders] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [productDetails, setProductDetails] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -18,8 +19,25 @@ const UserDetails = () => {
         const shipDetails = await shipDetailsResponse.json();
         const orders = await ordersResponse.json();
 
-        setShippingDetails(shipDetails.length ? shipDetails : null); // Check if shipping details exist
+        setShippingDetails(shipDetails.length ? shipDetails : null);
         setPreviousOrders(orders);
+
+        // Fetch product details
+        const productIds = orders.flatMap(order => order.products.map(product => product.productId));
+        const uniqueProductIds = [...new Set(productIds)];
+
+        const productDetailsResponses = await Promise.all(
+          uniqueProductIds.map(productId => fetch(`${config}/products/${productId}`))
+        );
+        const productDetailsData = await Promise.all(productDetailsResponses.map(res => res.json()));
+
+        const productDetailsMap = productDetailsData.reduce((acc, product) => {
+          acc[product._id] = product;
+          return acc;
+        }, {});
+
+        setProductDetails(productDetailsMap);
+
       } catch (error) {
         console.error("Failed to fetch data", error);
       } finally {
@@ -71,14 +89,17 @@ const UserDetails = () => {
                 <div className="mt-3">
                   <h3 className="font-semibold text-gray-700">Products:</h3>
                   <ul className="ml-4 list-disc space-y-2">
-                    {order.products.map((product) => (
-                      <li key={product.productId} className="text-gray-600">
-                        <p><strong>Product ID:</strong> {product.productId}</p>
-                        <p><strong>Quantity:</strong> {product.quantity}</p>
-                        <p><strong>Price:</strong> ₹{product.price}</p>
-                        <p><strong>Size:</strong> {product.size}</p>
-                      </li>
-                    ))}
+                    {order.products.map((product) => {
+                      const productDetail = productDetails[product.productId];
+                      return (
+                        <li key={product.productId} className="text-gray-600">
+                          <p><strong>Product Name:</strong> {productDetail ? productDetail.name : 'Loading...'}</p>
+                          <p><strong>Quantity:</strong> {product.quantity}</p>
+                          <p><strong>Price:</strong> ₹{product.price}</p>
+                          <p><strong>Size:</strong> {product.size}</p>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               </li>
