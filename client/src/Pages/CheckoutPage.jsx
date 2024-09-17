@@ -8,7 +8,7 @@ const CheckoutPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const [voucherCode, setVoucherCode] = useState("");
   const [maxDiscount, setMaxDiscount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
