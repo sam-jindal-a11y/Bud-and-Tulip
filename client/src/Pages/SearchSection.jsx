@@ -122,6 +122,13 @@ const SearchSection = () => {
     setCurrentPage(newPage);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   const filterProducts = (query, category ,hasOffer,sortOrder) => {
     if (products.length !== 0) {
       let filteredProducts = [...products[0]]; // Ensure to copy array
@@ -353,6 +360,59 @@ const SearchSection = () => {
             </select>
             <label className="ml-2">items per page</label>
           </div>
+          <div className=" flex justify-center flex-wrap">
+          {/* Previous Button */}
+          {currentPage > 1 && (
+            <button
+              className="border px-3 py-1 mr-2 bg-pinkc text-white"
+              onClick={() => { handlePageChange(currentPage - 1); scrollToTop(); }}
+            >
+              Prev
+            </button>
+          )}
+
+          {/* Page Buttons */}
+          {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+
+            if (currentPage <= 3) {
+              startPage = 1;
+              endPage = Math.min(totalPages, 5);
+            } else if (currentPage >= totalPages - 2) {
+              startPage = Math.max(1, totalPages - 4);
+              endPage = totalPages;
+            }
+
+            const page = startPage + index;
+
+            if (page > endPage) {
+              return null;
+            }
+
+            return (
+              <button
+                key={page}
+                className={`border px-3 py-1 mr-2 ${
+                  currentPage === page ? "bg-pinkc text-white" : ""
+                }`}
+                onClick={() => {handlePageChange(page); scrollToTop(); }}
+              >
+                {page}
+              </button>
+            );
+          })}
+
+          {/* Next Button */}
+          {currentPage < totalPages && (
+            <button
+              className="border px-3 py-1 mr-2 bg-pinkc text-white"
+              onClick={() => {handlePageChange(currentPage + 1); scrollToTop(); }}
+            >
+              Next
+            </button>
+          )}
+        </div>
           <div>
   <label className="mr-2">Sort by:</label>
   <select
@@ -422,7 +482,7 @@ const SearchSection = () => {
           {currentPage > 1 && (
             <button
               className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-              onClick={() => handlePageChange(currentPage - 1)}
+              onClick={() => { handlePageChange(currentPage - 1); scrollToTop(); }}
             >
               Prev
             </button>
@@ -453,7 +513,7 @@ const SearchSection = () => {
                 className={`border px-3 py-1 mr-2 ${
                   currentPage === page ? "bg-pink-500 text-white" : ""
                 }`}
-                onClick={() => handlePageChange(page)}
+                onClick={() => {handlePageChange(page); scrollToTop(); }}
               >
                 {page}
               </button>
@@ -464,7 +524,7 @@ const SearchSection = () => {
           {currentPage < totalPages && (
             <button
               className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-              onClick={() => handlePageChange(currentPage + 1)}
+              onClick={() => {handlePageChange(currentPage + 1); scrollToTop(); }}
             >
               Next
             </button>
