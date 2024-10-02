@@ -66,6 +66,12 @@ const SearchSection = () => {
   }, []);
 
   useEffect(() => {
+    // Check localStorage for stored page number
+    const storedPage = localStorage.getItem('currentPage');
+    if (storedPage) {
+      setCurrentPage(Number(storedPage)); // Set current page to the stored page
+      localStorage.removeItem('currentPage'); // Clear stored page after using it
+    }
     const params = new URLSearchParams(location.search);
     const query = params.get("query");
     const category = params.get("category");
@@ -85,6 +91,8 @@ const SearchSection = () => {
   ]);
 
   const handleProductClick = (productId) => {
+    // Store the current page in localStorage before navigating
+    localStorage.setItem('currentPage', currentPage);
     navigate(`/product/${productId}`);
   };
 
