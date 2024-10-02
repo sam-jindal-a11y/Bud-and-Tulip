@@ -123,7 +123,7 @@ const SearchSection = () => {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({
+    document.documentElement.scrollTo({
       top: 0,
       behavior: "smooth",
     });
