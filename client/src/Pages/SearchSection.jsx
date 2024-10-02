@@ -123,10 +123,10 @@ const SearchSection = () => {
   };
 
   const scrollToTop = () => {
-    document.documentElement.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    setTimeout(() => {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0; // for Safari
+    }, 50); 
   };
 
   const filterProducts = (query, category ,hasOffer,sortOrder) => {

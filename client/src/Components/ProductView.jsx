@@ -33,6 +33,8 @@ const ProductView = () => {
       prevIndex === 0 ? product.image.length - 1 : prevIndex - 1
     );
   };
+  
+  
 
   const handleCloseModal = () => {
     setIsModalOpen(false);

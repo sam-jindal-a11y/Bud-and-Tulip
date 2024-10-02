@@ -16,7 +16,12 @@ body {
     }
 }
 
-
+html, body {
+    scroll-behavior: smooth;
+    height: auto;
+    overflow: auto;
+  }
+  
 
 @tailwind base;
 @tailwind components;
