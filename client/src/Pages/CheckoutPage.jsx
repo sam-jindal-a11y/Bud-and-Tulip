@@ -366,13 +366,15 @@ const shippingCharge = addresses.find(addr => addr._id === selectedAddress)?.cou
       <div className="flex items-center">
         <input
           type="text"
-          placeholder="Enter code"
+          placeholder="SALE IS ON !!"
           value={voucherCode}
+          disabled
           onChange={(e) => setVoucherCode(e.target.value)}
           className="w-full p-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
         />
         <button
           onClick={applyVoucher}
+          disabled
           className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
         >
           Apply
