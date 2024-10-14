@@ -118,6 +118,7 @@ const ProductView = () => {
       let cart = JSON.parse(localStorage.getItem("tempCart")) || [];
       cart.push(newCartItem);
       localStorage.setItem("tempCart", JSON.stringify(cart));
+      localStorage.removeItem("tempOrders");
       addToCartIcon(newCartItem);
 
       // alert("Product added to cart");
