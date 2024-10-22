@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
-import axios from 'axios';
-import SalesTablePage from './SalesTablePage';
-import config from '../config';
+import React, { useState, useEffect } from "react";
+import Select from "react-select";
+import axios from "axios";
+import SalesTablePage from "./SalesTablePage";
+import config from "../config";
 
 const SalePage = () => {
-  const [saleName, setSaleName] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [discount, setDiscount] = useState('');
-  const [flatDiscount, setFlatDiscount] = useState('');
-  const [ selectedCategories, setSelectedCategories] = useState([]);
+  const [saleName, setSaleName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [flatDiscount, setFlatDiscount] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -22,13 +22,13 @@ const SalePage = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${config}/categories`);
-        const categories = response.data.map(category => ({
+        const categories = response.data.map((category) => ({
           value: category.category_id,
           label: category.name,
         }));
         setCategoryOptions(categories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
@@ -39,16 +39,21 @@ const SalePage = () => {
     if (selectedCategories.length > 0) {
       const fetchProducts = async () => {
         try {
-          const categoryNames = selectedCategories.map(category => category.label);
-          const response = await axios.post(`${config}/products/by-categories`, { categoryNames });
-          const productsWithCategory = response.data.map(product => ({
+          const categoryNames = selectedCategories.map(
+            (category) => category.label
+          );
+          const response = await axios.post(
+            `${config}/products/by-categories`,
+            { categoryNames }
+          );
+          const productsWithCategory = response.data.map((product) => ({
             ...product,
             originalPrice: product.price,
-            categoryName: product.categoryName || 'Unknown',
+            categoryName: product.categoryName || "Unknown",
           }));
           setProducts(productsWithCategory);
         } catch (error) {
-          console.error('Error fetching products:', error);
+          console.error("Error fetching products:", error);
         }
       };
 
@@ -61,9 +66,9 @@ const SalePage = () => {
   }, [selectedCategories]);
 
   useEffect(() => {
-    const filteredProducts = products.filter(product => !product.hasOffer);
+    const filteredProducts = products.filter((product) => !product.hasOffer);
     if (selectAll) {
-      setSelectedProducts(filteredProducts.map(product => product._id));
+      setSelectedProducts(filteredProducts.map((product) => product._id));
     } else {
       setSelectedProducts([]);
     }
@@ -75,7 +80,7 @@ const SalePage = () => {
 
   const handleProductChange = (productId) => {
     if (selectedProducts.includes(productId)) {
-      setSelectedProducts(selectedProducts.filter(id => id !== productId));
+      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
     } else {
       setSelectedProducts([...selectedProducts, productId]);
     }
@@ -88,19 +93,20 @@ const SalePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const updatedProducts = products.map(product => ({
+    const updatedProducts = products.map((product) => ({
       ...product,
       offerPrice: selectedProducts.includes(product._id)
         ? discount
-          ? Math.round(product.originalPrice - (product.originalPrice * (parseFloat(discount) / 100)))
+          ? Math.round(
+              product.originalPrice -
+                product.originalPrice * (parseFloat(discount) / 100)
+            )
           : flatDiscount
           ? Math.round(product.originalPrice - parseFloat(flatDiscount))
           : Math.round(product.originalPrice)
         : Math.round(product.originalPrice),
       hasOffer: selectedProducts.includes(product._id),
-    }));    
-    
-
+    }));
 
     const saleData = {
       saleName,
@@ -110,17 +116,32 @@ const SalePage = () => {
       endTime,
       discount,
       flatDiscount,
-      categories: selectedCategories.map(option => option.value),
-      products: updatedProducts.filter(product => selectedProducts.includes(product._id)),
+      categories: selectedCategories.map((option) => option.value),
+      products: updatedProducts.filter((product) =>
+        selectedProducts.includes(product._id)
+      ),
     };
 
     try {
       const response = await axios.post(`${config}/sales`, saleData);
-      console.log('Sale created successfully:', response.data);
-      alert('Sale created successfully');
+      console.log("Sale created successfully:", response.data);
+      alert("Sale created successfully");
       window.location.reload();
     } catch (error) {
-      console.error('Error creating sale:', error);
+      console.error("Error creating sale:", error);
+    }
+  };
+
+  const handleRemoveSale = async () => {
+    try {
+      const response = await axios.put(`${config}/update-offers`);
+      console.log("Offers updated successfully:", response.data);
+      alert(`${response.data.message}`);
+      // Reload page to reflect changes
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating offers:", error);
+      alert("An error occurred while removing the sale.");
     }
   };
 
@@ -176,15 +197,17 @@ const SalePage = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700">Percentage Discount (%)</label>
+              <label className="block text-gray-700">
+                Percentage Discount (%)
+              </label>
               <input
                 type="number"
                 value={discount}
                 onChange={(e) => {
                   setDiscount(e.target.value);
-                  if (e.target.value) setFlatDiscount('');
+                  if (e.target.value) setFlatDiscount("");
                 }}
-                disabled={flatDiscount !== ''}
+                disabled={flatDiscount !== ""}
                 className="w-full mt-2 p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -195,9 +218,9 @@ const SalePage = () => {
                 value={flatDiscount}
                 onChange={(e) => {
                   setFlatDiscount(e.target.value);
-                  if (e.target.value) setDiscount('');
+                  if (e.target.value) setDiscount("");
                 }}
-                disabled={discount !== ''}
+                disabled={discount !== ""}
                 className="w-full mt-2 p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -235,30 +258,39 @@ const SalePage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.filter(product => !product.hasOffer).map(product => (
-                      <tr key={product._id}>
-                        <td className="p-3 border-b">
-                          <input
-                            type="checkbox"
-                            checked={selectedProducts.includes(product._id)}
-                            onChange={() => handleProductChange(product._id)}
-                            className="form-checkbox"
-                          />
-                        </td>
-                        <td className="p-3 border-b">{product.name}</td>
-                        <td className="p-3 border-b">{product.category}</td>
-                        <td className="p-3 border-b">{product.originalPrice}</td>
-                        <td className="p-3 border-b">
-  {discount
-    ? Math.round(product.originalPrice - (product.originalPrice * (parseFloat(discount) / 100)))
-    : flatDiscount
-    ? Math.round(product.originalPrice - parseFloat(flatDiscount))
-    : Math.round(product.originalPrice)}
-</td>
-
-
-                      </tr>
-                    ))}
+                    {products
+                      .filter((product) => !product.hasOffer)
+                      .map((product) => (
+                        <tr key={product._id}>
+                          <td className="p-3 border-b">
+                            <input
+                              type="checkbox"
+                              checked={selectedProducts.includes(product._id)}
+                              onChange={() => handleProductChange(product._id)}
+                              className="form-checkbox"
+                            />
+                          </td>
+                          <td className="p-3 border-b">{product.name}</td>
+                          <td className="p-3 border-b">{product.category}</td>
+                          <td className="p-3 border-b">
+                            {product.originalPrice}
+                          </td>
+                          <td className="p-3 border-b">
+                            {discount
+                              ? Math.round(
+                                  product.originalPrice -
+                                    product.originalPrice *
+                                      (parseFloat(discount) / 100)
+                                )
+                              : flatDiscount
+                              ? Math.round(
+                                  product.originalPrice -
+                                    parseFloat(flatDiscount)
+                                )
+                              : Math.round(product.originalPrice)}
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
@@ -273,6 +305,12 @@ const SalePage = () => {
         </form>
       </div>
       <SalesTablePage />
+      {/* <button
+        onClick={handleRemoveSale}
+        className="mt-6 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+      >
+        Remove Sale (Danger)
+      </button> */}
     </div>
   );
 };

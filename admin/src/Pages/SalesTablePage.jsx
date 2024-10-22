@@ -72,12 +72,12 @@ const SalesTablePage = () => {
                   <td className="p-4 border-b text-gray-700">{sale.discount}</td>
                   <td className="p-4 border-b text-gray-700">{sale.flatDiscount}</td>
                   <td className="p-4 border-b">
-                    <button
+                    {/* <button
                       onClick={() => handleDeleteSale(sale._id)}
                       className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 mr-2"
                     >
                       Delete
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => handleReverseSale(sale._id)}
                       disabled={!sale.isActive} // Disable if sale is already reversed
@@ -103,12 +103,12 @@ const SalesTablePage = () => {
             <p><strong>End Date:</strong> {new Date(sale.endDate).toLocaleDateString()}</p>
             <p><strong>Discount (%)</strong>: {sale.discount}</p>
             <p><strong>Flat Discount (₹)</strong>: {sale.flatDiscount}</p>
-            <button
+            {/* <button
               onClick={() => handleDeleteSale(sale._id)}
               className="bg-red-500 text-white px-4 py-2 rounded mt-4 w-full"
             >
               Delete
-            </button>
+            </button> */}
             <button
               onClick={() => handleReverseSale(sale._id)}
               className="bg-blue-500 text-white px-4 py-2 rounded mt-4 w-full"
