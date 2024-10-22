@@ -63,7 +63,7 @@ app.use('/upload', uploadRoutes);
 app.use('/images', express.static(pathimageschange));
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://nilesh:nilesh@cluster0.cbh4pcf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+mongoose.connect('mongodb://localhost:27017/myDatabase', {
 
   useNewUrlParser: true,
   useUnifiedTopology: true
