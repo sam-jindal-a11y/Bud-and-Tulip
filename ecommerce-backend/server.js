@@ -63,7 +63,7 @@ app.use('/upload', uploadRoutes);
 app.use('/images', express.static(pathimageschange));
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/myDatabase', {
+mongoose.connect('mongodb+srv://nilesh:nilesh@cluster0.cbh4pcf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
 
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -158,6 +158,54 @@ app.post('/api/products', upload.array('image', 6), async (req, res) => {
     res.status(500).send({ error: 'Error uploading images' });
   }
 });
+
+app.put('/update-offers', async (req, res) => {
+  try {
+    // Fetch all products
+    const products = await Product.find();
+
+    // Array to hold promises for updating products
+    const updatePromises = products.map(async (product) => {
+        // Ensure that originalPrice, offerPrice, and stock are valid
+        if (product.originalPrice && product.offerPrice && product.stock != null) {
+            // Calculate 10% of original price and round it
+            const tenPercentOfOriginal = product.originalPrice - Math.round(product.originalPrice * 0.1);
+
+            // Log values for debugging
+            console.log(`Product: ${product.name}, Offer Price: ${product.offerPrice}, 10% of Original (Rounded): ${tenPercentOfOriginal}`);
+
+            // Check if the offerPrice is less than 10% of originalPrice
+            if (product.offerPrice == tenPercentOfOriginal) {                
+            product.offerPrice = product.originalPrice;
+                  product.hasOffer = product.originalHasOffer;
+                // Save the updated product
+                console.log(`Updating product: ${product.name} to hasOffer: ${product.hasOffer}`);
+                return product.save().catch((saveError) => {
+                    console.error(`Error saving product ${product.name}:`, saveError.message);
+                });
+            }
+        }
+        // Return null if no update is needed
+        return null;
+    });
+
+    // Execute all update promises and filter out nulls
+    const results = await Promise.all(updatePromises);
+    
+    // Filter out only successfully updated products
+    const updatedProducts = results.filter(result => result !== null);
+
+    // Send a response with information about updated products
+    res.status(200).json({ 
+        message: `${updatedProducts.length} products updated successfully.`,
+        updatedProducts
+    });
+} catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred while updating offers.', error: error.message });
+  }
+});
+
 app.delete('/products/:id', async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
