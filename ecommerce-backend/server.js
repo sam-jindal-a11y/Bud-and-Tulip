@@ -251,6 +251,17 @@ app.post('/sales', async (req, res) => {
   } = req.body;
 
   try {
+    // Validate products array
+    if (!Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ message: 'Products array is required' });
+    }
+
+    // Check for valid product IDs
+    for (const product of products) {
+      if (!product._id || !mongoose.Types.ObjectId.isValid(product._id)) {
+        return res.status(400).json({ message: 'Each product must have a valid product ID' });
+      }
+    }
     // Create a new sale
     const newSale = new Sale({
       saleName,
@@ -261,6 +272,16 @@ app.post('/sales', async (req, res) => {
       discount,
       flatDiscount,
       categories,
+      products: products.map(p => ({
+        product: p._id, // Use the _id field here
+        originalPrice: p.price,
+        offerPrice: discount
+          ? Math.round(p.price - (p.price * (parseFloat(discount) / 100)))
+          : flatDiscount
+          ? Math.round(p.price - parseFloat(flatDiscount))
+          : p.price,
+        hasOffer: true,
+      })),
     });
 
     await newSale.save();
@@ -310,6 +331,65 @@ app.post('/sales', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+app.put('/sales/deactivate/:saleId', async (req, res) => {
+  const { saleId } = req.params;
+
+  try {
+    // Find the sale by ID
+    const sale = await Sale.findById(saleId);
+    if (!sale) {
+      return res.status(404).json({ message: 'Sale not found' });
+    }
+
+    // Check if the sale is already inactive
+    if (!sale.isActive) {
+      return res.status(400).json({ message: 'Sale is already deactivated' });
+    }
+
+    // Get the products associated with this sale
+    const productIds = sale.products.map((product) => product.product);
+
+    // Revert the product prices to their original price and set hasOffer to false
+    const revertPromises = productIds.map(async productId => {
+      const product = await Product.findById(productId);
+      
+      if (product) {
+
+        // Make sure the original price is available before updating
+        if (product.originalPrice !== null && product.originalPrice !== undefined) {
+          product.offerPrice = product.originalPrice; // Revert to original price
+          product.hasOffer = false; // Remove offer
+          
+          // Explicitly mark the fields as modified
+          product.markModified('offerPrice');
+          product.markModified('hasOffer');
+
+          console.log("step 5")
+          // Save the product
+          await product.save();
+          console.log(`Product updated: ${product.name}, New Price: ${product.price}, Offer Removed: ${!product.hasOffer}`);
+        } else {
+          console.log(`Skipping product: ${product.name} (No original price found)`);
+        }
+      } else {
+        console.log(`Product not found with ID: ${productId}`);
+      }
+    });
+
+    // Await all promises to ensure all products are reverted
+    await Promise.all(revertPromises);
+    // Deactivate the sale
+    sale.isActive = false;
+    await sale.save();
+
+    res.status(200).json({ message: 'Sale deactivated and products reverted to original prices', sale });
+  } catch (error) {
+    console.error('Error deactivating sale:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 // GET all sales
 app.get('/sales', async (req, res) => {

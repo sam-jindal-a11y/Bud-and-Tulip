@@ -111,6 +111,7 @@ const ProductView = () => {
         price: product.hasOffer ? product.offerPrice : product.price,
         image: product.image[0],
         quantity,
+        hasOffer:product.hasOffer,
         timestamp: Date.now(),
         size,
       };

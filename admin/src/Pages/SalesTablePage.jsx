@@ -1,7 +1,7 @@
-// src/components/SalesTablePage.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import config from "../config";
+
 const SalesTablePage = () => {
   const [sales, setSales] = useState([]);
 
@@ -28,6 +28,18 @@ const SalesTablePage = () => {
     }
   };
 
+  const handleReverseSale = async (saleId) => {
+    try {
+      await axios.put(`${config}/sales/deactivate/${saleId}`); // Call the API to deactivate the sale
+      setSales(sales.map(sale =>
+        sale._id === saleId ? { ...sale, isActive: false } : sale
+      ));
+      alert('Sale has been reversed and products have been restored.');
+    } catch (error) {
+      console.error('Error reversing sale:', error);
+    }
+  };
+
   const currentTime = new Date();
 
   const ongoingSales = sales.filter(sale => new Date(sale.startDate) <= currentTime && new Date(sale.endDate) >= currentTime);
@@ -51,7 +63,7 @@ const SalesTablePage = () => {
                 <th className="p-4 border-b text-left font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody >
+            <tbody>
               {sales.map(sale => (
                 <tr key={sale._id} className="hover:bg-gray-100 bg-gray-50">
                   <td className="p-4 border-b text-gray-700">{sale.saleName}</td>
@@ -62,9 +74,18 @@ const SalesTablePage = () => {
                   <td className="p-4 border-b">
                     <button
                       onClick={() => handleDeleteSale(sale._id)}
-                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 mr-2"
                     >
                       Delete
+                    </button>
+                    <button
+                      onClick={() => handleReverseSale(sale._id)}
+                      disabled={!sale.isActive} // Disable if sale is already reversed
+                      className={`px-4 py-2 rounded-lg focus:outline-none focus:ring-2 ${
+                        !sale.isActive ? 'bg-gray-300 text-gray-500' : 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500'
+                      }`}
+                    >
+                      {!sale.isActive ? 'Reversed' : 'Reverse Sale'}
                     </button>
                   </td>
                 </tr>
@@ -88,6 +109,12 @@ const SalesTablePage = () => {
             >
               Delete
             </button>
+            <button
+              onClick={() => handleReverseSale(sale._id)}
+              className="bg-blue-500 text-white px-4 py-2 rounded mt-4 w-full"
+            >
+              Reverse Sale
+            </button>
           </div>
         ))}
       </div>
@@ -97,7 +124,6 @@ const SalesTablePage = () => {
   return (
     <div className="min-h-screen text-start mt-5">
       <div className="max-w-6xl mx-auto bg-white  rounded-lg ">
-        {/* <h1 className="text-2xl font-bold mb-6">Sales Overview</h1> */}
         {renderSalesTable(ongoingSales, 'Ongoing Sales')}
         {renderSalesTable(upcomingSales, 'Upcoming Sales')}
         {renderSalesTable(finishedSales, 'Finished Sales')}

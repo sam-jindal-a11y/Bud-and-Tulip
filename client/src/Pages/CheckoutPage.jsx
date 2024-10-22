@@ -254,6 +254,13 @@ const getShippingCharge = (quantity) => {
 };
 const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
 const shippingCharge = addresses.find(addr => addr._id === selectedAddress)?.country === 'India' ? 0 : getShippingCharge(totalQuantity);
+const hasOffer = products.some(product => {
+  console.log(`Checking product: ${product.name}, hasOffer: ${product.hasOffer}`);
+  return product.hasOffer === true;
+});
+
+console.log(`Products: ${JSON.stringify(products)}`);
+console.log(`Any product has offer: ${hasOffer}`);
 
   return (
     <div className="container mx-auto p-4 flex flex-wrap">
@@ -363,23 +370,23 @@ const shippingCharge = addresses.find(addr => addr._id === selectedAddress)?.cou
       <h2 className="text-lg font-semibold mb-2">
         Apply Gift Card or Voucher
       </h2>
-      <div className="flex items-center">
-        <input
-          type="text"
-          placeholder="SALE IS ON !!"
-          value={voucherCode}
-          disabled
-          onChange={(e) => setVoucherCode(e.target.value)}
-          className="w-full p-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
-        />
-        <button
-          onClick={applyVoucher}
-          disabled
-          className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
-        >
-          Apply
-        </button>
-      </div>
+      {!hasOffer ? (
+            <div>
+              <input
+                type="text"
+                value={voucherCode}
+                onChange={(e) => setVoucherCode(e.target.value)}
+                placeholder="Enter your voucher code"
+                className="border border-gray-300 rounded-md p-2 w-full mb-2"
+              />
+              <button onClick={applyVoucher} className="bg-pink-500 text-white p-2 rounded-md">
+                Apply
+              </button>
+              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            </div>
+          ) : (
+            <p className="text-red-500">Cannot apply voucher as some products are on offer.</p>
+          )}
       {maxDiscount > 0 && (
         <div className="mt-4 text-green-500">
           Voucher applied! You get a discount of ₹{maxDiscount.toFixed(2)}.
