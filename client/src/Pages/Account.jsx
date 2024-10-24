@@ -70,6 +70,7 @@ const Account = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.clear();
+    window.location.reload();
     navigate('/');
   };
 

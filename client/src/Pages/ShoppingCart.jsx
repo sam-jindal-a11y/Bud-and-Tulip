@@ -1,16 +1,48 @@
-import React, { useEffect, useState ,useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import config from "../config";
 import { CartContext } from '../Components/CartContext';
+import axios from "axios";
+
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const { tempCart, setTempCart } = useContext(CartContext);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const fetchCartItems = () => {
-    const items = JSON.parse(localStorage.getItem("tempCart")) || [];
-    setCartItems(items);
+  // Fetch product details by ID and remove inactive or out-of-stock items
+  const fetchCartItems = async () => {
+    const storedItems = JSON.parse(localStorage.getItem("tempCart")) || [];
+
+    const updatedCart = [];
+
+    // Fetch product details for each item in the cart
+    for (const item of storedItems) {
+      try {
+        const response = await axios.get(`${config}/products/${item.productId}`);
+        const productData = response.data;
+
+        // Check if the product is active and the size is available
+        const isSizeAvailable = productData.size.some(size => size.size !== "OUT OF STOCK");
+
+        if (productData.isActive && isSizeAvailable) {
+          // Check if the product has an offer and set the price accordingly
+        const price = productData.hasOffer ? productData.offerPrice : productData.price;
+
+        updatedCart.push({
+          ...item,
+          price: price, // Set price based on offer availability
+        });
+        }
+      } catch (error) {
+        console.error(`Failed to fetch product ${item.productId}:`, error);
+      }
+    }
+
+    // Update cart state and localStorage
+    setCartItems(updatedCart);
+    setTempCart(updatedCart);
+    localStorage.setItem("tempCart", JSON.stringify(updatedCart));
     setLoading(false);
   };
 
@@ -39,10 +71,8 @@ const ShoppingCart = () => {
     const updatedCart = tempCart.filter((item) => item.timestamp !== itemId);
     setTempCart(updatedCart);
     localStorage.setItem("tempCart", JSON.stringify(updatedCart));
-    
     setCartItems(updatedCart);
-    
-   };
+  };
 
   const handleContinueShopping = () => {
     navigate("/"); // Adjust to your products page route
@@ -87,15 +117,15 @@ const ShoppingCart = () => {
         <div className="bg-white shadow-md rounded-lg p-4">
           {cartItems.length === 0 ? (
             <p className="text-center text-gray-600">Your cart is empty.
-            <br />
-            <br />
-            <button
-                  className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
-                  onClick={handleContinueShopping}
-                >
-                  Continue Shopping
-                </button>
-                </p>
+              <br />
+              <br />
+              <button
+                className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950"
+                onClick={handleContinueShopping}
+              >
+                Continue Shopping
+              </button>
+            </p>
           ) : (
             <>
               {cartItems.map((item) => (

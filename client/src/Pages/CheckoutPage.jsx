@@ -1,7 +1,7 @@
 // src/CheckoutPage.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode"; // Corrected import statement
+import { jwtDecode } from "jwt-decode"; // Corrected import statement
 import axios from "axios"; // Added axios for HTTP requests
 import config from "../config";
 const CheckoutPage = () => {
@@ -12,7 +12,7 @@ const CheckoutPage = () => {
   const [voucherCode, setVoucherCode] = useState("");
   const [maxDiscount, setMaxDiscount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
-  const [international , setInternaiotnal] = useState('outoff'); 
+  const [international, setInternaiotnal] = useState('outoff');
   const navigate = useNavigate();
 
   //for razorpay
@@ -56,38 +56,49 @@ const CheckoutPage = () => {
     }
   };
 
-
-  const fetchCartOrOrder = () => {
+  // Function to fetch the product by ID
+  const fetchProductById = async (productId) => {
     try {
-      // Retrieve and parse the JSON data from localStorage
+      const response = await axios.get(`${config}/products/${productId}`);
+      return response.data; // Assuming the API returns the product data with its price
+    } catch (error) {
+      console.error(`Error fetching product ${productId}:`, error);
+      return null; // Return null or handle error gracefully
+    }
+  };
+
+  const fetchCartOrOrder = async () => {
+    try {
       const storedCart = localStorage.getItem("tempCart");
       const storedOrder = localStorage.getItem("tempOrders");
-  
-      // Parse data or initialize as empty array
       const tempCart = storedCart ? JSON.parse(storedCart) : [];
       const tempOrder = storedOrder ? JSON.parse(storedOrder) : [];
-  
-      // Ensure both are arrays
-      const validTempCart = Array.isArray(tempCart) ? tempCart : [];
-      const validTempOrder = Array.isArray(tempOrder) ? tempOrder : [];
-  
-      // Set latestData to tempOrder if both tempCart and tempOrder are present; otherwise, use tempCart
-      const latestData = validTempOrder.length > 0 ? validTempOrder : validTempCart;
-  
-      // Debugging: Log the latest data
-      // console.log("Latest Data:", latestData);
-  
-      // Set products to the latest data
-      setProducts(latestData);
+      const latestData = tempOrder.length > 0 ? tempOrder : tempCart;
+
+      // Fetch the product prices for each item in the cart or order
+      const updatedProducts = await Promise.all(
+        latestData.map(async (item) => {
+          const productData = await fetchProductById(item.productId);
+          if (productData) {
+            const price = productData.hasOffer ? productData.offerPrice : productData.price;
+
+          return {
+            ...item,
+            price: price, // Add the price from API response
+              hasOffer: productData.hasOffer,
+            };
+          }
+          return item; // Return the original item if fetching failed
+        })
+      );
+
+      setProducts(updatedProducts); // Set the products with updated prices
     } catch (error) {
       console.error("Error fetching cart or order from local storage:", error);
-      // Optionally set products to an empty array in case of error
       setProducts([]);
     }
   };
-  
-  
-  
+
 
   const applyVoucher = async () => {
     try {
@@ -108,7 +119,7 @@ const CheckoutPage = () => {
       setMaxDiscount(discountAmount);
 
       // Send a request to apply the voucher and track usage
-      await axios.post(`${config}/api/apply-voucher`, { code: voucherCode, userId});
+      await axios.post(`${config}/api/apply-voucher`, { code: voucherCode, userId });
     } catch (error) {
       console.error('Error applying voucher:', error.response ? error.response.data.message : error.message);
       setErrorMessage(error.response ? error.response.data.message : 'An error occurred');
@@ -140,127 +151,129 @@ const CheckoutPage = () => {
   };
 
   const handlePayment = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("User not logged in");
-    navigate("/login");
-    return;
-  }
-  const decoded = jwtDecode(token);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("User not logged in");
+      navigate("/login");
+      return;
+    }
+    const decoded = jwtDecode(token);
 
-  const orderData = {
-    userId: decoded.id,
-    ShipDetails: selectedAddress,
-    products: products.map((product) => ({
-      productId: product.productId,
-      quantity: product.quantity,
-      price: product.price,
-      size: product.size
-    })),
-    paymentMethod,
-    totalAmount: totalPrice,
-    discount: maxDiscount,
-    voucherCode: voucherCode || null, // Include voucher code if used
-    codCharge: paymentMethod === "cod" ? 300 : 0,
-    finalAmount: shippingCharge+finalPrice + (paymentMethod === "cod" ? 300 : 0)
+    const orderData = {
+      userId: decoded.id,
+      ShipDetails: selectedAddress,
+      products: products.map((product) => ({
+        productId: product.productId,
+        quantity: product.quantity,
+        price: product.price,
+        size: product.size
+      })),
+      paymentMethod,
+      totalAmount: totalPrice,
+      discount: maxDiscount,
+      voucherCode: voucherCode || null, // Include voucher code if used
+      codCharge: paymentMethod === "cod" ? 300 : 0,
+      finalAmount: shippingCharge + finalPrice + (paymentMethod === "cod" ? 300 : 0)
+    };
+
+    if (paymentMethod === "razorpay") {
+      try {
+        const razorpayResponse = await axios.post(`${config}/orders`, {
+          amount: orderData.finalAmount,
+          currency: "INR"
+        });
+
+        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+
+        if (!res) {
+          alert("Failed to load Razorpay SDK. Please check your internet connection.");
+          return;
+        }
+
+        const options = {
+          key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+          amount: razorpayResponse.data.amount,
+          currency: razorpayResponse.data.currency,
+          order_id: razorpayResponse.data.order_id,
+          handler: async (response) => {
+            setResponseId(response.razorpay_payment_id);
+            setConfirmationMessage("Payment was successful! Payment ID: " + response.razorpay_payment_id);
+            orderData.paymentMethod = "razorpay";
+            orderData.razorpayPaymentId = response.razorpay_payment_id;
+            try {
+              const response = await axios.post(`${config}/api/orderHistory`, orderData);
+              if (response.status === 201) {
+                alert("Order placed successfully!");
+                localStorage.removeItem("tempCart");
+                localStorage.removeItem("tempOrders");
+                navigate("/account");
+              }
+            } catch (error) {
+              console.error("Error placing order:", error);
+              // console.log(orderData);
+              alert("Failed to place order. Please try again.");
+            }
+          },
+          prefill: {
+            name: "Harshit"
+          },
+          theme: {
+            color: "#EC4899"
+          },
+          modal: {
+            ondismiss: function () {
+              alert("Payment popup closed. Please complete the payment to place your order.");
+            }
+          }
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+
+      } catch (error) {
+        console.error("Error creating Razorpay order:", error);
+        alert("Failed to initiate payment. Please try again.");
+      }
+    } else {
+      try {
+        const response = await axios.post(`${config}/api/orderHistory`, orderData);
+        if (response.status === 201) {
+          alert("Order placed successfully!");
+          localStorage.removeItem("cartData");
+          localStorage.removeItem("tempCart");
+          localStorage.removeItem("tempOrders");
+          window.location.reload();
+          navigate("/account");
+        }
+      } catch (error) {
+        console.error("Error placing order:", error);
+        // console.log(orderData);
+        alert("Failed to place order. Please try again.");
+      }
+    }
   };
 
-  if (paymentMethod === "razorpay") {
-    try {
-      const razorpayResponse = await axios.post(`${config}/orders`, {
-        amount: orderData.finalAmount,
-        currency: "INR"
-      });
-
-      const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-
-      if (!res) {
-        alert("Failed to load Razorpay SDK. Please check your internet connection.");
-        return;
-      }
-
-      const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
-        amount: razorpayResponse.data.amount,
-        currency: razorpayResponse.data.currency,
-        order_id: razorpayResponse.data.order_id,
-        handler: async (response) => {
-          setResponseId(response.razorpay_payment_id);
-          setConfirmationMessage("Payment was successful! Payment ID: " + response.razorpay_payment_id);
-          orderData.paymentMethod = "razorpay";
-          orderData.razorpayPaymentId = response.razorpay_payment_id;
-          try {
-            const response = await axios.post(`${config}/api/orderHistory`, orderData);
-            if (response.status === 201) {
-              alert("Order placed successfully!");
-              // localStorage.removeItem("tempCart");
-              localStorage.removeItem("tempOrders");
-              navigate("/account");
-            }
-          } catch (error) {
-            console.error("Error placing order:", error);
-            // console.log(orderData);
-            alert("Failed to place order. Please try again.");
-          }
-        },
-        prefill: {
-          name: "Harshit"
-        },
-        theme: {
-          color: "#EC4899"
-        },
-        modal: {
-          ondismiss: function () {
-            alert("Payment popup closed. Please complete the payment to place your order.");
-          }
-        }
-      };
-
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.open();
-
-    } catch (error) {
-      console.error("Error creating Razorpay order:", error);
-      alert("Failed to initiate payment. Please try again.");
+  const getShippingCharge = (quantity) => {
+    if (quantity === 1) {
+      return 3000;
+    } else if (quantity <= 3) {
+      return 3500;
+    } else if (quantity <= 5) {
+      return 5500;
+    } else {
+      // Handle cases where quantity is more than 5, if needed
+      return 0; // Or another default value if applicable
     }
-  } else {
-    try {
-      const response = await axios.post(`${config}/api/orderHistory`, orderData);
-      if (response.status === 201) {
-        alert("Order placed successfully!");
-        // localStorage.removeItem("tempCart");
-        localStorage.removeItem("tempOrders");
-        navigate("/account");
-      }
-    } catch (error) {
-      console.error("Error placing order:", error);
-      // console.log(orderData);
-      alert("Failed to place order. Please try again.");
-    }
-  }
-};
+  };
+  const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
+  const shippingCharge = addresses.find(addr => addr._id === selectedAddress)?.country === 'India' ? 0 : getShippingCharge(totalQuantity);
+  const hasOffer = products.some(product => {
+    console.log(`Checking product: ${product.name}, hasOffer: ${product.hasOffer}`);
+    return product.hasOffer === true;
+  });
 
-const getShippingCharge = (quantity) => {
-  if (quantity === 1) {
-    return 3000;
-  } else if (quantity <= 3) {
-    return 3500;
-  } else if (quantity <= 5) {
-    return 5500;
-  } else {
-    // Handle cases where quantity is more than 5, if needed
-    return 0; // Or another default value if applicable
-  }
-};
-const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
-const shippingCharge = addresses.find(addr => addr._id === selectedAddress)?.country === 'India' ? 0 : getShippingCharge(totalQuantity);
-const hasOffer = products.some(product => {
-  console.log(`Checking product: ${product.name}, hasOffer: ${product.hasOffer}`);
-  return product.hasOffer === true;
-});
-
-console.log(`Products: ${JSON.stringify(products)}`);
-console.log(`Any product has offer: ${hasOffer}`);
+  console.log(`Products: ${JSON.stringify(products)}`);
+  console.log(`Any product has offer: ${hasOffer}`);
 
   return (
     <div className="container mx-auto p-4 flex flex-wrap">
@@ -309,7 +322,7 @@ console.log(`Any product has offer: ${hasOffer}`);
         <div className="mb-4">
           <h2 className="text-2xl font-bold mb-2">Select Payment Method</h2>
           <div className=" p-4 border border-gray-200 rounded-md mr-2">
-          {selectedAddress && addresses.find(addr => addr._id === selectedAddress)?.country === 'India' && (
+            {selectedAddress && addresses.find(addr => addr._id === selectedAddress)?.country === 'India' && (
               <label className="flex items-center mb-2">
                 <input
                   type="radio"
@@ -333,11 +346,11 @@ console.log(`Any product has offer: ${hasOffer}`);
             </label>
           </div>
           <div className="mb-2 ">
-            
-        
+
+
           </div>
 
-          
+
         </div>
       </div>
 
@@ -366,11 +379,11 @@ console.log(`Any product has offer: ${hasOffer}`);
         ) : (
           <p className="text-gray-700 mb-4">No products in cart.</p>
         )}
-       <div className="mt-6">
-      <h2 className="text-lg font-semibold mb-2">
-        Apply Gift Card or Voucher
-      </h2>
-      {!hasOffer ? (
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold mb-2">
+            Apply Gift Card or Voucher
+          </h2>
+          {!hasOffer ? (
             <div>
               <input
                 type="text"
@@ -387,18 +400,18 @@ console.log(`Any product has offer: ${hasOffer}`);
           ) : (
             <p className="text-red-500">Cannot apply voucher as some products are on offer.</p>
           )}
-      {maxDiscount > 0 && (
-        <div className="mt-4 text-green-500">
-          Voucher applied! You get a discount of ₹{maxDiscount.toFixed(2)}.
-        </div>
-      )}
-      {errorMessage && (
-        <div className="mt-4 text-red-500">
-          {errorMessage}!
-        </div>
-      )}
-  
-    
+          {maxDiscount > 0 && (
+            <div className="mt-4 text-green-500">
+              Voucher applied! You get a discount of ₹{maxDiscount.toFixed(2)}.
+            </div>
+          )}
+          {errorMessage && (
+            <div className="mt-4 text-red-500">
+              {errorMessage}!
+            </div>
+          )}
+
+
           <div className="flex justify-between items-center font-light mt-2">
             <span>Total Price:</span>
             <span>₹ {totalPrice.toFixed(2)}</span>
@@ -413,7 +426,7 @@ console.log(`Any product has offer: ${hasOffer}`);
               <span>₹ {maxDiscount.toFixed(2)}</span>
             </div>
           )}
- {shippingCharge > 0 &&
+          {shippingCharge > 0 &&
             <div className="flex justify-between items-center font-light mt-2">
               <span>Shipping Charges ( + ) :</span>
               <span>₹ {shippingCharge}</span>
