@@ -151,6 +151,13 @@ const CheckoutPage = () => {
   };
 
   const handlePayment = async () => {
+    
+    if (products.length === 0) {
+      alert("No products in the cart. Please add items to your cart before proceeding.");
+      navigate("/"); // Redirect to the home page
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (!token) {
       alert("User not logged in");
