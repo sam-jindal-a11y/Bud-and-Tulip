@@ -91,7 +91,7 @@ const ProductCard = ({
           e.stopPropagation(); // Prevents navigation on button click
           addToWishlist();
         }}
-        className="absolute bottom-4 right-4 bg-pinkc text-white py-1 px-2 rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:bg-pink-700 focus:outline-none"
+        className="absolute top-4 right-4 bg-pinkc text-white py-1 px-2 rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:bg-pink-700 focus:outline-none"
       >
         <i class="fa-solid fa-heart fa-sm "></i>
       </button>
