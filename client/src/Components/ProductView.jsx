@@ -33,8 +33,8 @@ const ProductView = () => {
       prevIndex === 0 ? product.image.length - 1 : prevIndex - 1
     );
   };
-  
-  
+
+
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -111,7 +111,7 @@ const ProductView = () => {
         price: product.hasOffer ? product.offerPrice : product.price,
         image: product.image[0],
         quantity,
-        hasOffer:product.hasOffer,
+        hasOffer: product.hasOffer,
         timestamp: Date.now(),
         size,
       };
@@ -216,9 +216,9 @@ const ProductView = () => {
             <img
               src={
                 product.image[
-                  selectedImageIndex === product.image.length - 1
-                    ? 0
-                    : selectedImageIndex + 1
+                selectedImageIndex === product.image.length - 1
+                  ? 0
+                  : selectedImageIndex + 1
                 ]
               }
               alt={product.name}
@@ -232,9 +232,8 @@ const ProductView = () => {
                 key={index}
                 src={img}
                 alt={`${product.name} thumbnail ${index + 1}`}
-                className={`w-24 h-24 object-cover rounded-md cursor-pointer ${
-                  index === selectedImageIndex ? "border-2 border-blue-500" : ""
-                }`}
+                className={`w-24 h-24 object-cover rounded-md cursor-pointer ${index === selectedImageIndex ? "border-2 border-blue-500" : ""
+                  }`}
                 onClick={() => handleThumbnailClick(index)}
               />
             ))}
@@ -338,8 +337,9 @@ const ProductView = () => {
               Buy Now
             </button>
             <button
-              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 button-add"
+              className={`bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 button-add ${product.size.length === 1 ? ' cursor-not-allowed' : ''}`}
               onClick={addToCart}
+              disabled={product.size.length === 1} // Disable the "Add to Cart" button if only one size is available
             >
               Add to Cart
             </button>
