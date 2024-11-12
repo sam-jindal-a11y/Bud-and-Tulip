@@ -452,8 +452,10 @@ const SearchSection = () => {
                   </div>
                 )}
                 {product.size.includes("SOLD OUT") && (
-                  <div className="absolute top-7 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md mx-4 my-4">
-                    SOLD OUT
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="absolute bg-pink-500 bg-opacity-75 w-full text-center py-2 text-white font-bold text-lg">
+                      Sold Out
+                    </div>
                   </div>
                 )}
                 {product.image && product.image[0] && (

@@ -22,7 +22,8 @@ const UpdateProduct = () => {
     offerPrice: 0,
     isActive: true,
   });
-
+  
+  const [soldOutCheckbox, setSoldOutCheckbox] = useState(false);
   const [sizes, setSizes] = useState([]);
   const [colors, setColors] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -73,8 +74,11 @@ const UpdateProduct = () => {
     e.preventDefault();
     setLoading(true);
 
+    // Set the size to "SOLD OUT" if the checkbox is checked
+    const dataToSend = { ...formData, size: soldOutCheckbox ? ["SOLD OUT"] : formData.size };
+
     try {
-      const response = await axios.put(`${config}/products/${id}`, formData);
+      const response = await axios.put(`${config}/products/${id}`, dataToSend);
 
       console.log('Product updated successfully:', response.data);
       alert('Product updated successfully!');
@@ -182,7 +186,7 @@ const UpdateProduct = () => {
             name="size"
             options={sizeOptions}
             isMulti
-            value={formData.size.map(sz => ({ value: sz, label: sz }))}
+            value={soldOutCheckbox ? [{ value: "SOLD OUT", label: "SOLD OUT" }] : formData.size.map(sz => ({ value: sz, label: sz }))}
             onChange={handleSelectChange}
             className="mt-1"
             required
@@ -231,6 +235,17 @@ const UpdateProduct = () => {
             name="hasOffer"
             checked={formData.hasOffer}
             onChange={handleChange}
+            className="mt-1"
+          />
+        </div>
+        
+        <div className="mb-4">
+          <label htmlFor="soldOutCheckbox" className="block text-sm font-medium text-gray-700">Sold Out</label>
+          <input
+            type="checkbox"
+            id="soldOutCheckbox"
+            checked={soldOutCheckbox}
+            onChange={(e) => setSoldOutCheckbox(e.target.checked)}
             className="mt-1"
           />
         </div>

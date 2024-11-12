@@ -27,7 +27,7 @@ const AddProduct = () => {
   const [colors, setColors] = useState([]);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-
+  const [isSoldOut, setIsSoldOut] = useState(false);
 
 
   const handleImageUpload = (event) => {
@@ -82,7 +82,9 @@ const AddProduct = () => {
     const submitFormData = new FormData();
 
     for (const key in formData) {
-      if (Array.isArray(formData[key])) {
+      if (key === 'size' && formData.size.length === 1 && formData.size[0].value === 'SOLD OUT') {
+        submitFormData.append('size', 'SOLD OUT');
+      } else if (Array.isArray(formData[key])) {
         formData[key].forEach((item) => {
           submitFormData.append(key, item);
         });
@@ -198,7 +200,7 @@ const AddProduct = () => {
             name="size"
             options={sizeOptions}
             isMulti
-            value={formData.size.map(sz => ({ value: sz, label: sz }))}
+            value={isSoldOut ? [{ value: "SOLD OUT", label: "SOLD OUT" }] : formData.size.map(sz => ({ value: sz, label: sz }))}
             onChange={handleSelectChange}
             className="mt-1"
             required
@@ -265,6 +267,32 @@ const AddProduct = () => {
           </div>
         )}
         <div className="mb-4">
+          <label htmlFor="soldOut" className="block text-sm font-medium text-gray-700">Sold Out</label>
+          <input
+            type="checkbox"
+            id="soldOut"
+            name="soldOut"
+            checked={isSoldOut}
+            onChange={(e) => {
+              setIsSoldOut(e.target.checked);
+              if (e.target.checked) {
+                // Set size to SOLD OUT if checked
+                setFormData({
+                  ...formData,
+                  size: [{ value: "SOLD OUT", label: "SOLD OUT" }],
+                });
+              } else {
+                // Clear size selection if unchecked
+                setFormData({
+                  ...formData,
+                  size: [],
+                });
+              }
+            }}
+            className="mt-1"
+          />
+        </div>
+        <div className="mb-4">
           <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Is Active</label>
           <div>
             <button
@@ -274,7 +302,7 @@ const AddProduct = () => {
             >
               Yes
             </button>
-            <button 
+            <button
               type="button"
               onClick={() => setFormData({ ...formData, isActive: false })}
               className={`px-2 rounded ml-2 ${!formData.isActive ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
@@ -293,8 +321,8 @@ const AddProduct = () => {
         </div>
       </form>
       <div className="mt-8">
-      <ProductsTable products={products} />
-       </div>
+        <ProductsTable products={products} />
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import config from "../config";
 const ProductCard = ({
   image,
@@ -48,8 +48,8 @@ const ProductCard = ({
           },
         }
       );
-console.log(image);
-      // alert("Product added to wishlist");
+      console.log(image);
+      alert("Product added to wishlist");
     } catch (error) {
       console.error(
         "Error adding product to wishlist:",
@@ -64,23 +64,36 @@ console.log(image);
   }
 
   return (
-    <div className="bg-white rounded-sm shadow-md overflow-hidden relative m-1">
+    <div
+      className="bg-white rounded-sm shadow-md overflow-hidden relative m-1 cursor-pointer"
+      onClick={singleProduct}
+    >
       {hasOffer && (
         <div className="absolute top-0 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md m-4">
-          Sales
+          Sale
         </div>
       )}
       {size.includes("SOLD OUT") && (
-        <div className="absolute top-7 right-0 bg-gray-500 text-white px-2 py-1 text-xs rounded-md m-4">
-          Sold Out
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute bg-pink-500 bg-opacity-75 w-full text-center py-2 text-white font-bold text-lg">
+            Sold Out
+          </div>
         </div>
       )}
       <img
         src={image}
         alt={name}
-        className="w-full h-56 sm:h-64 md:h-72 lg:h-80 object-cover cursor-pointer"
-        onClick={singleProduct}
+        className="w-full h-56 sm:h-64 md:h-72 lg:h-80 object-cover"
       />
+      <button
+        onClick={(e) => {
+          e.stopPropagation(); // Prevents navigation on button click
+          addToWishlist();
+        }}
+        className="absolute top-4 right-4 bg-pink-500 text-white py-1 px-2 rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:bg-pink-700 focus:outline-none"
+      >
+        <i class="fa-solid fa-heart fa-sm "></i>
+      </button>
       <div className="p-4 text-left">
         <p className="text-sm text-gray-400 mb-1">{category[0]}</p>
         <h3 className="text-md font-semibold mb-2 product-name">{name}</h3>
@@ -95,7 +108,7 @@ console.log(image);
             `₹ ${price}`
           )}
         </p>
-        
+
       </div>
     </div>
   );
