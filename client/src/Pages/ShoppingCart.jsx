@@ -27,12 +27,12 @@ const ShoppingCart = () => {
 
         if (productData.isActive && isSizeAvailable) {
           // Check if the product has an offer and set the price accordingly
-        const price = productData.hasOffer ? productData.offerPrice : productData.price;
+          const price = productData.hasOffer ? productData.offerPrice : productData.price;
 
-        updatedCart.push({
-          ...item,
-          price: price, // Set price based on offer availability
-        });
+          updatedCart.push({
+            ...item,
+            price: price, // Set price based on offer availability
+          });
         }
       } catch (error) {
         console.error(`Failed to fetch product ${item.productId}:`, error);
@@ -183,9 +183,10 @@ const ShoppingCart = () => {
                       </div>
                       <button
                         onClick={() => handleDelete(item.timestamp)}
-                        className="bg-pinkc text-white px-4 py-1 rounded-sm hover:bg-blue-950  sm:mt-0"
+                        className="bg-pinkc text-white px-3 sm:px-4 py-1 rounded-sm hover:bg-blue-950 sm:mt-0"
                       >
-                        Delete
+                        <span className="hidden sm:inline">Delete</span>
+                        <i className="fas fa-trash-alt sm:hidden"></i>
                       </button>
                     </div>
                     <div className="flex items-center">
