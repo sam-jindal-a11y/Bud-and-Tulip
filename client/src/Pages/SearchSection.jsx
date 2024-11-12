@@ -26,9 +26,7 @@ const SearchSection = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `${config}/products`
-        );
+        const response = await axios.get(`${config}/products`);
         const productArray = Object.values(response.data); // Convert JSON object to array
         setProducts(productArray);
         setLoading(false);
@@ -40,9 +38,7 @@ const SearchSection = () => {
 
     const fetchSizes = async () => {
       try {
-        const response = await axios.get(
-          `${config}/sizes`
-        );
+        const response = await axios.get(`${config}/sizes`);
         setSizes(response.data);
       } catch (error) {
         console.error("Error fetching sizes:", error);
@@ -51,9 +47,7 @@ const SearchSection = () => {
 
     const fetchColors = async () => {
       try {
-        const response = await axios.get(
-          `${config}/colors`
-        );
+        const response = await axios.get(`${config}/colors`);
         setColors(response.data);
       } catch (error) {
         console.error("Error fetching colors:", error);
@@ -67,10 +61,10 @@ const SearchSection = () => {
 
   useEffect(() => {
     // Check localStorage for stored page number
-    const storedPage = localStorage.getItem('currentPage');
+    const storedPage = localStorage.getItem("currentPage");
     if (storedPage) {
       setCurrentPage(Number(storedPage)); // Set current page to the stored page
-      localStorage.removeItem('currentPage'); // Clear stored page after using it
+      localStorage.removeItem("currentPage"); // Clear stored page after using it
     }
     const params = new URLSearchParams(location.search);
     const query = params.get("query");
@@ -92,7 +86,7 @@ const SearchSection = () => {
 
   const handleProductClick = (productId) => {
     // Store the current page in localStorage before navigating
-    localStorage.setItem('currentPage', currentPage);
+    localStorage.setItem("currentPage", currentPage);
     navigate(`/product/${productId}`);
   };
 
@@ -147,7 +141,9 @@ const SearchSection = () => {
         );
       }
       if (hasOffer) {
-        filteredProducts = filteredProducts.filter((product) => product.hasOffer);
+        filteredProducts = filteredProducts.filter(
+          (product) => product.hasOffer
+        );
         setSortOption("");
       }
       if (sortOrder === "new") {
@@ -373,7 +369,10 @@ const SearchSection = () => {
             {currentPage > 1 && (
               <button
                 className="border px-3 py-1 mr-2 bg-pinkc text-white"
-                onClick={() => { handlePageChange(currentPage - 1); scrollToTop(); }}
+                onClick={() => {
+                  handlePageChange(currentPage - 1);
+                  scrollToTop();
+                }}
               >
                 Prev
               </button>
@@ -401,9 +400,13 @@ const SearchSection = () => {
               return (
                 <button
                   key={page}
-                  className={`border px-3 py-1 mr-2 ${currentPage === page ? "bg-pinkc text-white" : ""
-                    }`}
-                  onClick={() => { handlePageChange(page); scrollToTop(); }}
+                  className={`border px-3 py-1 mr-2 ${
+                    currentPage === page ? "bg-pinkc text-white" : ""
+                  }`}
+                  onClick={() => {
+                    handlePageChange(page);
+                    scrollToTop();
+                  }}
                 >
                   {page}
                 </button>
@@ -414,7 +417,10 @@ const SearchSection = () => {
             {currentPage < totalPages && (
               <button
                 className="border px-3 py-1 mr-2 bg-pinkc text-white"
-                onClick={() => { handlePageChange(currentPage + 1); scrollToTop(); }}
+                onClick={() => {
+                  handlePageChange(currentPage + 1);
+                  scrollToTop();
+                }}
               >
                 Next
               </button>
@@ -430,11 +436,12 @@ const SearchSection = () => {
               <option value="popularity">Popularity</option>
               <option value="priceLowToHigh">Price: Low to High</option>
               <option value="priceHighToLow">Price: High to Low</option>
-              <option value="newest">Newest First</option>  {/* New option for newest first */}
-              <option value="oldest">Oldest First</option>  {/* New option for oldest first */}
+              <option value="newest">Newest First</option>{" "}
+              {/* New option for newest first */}
+              <option value="oldest">Oldest First</option>{" "}
+              {/* New option for oldest first */}
             </select>
           </div>
-
         </div>
 
         {/* Product Listing */}
@@ -453,11 +460,12 @@ const SearchSection = () => {
                 )}
                 {product.size.includes("SOLD OUT") && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="absolute bg-pink-500 bg-opacity-75 w-full text-center py-2 text-white font-bold text-lg">
+                    <div className="absolute bg-pink-500 bg-opacity-75 w-full text-center py-2 text-white font-bold text-lg sm:text-base">
                       Sold Out
                     </div>
                   </div>
                 )}
+
                 {product.image && product.image[0] && (
                   <img
                     src={product.image[0]}
@@ -496,7 +504,10 @@ const SearchSection = () => {
           {currentPage > 1 && (
             <button
               className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-              onClick={() => { handlePageChange(currentPage - 1); scrollToTop(); }}
+              onClick={() => {
+                handlePageChange(currentPage - 1);
+                scrollToTop();
+              }}
             >
               Prev
             </button>
@@ -524,9 +535,13 @@ const SearchSection = () => {
             return (
               <button
                 key={page}
-                className={`border px-3 py-1 mr-2 ${currentPage === page ? "bg-pink-500 text-white" : ""
-                  }`}
-                onClick={() => { handlePageChange(page); scrollToTop(); }}
+                className={`border px-3 py-1 mr-2 ${
+                  currentPage === page ? "bg-pink-500 text-white" : ""
+                }`}
+                onClick={() => {
+                  handlePageChange(page);
+                  scrollToTop();
+                }}
               >
                 {page}
               </button>
@@ -537,7 +552,10 @@ const SearchSection = () => {
           {currentPage < totalPages && (
             <button
               className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-              onClick={() => { handlePageChange(currentPage + 1); scrollToTop(); }}
+              onClick={() => {
+                handlePageChange(currentPage + 1);
+                scrollToTop();
+              }}
             >
               Next
             </button>
