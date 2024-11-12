@@ -82,6 +82,7 @@ const navigate = useNavigate();
             category={product.category}
             isActive={product.isActive}
             hasOffer={product.hasOffer}
+            size={product.size}
           />
         ))}
       </div>
@@ -107,6 +108,7 @@ const navigate = useNavigate();
                 category={product.category}
                 isActive={product.isActive}
                 hasOffer={product.hasOffer}
+                size={product.size}
               />
             ))}
           </div>
@@ -134,6 +136,7 @@ const navigate = useNavigate();
                 category={product.category}
                 isActive={product.isActive}
                 hasOffer={product.hasOffer}
+                size={product.size}
               />
             ))}
           </div>

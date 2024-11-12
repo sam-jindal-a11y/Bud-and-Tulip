@@ -134,10 +134,10 @@ const SearchSection = () => {
     setTimeout(() => {
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0; // for Safari
-    }, 50); 
+    }, 50);
   };
 
-  const filterProducts = (query, category ,hasOffer,sortOrder) => {
+  const filterProducts = (query, category, hasOffer, sortOrder) => {
     if (products.length !== 0) {
       let filteredProducts = [...products[0]]; // Ensure to copy array
       // Filter by category if specified
@@ -182,11 +182,11 @@ const SearchSection = () => {
             return 0;
         }
       });
-    
-  if (sortOption === "oldest") {
-    sortedProducts.reverse();
-  }
-  const productsOnSale = products.filter((product) => product.hasOffer);
+
+      if (sortOption === "oldest") {
+        sortedProducts.reverse();
+      }
+      const productsOnSale = products.filter((product) => product.hasOffer);
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
       setDisplayedProducts(sortedProducts.slice(startIndex, endIndex));
@@ -369,72 +369,71 @@ const SearchSection = () => {
             <label className="ml-2">items per page</label>
           </div>
           <div className=" flex justify-center flex-wrap">
-          {/* Previous Button */}
-          {currentPage > 1 && (
-            <button
-              className="border px-3 py-1 mr-2 bg-pinkc text-white"
-              onClick={() => { handlePageChange(currentPage - 1); scrollToTop(); }}
-            >
-              Prev
-            </button>
-          )}
-
-          {/* Page Buttons */}
-          {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, currentPage + 2);
-
-            if (currentPage <= 3) {
-              startPage = 1;
-              endPage = Math.min(totalPages, 5);
-            } else if (currentPage >= totalPages - 2) {
-              startPage = Math.max(1, totalPages - 4);
-              endPage = totalPages;
-            }
-
-            const page = startPage + index;
-
-            if (page > endPage) {
-              return null;
-            }
-
-            return (
+            {/* Previous Button */}
+            {currentPage > 1 && (
               <button
-                key={page}
-                className={`border px-3 py-1 mr-2 ${
-                  currentPage === page ? "bg-pinkc text-white" : ""
-                }`}
-                onClick={() => {handlePageChange(page); scrollToTop(); }}
+                className="border px-3 py-1 mr-2 bg-pinkc text-white"
+                onClick={() => { handlePageChange(currentPage - 1); scrollToTop(); }}
               >
-                {page}
+                Prev
               </button>
-            );
-          })}
+            )}
 
-          {/* Next Button */}
-          {currentPage < totalPages && (
-            <button
-              className="border px-3 py-1 mr-2 bg-pinkc text-white"
-              onClick={() => {handlePageChange(currentPage + 1); scrollToTop(); }}
-            >
-              Next
-            </button>
-          )}
-        </div>
+            {/* Page Buttons */}
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, index) => {
+              let startPage = Math.max(1, currentPage - 2);
+              let endPage = Math.min(totalPages, currentPage + 2);
+
+              if (currentPage <= 3) {
+                startPage = 1;
+                endPage = Math.min(totalPages, 5);
+              } else if (currentPage >= totalPages - 2) {
+                startPage = Math.max(1, totalPages - 4);
+                endPage = totalPages;
+              }
+
+              const page = startPage + index;
+
+              if (page > endPage) {
+                return null;
+              }
+
+              return (
+                <button
+                  key={page}
+                  className={`border px-3 py-1 mr-2 ${currentPage === page ? "bg-pinkc text-white" : ""
+                    }`}
+                  onClick={() => { handlePageChange(page); scrollToTop(); }}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            {currentPage < totalPages && (
+              <button
+                className="border px-3 py-1 mr-2 bg-pinkc text-white"
+                onClick={() => { handlePageChange(currentPage + 1); scrollToTop(); }}
+              >
+                Next
+              </button>
+            )}
+          </div>
           <div>
-  <label className="mr-2">Sort by:</label>
-  <select
-    value={sortOption}
-    onChange={handleSortChange}
-    className="border p-1"
-  >
-    <option value="popularity">Popularity</option>
-    <option value="priceLowToHigh">Price: Low to High</option>
-    <option value="priceHighToLow">Price: High to Low</option>
-    <option value="newest">Newest First</option>  {/* New option for newest first */}
-    <option value="oldest">Oldest First</option>  {/* New option for oldest first */}
-  </select>
-</div>
+            <label className="mr-2">Sort by:</label>
+            <select
+              value={sortOption}
+              onChange={handleSortChange}
+              className="border p-1"
+            >
+              <option value="popularity">Popularity</option>
+              <option value="priceLowToHigh">Price: Low to High</option>
+              <option value="priceHighToLow">Price: High to Low</option>
+              <option value="newest">Newest First</option>  {/* New option for newest first */}
+              <option value="oldest">Oldest First</option>  {/* New option for oldest first */}
+            </select>
+          </div>
 
         </div>
 
@@ -450,6 +449,11 @@ const SearchSection = () => {
                 {product.hasOffer && (
                   <div className="absolute top-0 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md mx-4 my-4">
                     Sale
+                  </div>
+                )}
+                {product.size.includes("SOLD OUT") && (
+                  <div className="absolute top-7 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md mx-4 my-4">
+                    SOLD OUT
                   </div>
                 )}
                 {product.image && product.image[0] && (
@@ -518,10 +522,9 @@ const SearchSection = () => {
             return (
               <button
                 key={page}
-                className={`border px-3 py-1 mr-2 ${
-                  currentPage === page ? "bg-pink-500 text-white" : ""
-                }`}
-                onClick={() => {handlePageChange(page); scrollToTop(); }}
+                className={`border px-3 py-1 mr-2 ${currentPage === page ? "bg-pink-500 text-white" : ""
+                  }`}
+                onClick={() => { handlePageChange(page); scrollToTop(); }}
               >
                 {page}
               </button>
@@ -532,7 +535,7 @@ const SearchSection = () => {
           {currentPage < totalPages && (
             <button
               className="border px-3 py-1 mr-2 bg-pink-500 text-white"
-              onClick={() => {handlePageChange(currentPage + 1); scrollToTop(); }}
+              onClick={() => { handlePageChange(currentPage + 1); scrollToTop(); }}
             >
               Next
             </button>

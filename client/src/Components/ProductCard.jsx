@@ -11,6 +11,7 @@ const ProductCard = ({
   category,
   isActive,
   hasOffer,
+  size,
   productId,
 }) => {
   const navigate = useNavigate();
@@ -66,7 +67,12 @@ console.log(image);
     <div className="bg-white rounded-sm shadow-md overflow-hidden relative m-1">
       {hasOffer && (
         <div className="absolute top-0 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md m-4">
-          Sale
+          Sales
+        </div>
+      )}
+      {size.includes("SOLD OUT") && (
+        <div className="absolute top-7 right-0 bg-gray-500 text-white px-2 py-1 text-xs rounded-md m-4">
+          Sold Out
         </div>
       )}
       <img

@@ -478,6 +478,7 @@ const ProductView = () => {
                     category={product.category}
                     isActive={product.isActive}
                     hasOffer={product.hasOffer}
+                    size={product.size}
                   />
                 </div>
               ))}
