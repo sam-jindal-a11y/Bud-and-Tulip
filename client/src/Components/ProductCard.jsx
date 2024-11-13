@@ -75,7 +75,7 @@ const ProductCard = ({
       )}
       {size.includes("SOLD OUT") && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="absolute bg-pink-500 bg-opacity-75 w-full text-center py-2 text-white font-bold text-lg sm:text-base">
+          <div className="absolute bg-pink-500 bg-opacity-75 w-full text-center sm:py-2 text-white font-bold text-sm sm:text-base">
             Sold Out
           </div>
         </div>
@@ -91,7 +91,7 @@ const ProductCard = ({
           e.stopPropagation(); // Prevents navigation on button click
           addToWishlist();
         }}
-        className="absolute top-4 right-4 bg-pinkc text-white py-1 px-2 rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:bg-pink-700 focus:outline-none"
+        className="absolute top-4 right-4 bg-pink-500 text-white py-1 px-2 rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:bg-pink-700 focus:outline-none"
       >
         <i class="fa-solid fa-heart fa-sm "></i>
       </button>

@@ -460,7 +460,7 @@ const SearchSection = () => {
                 )}
                 {product.size.includes("SOLD OUT") && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="absolute bg-pink-500 bg-opacity-75 w-full text-center py-2 text-white font-bold text-lg sm:text-base">
+                    <div className="absolute bg-pink-500 bg-opacity-75 w-full text-center sm:py-2 text-white font-bold text-sm sm:text-base">
                       Sold Out
                     </div>
                   </div>

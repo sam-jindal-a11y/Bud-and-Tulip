@@ -331,15 +331,16 @@ const ProductView = () => {
           </div>
           <div className="space-x-4 mb-4 flex flex-col gap-2">
             <button
-              className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 "
+              className={`bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 ${product.size.includes("SOLD OUT") ? ' cursor-not-allowed' : ''}`}
               onClick={buyNow}
+              disabled={product.size.includes("SOLD OUT")} 
             >
               Buy Now
             </button>
             <button
-              className={`bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 button-add ${product.size.length === 1 ? ' cursor-not-allowed' : ''}`}
+              className={`bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 button-add ${product.size.includes("SOLD OUT") ? ' cursor-not-allowed' : ''}`}
               onClick={addToCart}
-              disabled={product.size.length === 1} // Disable the "Add to Cart" button if only one size is available
+              disabled={product.size.includes("SOLD OUT")} // Disable the "Add to Cart" button if SOLD OUT is available
             >
               Add to Cart
             </button>
