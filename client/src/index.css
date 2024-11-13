@@ -19,7 +19,6 @@ body {
 html, body {
     scroll-behavior: smooth;
     height: auto;
-    overflow: auto;
   }
   
 
