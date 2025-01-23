@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import VoucherList from './VoucherList';
 import config from "../config";
+
 const VoucherForm = () => {
   const [voucher, setVoucher] = useState({
     code: '',
@@ -10,6 +11,7 @@ const VoucherForm = () => {
     startDate: '',
     endDate: '',
     maxPerUse: '', // Added new field for maxPerUse
+    couponType: 'all', // Default value for couponType
   });
 
   const handleChange = (e) => {
@@ -87,6 +89,33 @@ const VoucherForm = () => {
             className="w-full p-2 border rounded-md"
             required
           />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Coupon Type</label>
+          <div className="flex gap-4">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="couponType"
+                value="razorpay"
+                checked={voucher.couponType === 'razorpay'}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Prepaid
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="couponType"
+                value="all"
+                checked={voucher.couponType === 'all'}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              All
+            </label>
+          </div>
         </div>
         <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md">
           Create Voucher

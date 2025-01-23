@@ -107,28 +107,47 @@ const CheckoutPage = () => {
       if (!token) {
         throw new Error('User not logged in');
       }
-
+  
       // Decode the token to get the user ID
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.id; // Adjust this based on your token structure
-      // console.log(decodedToken.id);
+  
       // Send the request to validate the voucher
       const response = await axios.post(`${config}/api/validate`, { code: voucherCode, userId });
       const voucher = response.data;
+  
+      console.log(`Voucher couponType: ${voucher.couponType}, Payment Method: ${paymentMethod}`);
+  
+      // Check if the voucher's coupon type matches the payment method
+      if (
+        (voucher.couponType === 'razorpay' && paymentMethod !== 'razorpay') || 
+        (voucher.couponType !== 'all' && voucher.couponType !== paymentMethod)
+      ) {
+        throw new Error(
+          `This voucher can only be applied for ${
+            voucher.couponType === 'Razorpay' ? 'Razorpay' : voucher.couponType
+          } payments.`
+        );
+      }
+  
+      // Calculate the discount amount
       const discountAmount = (voucher.discount / 100) * totalPrice;
       setMaxDiscount(discountAmount);
-
+  
       // Send a request to apply the voucher and track usage
       await axios.post(`${config}/api/apply-voucher`, { code: voucherCode, userId });
+      alert('Voucher applied successfully!');
     } catch (error) {
       console.error('Error applying voucher:', error.response ? error.response.data.message : error.message);
-      setErrorMessage(error.response ? error.response.data.message : 'An error occurred');
+      setErrorMessage(error.response ? error.response.data.message : error.message);
       setMaxDiscount(0); // Reset discount if voucher is invalid
       setTimeout(() => {
         setErrorMessage('');
       }, 1000);
     }
   };
+  
+  
 
   const totalPrice = products.reduce((acc, product) => acc + product.price * product.quantity, 0);
   const finalPrice = totalPrice - maxDiscount;
@@ -402,7 +421,7 @@ const CheckoutPage = () => {
               <button onClick={applyVoucher} className="bg-pink-500 text-white p-2 rounded-md">
                 Apply
               </button>
-              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            
             </div>
           ) : (
             <p className="text-red-500">Cannot apply voucher as some products are on offer.</p>

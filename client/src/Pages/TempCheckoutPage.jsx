@@ -58,24 +58,45 @@ const TempCheckoutPage = () => {
 
   const applyVoucher = async () => {
     try {
+      // Retrieve the token from local storage
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('User not logged in');
       }
   
+      // Decode the token to get the user ID
       const decodedToken = jwtDecode(token);
-      const userId = decodedToken.id;
+      const userId = decodedToken.id; // Adjust this based on your token structure
   
+      // Send the request to validate the voucher
       const response = await axios.post(`${config}/api/validate`, { code: voucherCode, userId });
       const voucher = response.data;
+  
+      console.log(`Voucher couponType: ${voucher.couponType}, Payment Method: ${paymentMethod}`);
+  
+      // Check if the voucher's coupon type matches the payment method
+      if (
+        (voucher.couponType === 'razorpay' && paymentMethod !== 'razorpay') || 
+        (voucher.couponType !== 'all' && voucher.couponType !== paymentMethod)
+      ) {
+        throw new Error(
+          `This voucher can only be applied for ${
+            voucher.couponType === 'Razorpay' ? 'Razorpay' : voucher.couponType
+          } payments.`
+        );
+      }
+  
+      // Calculate the discount amount
       const discountAmount = (voucher.discount / 100) * totalPrice;
       setMaxDiscount(discountAmount);
   
+      // Send a request to apply the voucher and track usage
       await axios.post(`${config}/api/apply-voucher`, { code: voucherCode, userId });
+      alert('Voucher applied successfully!');
     } catch (error) {
       console.error('Error applying voucher:', error.response ? error.response.data.message : error.message);
-      setErrorMessage(error.response ? error.response.data.message : 'An error occurred');
-      setMaxDiscount(0);
+      setErrorMessage(error.response ? error.response.data.message : error.message);
+      setMaxDiscount(0); // Reset discount if voucher is invalid
       setTimeout(() => {
         setErrorMessage('');
       }, 1000);

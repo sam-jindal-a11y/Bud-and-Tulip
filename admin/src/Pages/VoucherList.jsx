@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import config from "../config";
+
 const VoucherList = () => {
   const [vouchers, setVouchers] = useState([]);
 
@@ -41,6 +42,7 @@ const VoucherList = () => {
               <th className="py-2 px-4 border-b">Start Date</th>
               <th className="py-2 px-4 border-b">End Date</th>
               <th className="py-2 px-4 border-b">Max Per Use</th>
+              <th className="py-2 px-4 border-b">Coupon Type</th>
               <th className="py-2 px-4 border-b">Actions</th>
             </tr>
           </thead>
@@ -52,6 +54,7 @@ const VoucherList = () => {
                 <td className="py-2 px-4 border-b">{new Date(voucher.startDate).toLocaleDateString()}</td>
                 <td className="py-2 px-4 border-b">{new Date(voucher.endDate).toLocaleDateString()}</td>
                 <td className="py-2 px-4 border-b">{voucher.maxPerUse}</td>
+                <td className="py-2 px-4 border-b capitalize">{voucher.couponType}</td>
                 <td className="py-2 px-4 border-b">
                   <button
                     onClick={() => deleteVoucher(voucher._id)}
@@ -75,6 +78,7 @@ const VoucherList = () => {
             <p><strong>Start Date:</strong> {new Date(voucher.startDate).toLocaleDateString()}</p>
             <p><strong>End Date:</strong> {new Date(voucher.endDate).toLocaleDateString()}</p>
             <p><strong>Max Per Use:</strong> {voucher.maxPerUse}</p>
+            <p><strong>Coupon Type:</strong> <span className="capitalize">{voucher.couponType}</span></p>
             <button
               onClick={() => deleteVoucher(voucher._id)}
               className="bg-red-500 text-white px-4 py-2 rounded mt-4"
