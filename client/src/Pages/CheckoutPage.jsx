@@ -409,7 +409,7 @@ const CheckoutPage = () => {
           <h2 className="text-lg font-semibold mb-2">
             Apply Gift Card or Voucher
           </h2>
-          {!hasOffer ? (
+          {  (
             <div>
               <input
                 type="text"
@@ -423,8 +423,6 @@ const CheckoutPage = () => {
               </button>
             
             </div>
-          ) : (
-            <p className="text-red-500">Cannot apply voucher as some products are on offer.</p>
           )}
           {maxDiscount > 0 && (
             <div className="mt-4 text-green-500">
