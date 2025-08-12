@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import config from "../config";
+
 const TempCheckoutPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [product, setProduct] = useState(null);
@@ -12,6 +13,7 @@ const TempCheckoutPage = () => {
   const [voucherCode, setVoucherCode] = useState("");
   const [maxDiscount, setMaxDiscount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
+  const [hasOffer, setHasOffer] = useState(false); // New state for offer check
   const navigate = useNavigate();
   //for razorpay
   const [responseId, setResponseId] = useState("");
@@ -23,6 +25,7 @@ const TempCheckoutPage = () => {
       const decoded = jwtDecode(token);
       fetchAddresses(decoded.id);
       fetchTempProduct();
+      checkActiveOffers(); // Check for active offers
     } else {
       navigate("/login");
     }
@@ -56,7 +59,30 @@ const TempCheckoutPage = () => {
     }
   };
 
+  // New function to check for active offers
+  const checkActiveOffers = async () => {
+    try {
+      const response = await axios.get(`${config}/api/active-offers`);
+      if (response.data && response.data.hasActiveOffer) {
+        setHasOffer(true);
+      }
+    } catch (error) {
+      console.error("Error checking active offers:", error);
+      // If API fails, assume no offer to allow voucher functionality
+      setHasOffer(false);
+    }
+  };
+
   const applyVoucher = async () => {
+    // Prevent voucher application if there's an active offer
+    if (hasOffer) {
+      setErrorMessage("Vouchers cannot be applied when there's an active offer");
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return;
+    }
+
     try {
       // Retrieve the token from local storage
       const token = localStorage.getItem('token');
@@ -99,7 +125,7 @@ const TempCheckoutPage = () => {
       setMaxDiscount(0); // Reset discount if voucher is invalid
       setTimeout(() => {
         setErrorMessage('');
-      }, 1000);
+      }, 3000);
     }
   };
 
@@ -341,40 +367,54 @@ const TempCheckoutPage = () => {
         ) : (
           <p>No product details available.</p>
         )}
-          <div className="mt-6">
-      <h2 className="text-lg font-semibold mb-2">
-        Apply Gift Card or Voucher
-      </h2>
-      <div className="flex items-center">
-        <input
-          type="text"
-        placeholder="SALE IS ON !!"
-          value={voucherCode}
+        
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold mb-2">
+            Apply Gift Card or Voucher
+          </h2>
+          <div className="flex items-center">
+            <input
+              type="text"
+              placeholder={hasOffer ? "Voucher disabled during offer" : "Enter voucher code"}
+              value={voucherCode}
+              disabled={hasOffer}
+              onChange={(e) => setVoucherCode(e.target.value)}
+              className={`w-full p-2 border rounded mt-2 focus:outline-none focus:border-blue-500 ${
+                hasOffer ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : ''
+              }`}
+            />
+            <button
+              onClick={applyVoucher}
+              disabled={hasOffer}
+              className={`ml-4 px-4 py-2 rounded-lg focus:outline-none ${
+                hasOffer 
+                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                  : 'bg-blue-500 text-white hover:bg-blue-600'
+              }`}
+            >
+              Apply
+            </button>
+          </div>
           
-          disabled
-          onChange={(e) => setVoucherCode(e.target.value)}
-          className="w-full p-2 border rounded mt-2 focus:outline-none focus:border-blue-500"
-        />
-        <button
-          onClick={applyVoucher}
-          className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
-          disabled
-        >
-          Apply
-        </button>
-      </div>
-      {maxDiscount > 0 && (
-        <div className="mt-4 text-green-500">
-          Voucher applied! You get a discount of ₹{maxDiscount.toFixed(2)}.
-        </div>
-      )}
-      {errorMessage && (
-        <div className="mt-4 text-red-500">
-          {errorMessage}!
-        </div>
-      )}
-  
-    
+          {/* Show warning message when offer is active */}
+          {hasOffer && (
+            <div className="mt-4 text-red-500 text-sm">
+              ⚠️ Vouchers cannot be applied when there's an active offer running
+            </div>
+          )}
+          
+          {maxDiscount > 0 && !hasOffer && (
+            <div className="mt-4 text-green-500">
+              Voucher applied! You get a discount of ₹{maxDiscount.toFixed(2)}.
+            </div>
+          )}
+          
+          {errorMessage && (
+            <div className="mt-4 text-red-500">
+              {errorMessage}
+            </div>
+          )}
+
           <div className="flex justify-between items-center font-light mt-2">
             <span>Total Price:</span>
             <span>₹ {totalPrice.toFixed(2)}</span>

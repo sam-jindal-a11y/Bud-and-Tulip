@@ -1,9 +1,10 @@
 // src/CheckoutPage.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // Corrected import statement
-import axios from "axios"; // Added axios for HTTP requests
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 import config from "../config";
+
 const CheckoutPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [products, setProducts] = useState([]);
@@ -11,13 +12,13 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const [voucherCode, setVoucherCode] = useState("");
   const [maxDiscount, setMaxDiscount] = useState(0);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [international, setInternaiotnal] = useState('outoff');
+  const [errorMessage, setErrorMessage] = useState("");
+  const [international, setInternaiotnal] = useState("outoff");
   const navigate = useNavigate();
 
-  //for razorpay
   const [responseId, setResponseId] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
+
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -39,9 +40,7 @@ const CheckoutPage = () => {
 
   const fetchAddresses = async (userId) => {
     try {
-      const response = await fetch(
-        `${config}/api/address?userId=${userId}`
-      );
+      const response = await fetch(`${config}/api/address?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setAddresses(data);
@@ -56,14 +55,13 @@ const CheckoutPage = () => {
     }
   };
 
-  // Function to fetch the product by ID
   const fetchProductById = async (productId) => {
     try {
       const response = await axios.get(`${config}/products/${productId}`);
-      return response.data; // Assuming the API returns the product data with its price
+      return response.data;
     } catch (error) {
       console.error(`Error fetching product ${productId}:`, error);
-      return null; // Return null or handle error gracefully
+      return null;
     }
   };
 
@@ -75,105 +73,101 @@ const CheckoutPage = () => {
       const tempOrder = storedOrder ? JSON.parse(storedOrder) : [];
       const latestData = tempOrder.length > 0 ? tempOrder : tempCart;
 
-      // Fetch the product prices for each item in the cart or order
       const updatedProducts = await Promise.all(
         latestData.map(async (item) => {
           const productData = await fetchProductById(item.productId);
           if (productData) {
-            const price = productData.hasOffer ? productData.offerPrice : productData.price;
-
-          return {
-            ...item,
-            price: price, // Add the price from API response
+            const price = productData.hasOffer
+              ? productData.offerPrice
+              : productData.price;
+            return {
+              ...item,
+              price,
               hasOffer: productData.hasOffer,
             };
           }
-          return item; // Return the original item if fetching failed
+          return item;
         })
       );
 
-      setProducts(updatedProducts); // Set the products with updated prices
+      setProducts(updatedProducts);
     } catch (error) {
-      console.error("Error fetching cart or order from local storage:", error);
+      console.error("Error fetching cart or order:", error);
       setProducts([]);
     }
   };
 
-
   const applyVoucher = async () => {
     try {
-      // Retrieve the token from local storage
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User not logged in');
-      }
-  
-      // Decode the token to get the user ID
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("User not logged in");
+
       const decodedToken = jwtDecode(token);
-      const userId = decodedToken.id; // Adjust this based on your token structure
-  
-      // Send the request to validate the voucher
-      const response = await axios.post(`${config}/api/validate`, { code: voucherCode, userId });
+      const userId = decodedToken.id;
+
+      const response = await axios.post(`${config}/api/validate`, {
+        code: voucherCode,
+        userId,
+      });
       const voucher = response.data;
-  
-      console.log(`Voucher couponType: ${voucher.couponType}, Payment Method: ${paymentMethod}`);
-  
-      // Check if the voucher's coupon type matches the payment method
+
       if (
-        (voucher.couponType === 'razorpay' && paymentMethod !== 'razorpay') || 
-        (voucher.couponType !== 'all' && voucher.couponType !== paymentMethod)
+        (voucher.couponType === "razorpay" && paymentMethod !== "razorpay") ||
+        (voucher.couponType !== "all" &&
+          voucher.couponType !== paymentMethod)
       ) {
         throw new Error(
           `This voucher can only be applied for ${
-            voucher.couponType === 'Razorpay' ? 'Razorpay' : voucher.couponType
+            voucher.couponType === "Razorpay"
+              ? "Razorpay"
+              : voucher.couponType
           } payments.`
         );
       }
-  
-      // Calculate the discount amount
+
       const discountAmount = (voucher.discount / 100) * totalPrice;
       setMaxDiscount(discountAmount);
-  
-      // Send a request to apply the voucher and track usage
-      await axios.post(`${config}/api/apply-voucher`, { code: voucherCode, userId });
-      alert('Voucher applied successfully!');
+
+      await axios.post(`${config}/api/apply-voucher`, {
+        code: voucherCode,
+        userId,
+      });
+      alert("Voucher applied successfully!");
     } catch (error) {
-      console.error('Error applying voucher:', error.response ? error.response.data.message : error.message);
-      setErrorMessage(error.response ? error.response.data.message : error.message);
-      setMaxDiscount(0); // Reset discount if voucher is invalid
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 1000);
+      console.error(
+        "Error applying voucher:",
+        error.response ? error.response.data.message : error.message
+      );
+      setErrorMessage(
+        error.response ? error.response.data.message : error.message
+      );
+      setMaxDiscount(0);
+      setTimeout(() => setErrorMessage(""), 1000);
     }
   };
-  
-  
 
-  const totalPrice = products.reduce((acc, product) => acc + product.price * product.quantity, 0);
+  const totalPrice = products.reduce(
+    (acc, product) => acc + product.price * product.quantity,
+    0
+  );
   const finalPrice = totalPrice - maxDiscount;
 
   const loadScript = (src) => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
       script.src = src;
-
-      script.onload = () => {
-        resolve(true);
-      };
-
-      script.onerror = () => {
-        resolve(false);
-      };
-
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
       document.body.appendChild(script);
     });
   };
 
   const handlePayment = async () => {
-    
     if (products.length === 0) {
-      alert("No products in the cart. Please add items to your cart before proceeding.");
-      navigate("/"); // Redirect to the home page
+      alert(
+        "No products in the cart. Please add items to your cart before proceeding."
+      );
+      navigate("/");
       return;
     }
 
@@ -192,27 +186,33 @@ const CheckoutPage = () => {
         productId: product.productId,
         quantity: product.quantity,
         price: product.price,
-        size: product.size
+        size: product.size,
       })),
       paymentMethod,
       totalAmount: totalPrice,
       discount: maxDiscount,
-      voucherCode: voucherCode || null, // Include voucher code if used
+      voucherCode: voucherCode || null,
       codCharge: paymentMethod === "cod" ? 300 : 0,
-      finalAmount: shippingCharge + finalPrice + (paymentMethod === "cod" ? 300 : 0)
+      finalAmount:
+        shippingCharge +
+        finalPrice +
+        (paymentMethod === "cod" ? 300 : 0),
     };
 
     if (paymentMethod === "razorpay") {
       try {
         const razorpayResponse = await axios.post(`${config}/orders`, {
           amount: orderData.finalAmount,
-          currency: "INR"
+          currency: "INR",
         });
 
-        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-
+        const res = await loadScript(
+          "https://checkout.razorpay.com/v1/checkout.js"
+        );
         if (!res) {
-          alert("Failed to load Razorpay SDK. Please check your internet connection.");
+          alert(
+            "Failed to load Razorpay SDK. Please check your internet connection."
+          );
           return;
         }
 
@@ -223,12 +223,18 @@ const CheckoutPage = () => {
           order_id: razorpayResponse.data.order_id,
           handler: async (response) => {
             setResponseId(response.razorpay_payment_id);
-            setConfirmationMessage("Payment was successful! Payment ID: " + response.razorpay_payment_id);
+            setConfirmationMessage(
+              "Payment was successful! Payment ID: " +
+                response.razorpay_payment_id
+            );
             orderData.paymentMethod = "razorpay";
             orderData.razorpayPaymentId = response.razorpay_payment_id;
             try {
-              const response = await axios.post(`${config}/api/orderHistory`, orderData);
-              if (response.status === 201) {
+              const resp = await axios.post(
+                `${config}/api/orderHistory`,
+                orderData
+              );
+              if (resp.status === 201) {
                 alert("Order placed successfully!");
                 localStorage.removeItem("tempCart");
                 localStorage.removeItem("tempOrders");
@@ -236,33 +242,32 @@ const CheckoutPage = () => {
               }
             } catch (error) {
               console.error("Error placing order:", error);
-              // console.log(orderData);
               alert("Failed to place order. Please try again.");
             }
           },
-          prefill: {
-            name: "Harshit"
-          },
-          theme: {
-            color: "#EC4899"
-          },
+          prefill: { name: "Harshit" },
+          theme: { color: "#EC4899" },
           modal: {
             ondismiss: function () {
-              alert("Payment popup closed. Please complete the payment to place your order.");
-            }
-          }
+              alert(
+                "Payment popup closed. Please complete the payment to place your order."
+              );
+            },
+          },
         };
 
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
-
       } catch (error) {
         console.error("Error creating Razorpay order:", error);
         alert("Failed to initiate payment. Please try again.");
       }
     } else {
       try {
-        const response = await axios.post(`${config}/api/orderHistory`, orderData);
+        const response = await axios.post(
+          `${config}/api/orderHistory`,
+          orderData
+        );
         if (response.status === 201) {
           alert("Order placed successfully!");
           localStorage.removeItem("cartData");
@@ -273,36 +278,33 @@ const CheckoutPage = () => {
         }
       } catch (error) {
         console.error("Error placing order:", error);
-        // console.log(orderData);
         alert("Failed to place order. Please try again.");
       }
     }
   };
 
   const getShippingCharge = (quantity) => {
-    if (quantity === 1) {
-      return 3000;
-    } else if (quantity <= 3) {
-      return 3500;
-    } else if (quantity <= 5) {
-      return 5500;
-    } else {
-      // Handle cases where quantity is more than 5, if needed
-      return 0; // Or another default value if applicable
-    }
+    if (quantity === 1) return 3000;
+    else if (quantity <= 3) return 3500;
+    else if (quantity <= 5) return 5500;
+    return 0;
   };
-  const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
-  const shippingCharge = addresses.find(addr => addr._id === selectedAddress)?.country === 'India' ? 0 : getShippingCharge(totalQuantity);
-  const hasOffer = products.some(product => {
-    console.log(`Checking product: ${product.name}, hasOffer: ${product.hasOffer}`);
-    return product.hasOffer === true;
-  });
 
-  console.log(`Products: ${JSON.stringify(products)}`);
-  console.log(`Any product has offer: ${hasOffer}`);
+  const totalQuantity = products.reduce(
+    (total, product) => total + product.quantity,
+    0
+  );
+  const shippingCharge =
+    addresses.find((addr) => addr._id === selectedAddress)?.country ===
+    "India"
+      ? 0
+      : getShippingCharge(totalQuantity);
+
+  const hasOffer = products.some((product) => product.hasOffer === true);
 
   return (
     <div className="container mx-auto p-4 flex flex-wrap">
+      {/* Address Selection */}
       <div className="w-full lg:w-2/3 p-4">
         <div className="mb-4">
           <h2 className="text-2xl font-bold mb-2">Select Address</h2>
@@ -342,24 +344,36 @@ const CheckoutPage = () => {
               </div>
             ))
           ) : (
-            <p>No addresses found. Please add an address first. <Link to="/AddressForm" className="font-bold bg-pinkc p-2 rounded-sm">Click here.</Link></p>
+            <p>
+              No addresses found. Please add an address first.{" "}
+              <Link
+                to="/AddressForm"
+                className="font-bold bg-pinkc p-2 rounded-sm"
+              >
+                Click here.
+              </Link>
+            </p>
           )}
         </div>
+
+        {/* Payment Method */}
         <div className="mb-4">
           <h2 className="text-2xl font-bold mb-2">Select Payment Method</h2>
-          <div className=" p-4 border border-gray-200 rounded-md mr-2">
-            {selectedAddress && addresses.find(addr => addr._id === selectedAddress)?.country === 'India' && (
-              <label className="flex items-center mb-2">
-                <input
-                  type="radio"
-                  value="cod"
-                  checked={paymentMethod === "cod"}
-                  onChange={() => setPaymentMethod("cod")}
-                  className="mr-2"
-                />
-                Cash on Delivery (COD)
-              </label>
-            )}
+          <div className="p-4 border border-gray-200 rounded-md mr-2">
+            {selectedAddress &&
+              addresses.find((addr) => addr._id === selectedAddress)
+                ?.country === "India" && (
+                <label className="flex items-center mb-2">
+                  <input
+                    type="radio"
+                    value="cod"
+                    checked={paymentMethod === "cod"}
+                    onChange={() => setPaymentMethod("cod")}
+                    className="mr-2"
+                  />
+                  Cash on Delivery (COD)
+                </label>
+              )}
             <label className="flex items-center mb-2">
               <input
                 type="radio"
@@ -371,15 +385,10 @@ const CheckoutPage = () => {
               Razorpay
             </label>
           </div>
-          <div className="mb-2 ">
-
-
-          </div>
-
-
         </div>
       </div>
 
+      {/* Order Summary */}
       <div className="w-full lg:w-1/3 p-4 bg-gray-100 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
         {products.length > 0 ? (
@@ -389,7 +398,9 @@ const CheckoutPage = () => {
               className="flex items-center justify-between border-b-2 border-gray-200 py-4"
             >
               <div>
-                <h3 className="text-lg font-semibold">{product.productName}</h3>
+                <h3 className="text-lg font-semibold">
+                  {product.productName}
+                </h3>
                 <p className="text-gray-700">
                   <span className="font-bold">Size:</span> {product.size}{" "}
                   &nbsp;|&nbsp;
@@ -398,18 +409,26 @@ const CheckoutPage = () => {
                 </p>
               </div>
               <div className="flex items-center">
-                <p className="text-gray-700 font-bold mr-4">₹ {product.price * product.quantity}</p>
+                <p className="text-gray-700 font-bold mr-4">
+                  ₹ {product.price * product.quantity}
+                </p>
               </div>
             </div>
           ))
         ) : (
           <p className="text-gray-700 mb-4">No products in cart.</p>
         )}
+
+        {/* Voucher Section */}
         <div className="mt-6">
           <h2 className="text-lg font-semibold mb-2">
             Apply Gift Card or Voucher
           </h2>
-          {  (
+          {hasOffer ? (
+            <p className="text-red-500 text-sm mb-2">
+              Voucher not available for products with an active offer.
+            </p>
+          ) : (
             <div>
               <input
                 type="text"
@@ -418,24 +437,25 @@ const CheckoutPage = () => {
                 placeholder="Enter your voucher code"
                 className="border border-gray-300 rounded-md p-2 w-full mb-2"
               />
-              <button onClick={applyVoucher} className="bg-pink-500 text-white p-2 rounded-md">
+              <button
+                onClick={applyVoucher}
+                className="bg-pink-500 text-white p-2 rounded-md"
+              >
                 Apply
               </button>
-            
             </div>
           )}
           {maxDiscount > 0 && (
             <div className="mt-4 text-green-500">
-              Voucher applied! You get a discount of ₹{maxDiscount.toFixed(2)}.
+              Voucher applied! You get a discount of ₹
+              {maxDiscount.toFixed(2)}.
             </div>
           )}
           {errorMessage && (
-            <div className="mt-4 text-red-500">
-              {errorMessage}!
-            </div>
+            <div className="mt-4 text-red-500">{errorMessage}!</div>
           )}
 
-
+          {/* Price Details */}
           <div className="flex justify-between items-center font-light mt-2">
             <span>Total Price:</span>
             <span>₹ {totalPrice.toFixed(2)}</span>
@@ -450,12 +470,12 @@ const CheckoutPage = () => {
               <span>₹ {maxDiscount.toFixed(2)}</span>
             </div>
           )}
-          {shippingCharge > 0 &&
+          {shippingCharge > 0 && (
             <div className="flex justify-between items-center font-light mt-2">
               <span>Shipping Charges ( + ) :</span>
               <span>₹ {shippingCharge}</span>
             </div>
-          }
+          )}
           {paymentMethod === "cod" && (
             <div className="flex justify-between items-center font-light mt-2">
               <span>COD Charge ( + ) :</span>
@@ -465,14 +485,22 @@ const CheckoutPage = () => {
           <div className="flex justify-between items-center font-semibold mt-4">
             <span>Final Price:</span>
             <span>
-              ₹ {shippingCharge + finalPrice + (paymentMethod === "cod" ? 300 : 0)}
+              ₹{" "}
+              {shippingCharge +
+                finalPrice +
+                (paymentMethod === "cod" ? 300 : 0)}
             </span>
           </div>
+
+          {/* Pay Button */}
           <button
             onClick={handlePayment}
             className="w-full bg-pink-500 text-white py-2 rounded-lg mt-4 hover:bg-pink-600 focus:outline-none"
           >
-            Pay Now ₹ {shippingCharge + finalPrice + (paymentMethod === "cod" ? 300 : 0)}
+            Pay Now ₹{" "}
+            {shippingCharge +
+              finalPrice +
+              (paymentMethod === "cod" ? 300 : 0)}
           </button>
           {confirmationMessage && (
             <p className="mt-4 text-green-500">{confirmationMessage}</p>
