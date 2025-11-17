@@ -1,27 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import EditAddressForm from './EditAddressForm';
+import React, { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import EditAddressForm from "./EditAddressForm"; // if unused, you can remove this
 import config from "../config";
+
 const Account = () => {
   const [user, setUser] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [editAddress, setEditAddress] = useState(null);
+  const [activeTab, setActiveTab] = useState("dashboard");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
-      const decoded = jwtDecode(token);
-      setUser(decoded);
-      fetchAddresses(decoded.id);
-      fetchUserDetails(decoded.id);
-      fetchOrders(decoded.id);
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+        fetchAddresses(decoded.id);
+        fetchUserDetails(decoded.id);
+        fetchOrders(decoded.id);
+      } catch (err) {
+        console.error("Invalid token:", err);
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
     } else {
-      navigate('/login');
+      navigate("/login");
     }
   }, [navigate]);
 
@@ -32,10 +39,10 @@ const Account = () => {
         const data = await response.json();
         setAddresses(data);
       } else {
-        console.error('Failed to fetch addresses');
+        console.error("Failed to fetch addresses:", response.status);
       }
     } catch (error) {
-      console.error('Error fetching addresses:', error);
+      console.error("Error fetching addresses:", error);
     }
   };
 
@@ -46,78 +53,83 @@ const Account = () => {
         const data = await response.json();
         setUser(data);
       } else {
-        console.error('Failed to fetch user details');
+        console.error("Failed to fetch user details:", response.status);
       }
     } catch (error) {
-      console.error('Error fetching user details:', error);
+      console.error("Error fetching user details:", error);
     }
   };
 
   const fetchOrders = async (userId) => {
     try {
-      const response = await fetch(`${config}/api/orderHistory/orders/user/${userId}`);
+      const response = await fetch(
+        `${config}/api/orderHistory/orders/user/${userId}`
+      );
       if (response.ok) {
         const data = await response.json();
         setOrders(data);
       } else {
-        console.error('Failed to fetch orders');
+        console.error("Failed to fetch orders:", response.status);
       }
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error("Error fetching orders:", error);
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     localStorage.clear();
-    window.location.reload();
-    navigate('/');
+    navigate("/");
   };
 
   const handleDeleteAddress = async (addressId) => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
 
-      const response = await axios.delete(`${config}/api/address/${addressId}`, { headers });
+      const headers = { Authorization: `Bearer ${token}` };
+      const response = await axios.delete(
+        `${config}/api/address/${addressId}`,
+        { headers }
+      );
 
       if (response.status === 200) {
-        setAddresses(addresses.filter((address) => address._id !== addressId));
+        setAddresses((prev) =>
+          prev.filter((address) => address._id !== addressId)
+        );
       } else {
-        console.error('Failed to delete address');
+        console.error("Failed to delete address:", response.status);
       }
     } catch (error) {
-      console.error('Error deleting address:', error);
+      console.error("Error deleting address:", error);
     }
   };
 
   const handleUpdateAddress = (address) => {
-    setEditAddress(address);
-    navigate('/editaddressform', { state: { address } });
+    navigate("/editaddressform", { state: { address } });
   };
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  if (!user) return <div>Loading...</div>;
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'dashboard':
+      case "dashboard":
         return <Dashboard orders={orders} />;
-      case 'addresses':
+      case "addresses":
         return (
           <Addresses
             addresses={addresses}
             onDelete={handleDeleteAddress}
             onUpdate={handleUpdateAddress}
-            addNewAddress={() => navigate('/addressform')}
+            addNewAddress={() => navigate("/addressform")}
           />
         );
-      case 'wishlist':
+      case "wishlist":
         return <Wishlist />;
-      case 'wallet':
+      case "wallet":
         return <Wallet />;
       default:
         return <Dashboard orders={orders} />;
@@ -125,32 +137,79 @@ const Account = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-semibold mb-4">Hello, {user.firstName}! Welcome to your dashboard!</h2>
+    <main className="max-w-4xl mx-auto p-4">
+      <Helmet>
+        <title>{`Account Dashboard - ${user?.firstName || ""}`}</title>
+        <meta
+          name="description"
+          content={`Manage your account, addresses, orders, wishlist, and wallet, ${
+            user?.firstName || "user"
+          }.`}
+        />
+      </Helmet>
+
+      <h1 className="text-2xl font-semibold mb-4">
+        Hello, {user?.firstName || "User"}! Welcome to your dashboard!
+      </h1>
+
       <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/3 p-4 border-r mb-4 md:mb-0">
-          <h3 className="text-xl font-bold mb-4">My Profile</h3>
-          <ul className="space-y-2">
-            <li className={`cursor-pointer ${activeTab === 'dashboard' ? 'text-pink-500' : ''}`} onClick={() => setActiveTab('dashboard')}>Dashboard</li>
-            <li className={`cursor-pointer ${activeTab === 'addresses' ? 'text-pink-500' : ''}`} onClick={() => setActiveTab('addresses')}>Addresses</li>
-            <li className={`cursor-pointer ${activeTab === 'wishlist' ? 'text-pink-500' : ''}`} onClick={() => setActiveTab('wishlist')}>Wishlist</li>
-            <li className={`cursor-pointer ${activeTab === 'wallet' ? 'text-pink-500' : ''}`} onClick={() => setActiveTab('wallet')}>Wallet</li>
-          </ul>
-          <button onClick={handleLogout} className="mt-6 px-4 py-2 border border-black rounded">Log Out</button>
-        </div>
-        <div className="md:w-2/3 p-4">
-          {renderContent()}
-        </div>
+        <aside className="md:w-1/3 p-4 border-r mb-4 md:mb-0">
+          <h2 className="text-xl font-bold mb-4">My Profile</h2>
+          <nav>
+            <ul className="space-y-2">
+              <li
+                className={`cursor-pointer ${
+                  activeTab === "dashboard" ? "text-pink-500" : ""
+                }`}
+                onClick={() => setActiveTab("dashboard")}
+              >
+                Dashboard
+              </li>
+              <li
+                className={`cursor-pointer ${
+                  activeTab === "addresses" ? "text-pink-500" : ""
+                }`}
+                onClick={() => setActiveTab("addresses")}
+              >
+                Addresses
+              </li>
+              <li
+                className={`cursor-pointer ${
+                  activeTab === "wishlist" ? "text-pink-500" : ""
+                }`}
+                onClick={() => setActiveTab("wishlist")}
+              >
+                Wishlist
+              </li>
+              <li
+                className={`cursor-pointer ${
+                  activeTab === "wallet" ? "text-pink-500" : ""
+                }`}
+                onClick={() => setActiveTab("wallet")}
+              >
+                Wallet
+              </li>
+            </ul>
+          </nav>
+          <button
+            onClick={handleLogout}
+            className="mt-6 px-4 py-2 border border-black rounded"
+          >
+            Log Out
+          </button>
+        </aside>
+
+        <section className="md:w-2/3 p-4">{renderContent()}</section>
       </div>
-    </div>
+    </main>
   );
 };
 
 const Dashboard = ({ orders }) => (
-  <div>
-    <h3 className="text-xl font-bold mb-4">Orders History</h3>
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white">
+  <section>
+    <h2 className="text-xl font-bold mb-4">Orders History</h2>
+    {orders && orders.length ? (
+      <table className="min-w-full bg-white border">
         <thead>
           <tr>
             <th className="py-2 px-4 border-b">Order ID</th>
@@ -160,60 +219,86 @@ const Dashboard = ({ orders }) => (
           </tr>
         </thead>
         <tbody>
-          {orders.length > 0 ? (
-            orders.map((order) => (
-              <tr key={order._id}>
-                <td className="py-2 px-4 border-b">{order._id}</td>
-                <td className="py-2 px-4 border-b">{new Date(order.createdAt).toLocaleDateString()}</td>
-                <td className="py-2 px-4 border-b">{order.status ? order.status : 'pending'}</td>
-                <td className="py-2 px-4 border-b">₹ {order.finalAmount}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td className="py-2 px-4 border-b" colSpan="5">No orders found</td>
+          {orders.map((order) => (
+            <tr key={order._id}>
+              <td className="py-2 px-4 border-b">{order._id}</td>
+              <td className="py-2 px-4 border-b">
+                {new Date(order.createdAt).toLocaleDateString()}
+              </td>
+              <td className="py-2 px-4 border-b">
+                {order.status || "pending"}
+              </td>
+              <td className="py-2 px-4 border-b">₹ {order.finalAmount}</td>
             </tr>
-          )}
+          ))}
         </tbody>
       </table>
-    </div>
-  </div>
+    ) : (
+      <p>No orders found</p>
+    )}
+  </section>
 );
 
 const Addresses = ({ addresses, onDelete, onUpdate, addNewAddress }) => (
-  <div>
-    <h3 className="text-xl font-bold mb-4">My Addresses</h3>
-    <div className="space-y-4">
-      {addresses.map((address) => (
-        <div key={address._id} className="border p-4 rounded">
-          <p>{address.firstName} {address.lastName}</p>
-          <p>{address.address1}, {address.address2}</p>
-          <p>{address.city}, {address.province}, {address.country} - {address.postalCode}</p>
+  <section>
+    <h2 className="text-xl font-bold mb-4">My Addresses</h2>
+    {addresses && addresses.length ? (
+      addresses.map((address) => (
+        <article key={address._id} className="border p-4 rounded mb-4">
+          <p>
+            <strong>
+              {address.firstName} {address.lastName}
+            </strong>
+          </p>
+          <p>
+            {address.address1}, {address.address2}
+          </p>
+          <p>
+            {address.city}, {address.province}, {address.country} -{" "}
+            {address.postalCode}
+          </p>
           <p>Phone: {address.phone}</p>
           <p>Company: {address.company}</p>
           <div className="mt-2">
-            <button onClick={() => onUpdate(address)} className="mr-2 px-2 py-1 border rounded">Edit</button>
-            <button onClick={() => onDelete(address._id)} className="px-2 py-1 border rounded">Delete</button>
+            <button
+              onClick={() => onUpdate(address)}
+              className="mr-2 px-2 py-1 border rounded"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => onDelete(address._id)}
+              className="px-2 py-1 border rounded"
+            >
+              Delete
+            </button>
           </div>
-        </div>
-      ))}
-      <button onClick={addNewAddress} className="mt-4 px-4 py-2 border border-black rounded">Add New Address</button>
-    </div>
-  </div>
+        </article>
+      ))
+    ) : (
+      <p>No addresses added yet.</p>
+    )}
+    <button
+      onClick={addNewAddress}
+      className="mt-4 px-4 py-2 border border-black rounded"
+    >
+      Add New Address
+    </button>
+  </section>
 );
 
 const Wishlist = () => (
-  <div>
-    <h3 className="text-xl font-bold mb-4">My Wishlist</h3>
-    {/* Wishlist content */}
-  </div>
+  <section>
+    <h2 className="text-xl font-bold mb-4">My Wishlist</h2>
+    <p>Your wishlist items will appear here.</p>
+  </section>
 );
 
 const Wallet = () => (
-  <div>
-    <h3 className="text-xl font-bold mb-4">My Wallet</h3>
-    {/* Wallet content */}
-  </div>
+  <section>
+    <h2 className="text-xl font-bold mb-4">My Wallet</h2>
+    <p>Wallet summary and transaction history will appear here.</p>
+  </section>
 );
 
 export default Account;
