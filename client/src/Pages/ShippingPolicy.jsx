@@ -8,36 +8,31 @@ const ShippingPolicy = () => {
         <title>Shipping & Exchange Policy | Bud & Tulips</title>
         <meta
           name="description"
-          content="Learn about Bud & Tulips' shipping policy, delivery timelines, and exchange procedures for domestic and international orders."
+          content="Detailed Shipping & Exchange Policy of Bud & Tulips. Check delivery timelines, shipping charges, domestic & international shipping, return rules and exchange guidelines."
         />
-        <link rel="canonical" href="https://budandtulips.com/shipping-policy" />
-        <meta
-          property="og:title"
-          content="Shipping & Exchange Policy | Bud & Tulips"
-        />
+        <link rel="canonical" href="https://budandtulips.com/shipping-and-exchange-policy-budandtulips" />
+
+        <meta property="og:title" content="Shipping & Exchange Policy | Bud & Tulips" />
         <meta
           property="og:description"
-          content="Know our shipping timelines and exchange policy. Free delivery in India. Easy size exchange within 10 days."
+          content="Know Bud & Tulips' shipping timelines, dispatch process, size exchange rules and international delivery guidelines."
         />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:url"
-          content="https://budandtulips.com/shipping-policy"
-        />
+        <meta property="og:url" content="https://budandtulips.com/shipping-and-exchange-policy-budandtulips" />
         <meta property="og:site_name" content="Bud & Tulips" />
+
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebPage",
-            name: "Shipping & Exchange Policy | Bud & Tulips",
-            description:
-              "Learn about Bud & Tulips' shipping policy, delivery timelines, and exchange procedures for domestic and international orders.",
-            url: "https://budandtulips.com/shipping-policy",
-            publisher: {
+            "name": "Shipping & Exchange Policy - Bud & Tulips",
+            "description":
+              "Official shipping & exchange policy page of Bud & Tulips including domestic delivery, international shipping, dispatch timeline, returns & cancellations.",
+            "url": "https://budandtulips.com/shipping-and-exchange-policy-budandtulips",
+            "publisher": {
               "@type": "Organization",
-              name: "Bud & Tulips",
-              url: "https://budandtulips.com",
-              logo: "https://budandtulips.com/logo.png",
+              "name": "Bud & Tulips",
+              "logo": "https://budandtulips.com/logo.png",
             },
           })}
         </script>
@@ -48,57 +43,74 @@ const ShippingPolicy = () => {
           Shipping & Exchange Policy
         </h1>
 
-        <section className="text-left text-gray-700 text-sm md:text-base leading-relaxed space-y-4">
-          <h2 className="font-semibold text-lg text-gray-900">
-            Domestic Shipping
-          </h2>
+        <section className="text-left text-gray-700 text-sm md:text-base leading-relaxed space-y-5">
           <p>
-            Orders within India will be delivered within{" "}
-            <strong>5–18 working days</strong>. We offer{" "}
-            <strong>free delivery</strong> on all domestic orders.
+            At Bud & Tulips, we aim to deliver a smooth and hassle-free shopping experience to our customers. Below you’ll find complete details regarding our domestic and international shipping timelines, replacement policies, and exchange procedures.
           </p>
 
-          <h2 className="font-semibold text-lg text-gray-900">
-            International Shipping
-          </h2>
+          {/* Domestic Shipping */}
+          <h2 className="font-semibold text-lg text-gray-900">Domestic Shipping (India)</h2>
           <p>
-            For international orders, delivery takes approximately{" "}
-            <strong>20–25 working days</strong>. Shipping costs and customs
-            duties (if any) are the responsibility of the customer.
+            All orders within India are delivered within <strong>5–18 working days</strong>.  
+            We offer <strong>free delivery</strong> across India without any minimum order value.
+          </p>
+          <p>
+            Each order is quality checked, packed carefully, and dispatched through trusted courier partners.
           </p>
 
-          <h2 className="font-semibold text-lg text-gray-900">
-            Exchange Policy
-          </h2>
+          {/* Dispatch Time */}
+          <h2 className="font-semibold text-lg text-gray-900">Order Processing & Dispatch Time</h2>
           <p>
-            We allow <strong>size exchange within 10 working days</strong>. In
-            case the item is sold out, we’ll offer a replacement piece. To
-            initiate an exchange, message us on WhatsApp at{" "}
-            <a
-              href="https://wa.me/9485701666"
-              className="text-pink-600 underline"
-            >
+            Your order is processed within <strong>1–3 working days</strong>.  
+            During sale periods or festive seasons, dispatch may take slightly longer.
+          </p>
+
+          {/* International Shipping */}
+          <h2 className="font-semibold text-lg text-gray-900">International Shipping</h2>
+          <p>
+            We ship worldwide! International deliveries take around  
+            <strong>20–25 working days</strong>.
+          </p>
+          <p>
+            Shipping charges, import duties, and customs fees (if applicable) must be paid by the customer.
+          </p>
+
+          {/* Exchange Policy */}
+          <h2 className="font-semibold text-lg text-gray-900">Exchange Policy (India Only)</h2>
+          <p>
+            We offer a <strong>size exchange within 10 working days</strong> of delivery.  
+            If the same size or product is unavailable, we provide an alternative product.
+          </p>
+          <p>
+            To request an exchange, message us on WhatsApp:{" "}
+            <a href="https://wa.me/9485701666" className="text-pink-600 underline">
               9485701666
-            </a>{" "}
-            or DM us on Instagram.
+            </a>
+            {" "}or DM us on Instagram.
           </p>
 
-          <h2 className="font-semibold text-lg text-gray-900">
-            Returns & Cancellations
-          </h2>
+          {/* Returns */}
+          <h2 className="font-semibold text-lg text-gray-900">Returns & Cancellations</h2>
           <p>
-            We do not accept returns or cancellations once an order has been
-            placed. Sale or reduced-price items are{" "}
-            <strong>non-exchangeable and non-refundable</strong>.
+            We do not accept returns or cancellations once an order is placed as each piece is handcrafted specially for you.
+          </p>
+          <p>
+            Sale/discounted products are <strong>non-returnable & non-exchangeable</strong>.
           </p>
 
-          <h2 className="font-semibold text-lg text-gray-900">
-            International Exchange
-          </h2>
+          {/* International Exchange */}
+          <h2 className="font-semibold text-lg text-gray-900">International Exchange & Returns</h2>
           <p>
-            We do not exchange or return international orders due to high
-            customs and logistics costs.
+            Due to high customs and international logistics charges, we do not offer exchanges or returns on international orders.
           </p>
+
+          {/* Additional Notes */}
+          <h2 className="font-semibold text-lg text-gray-900">Additional Information</h2>
+          <ul className="list-disc ml-5 space-y-2">
+            <li>Ensure your address and contact details are correct during checkout.</li>
+            <li>If a shipment is undelivered due to incorrect address, reshipping charges apply.</li>
+            <li>We are not responsible for delays caused due to weather or courier issues.</li>
+          </ul>
         </section>
 
         <h3 className="font-medium text-xl md:text-2xl mt-10 text-pink-500">
@@ -109,4 +121,4 @@ const ShippingPolicy = () => {
   );
 };
 
-export default ShippingPolicy;
+export default ShippingPolicy;
