@@ -64,6 +64,18 @@ const ProductSchema = new mongoose.Schema({
     salesCount: {
         type: Number,
         default: 0 // Initialize sales count to 0
+    },
+     metaTitle: {
+        type: String,
+        default: ""
+    },
+    metaDescription: {
+        type: String,
+        default: ""
+    },
+    keywords:{
+        type: [String],
+        default: ""
     }
 });
 

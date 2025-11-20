@@ -19,6 +19,9 @@ const AddProduct = () => {
     hasOffer: false,
     offerPrice: 0,
     isActive: true,
+    metaTitle: '',
+    metaDescription: '',
+    keywords: "",
   });
 
   const navigate = useNavigate();
@@ -241,6 +244,50 @@ const AddProduct = () => {
             rows="2"
           ></textarea>
         </div>
+        <div className="mb-4">
+          <label htmlFor="metaTitle" className="block text-sm font-medium text-gray-700">
+            Meta Title (SEO)
+          </label>
+          <input
+            type="text"
+            id="metaTitle"
+            name="metaTitle"
+            value={formData.metaTitle}
+            onChange={handleChange}
+            className="mt-1 px-3 py-2 border border-gray-300 rounded-md w-full"
+
+          />
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="metaDescription" className="block text-sm font-medium text-gray-700">
+            Meta Description (SEO)
+          </label>
+          <textarea
+            id="metaDescription"
+            name="metaDescription"
+            value={formData.metaDescription}
+            onChange={handleChange}
+            className="mt-1 px-3 py-2 border border-gray-300 rounded-md w-full"
+            rows="3"
+
+          ></textarea>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="keywords" className="block text-sm font-medium text-gray-700">
+            Keyword Tags (SEO)
+          </label>
+          <input
+            type="text"
+            id="keywords"
+            name="keywords"
+            value={formData.keywords}
+            onChange={handleChange}
+            className="mt-1 px-3 py-2 border border-gray-300 rounded-md w-full"
+            
+          />
+        </div>
+
         <div className="mb-4">
           <label htmlFor="hasOffer" className="block text-sm font-medium text-gray-700">Has Offer</label>
           <input
