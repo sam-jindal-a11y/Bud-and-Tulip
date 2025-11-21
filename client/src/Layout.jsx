@@ -26,6 +26,7 @@ import EditAddressForm from "./Pages/EditAddressForm.jsx";
 import TempCheckoutPage from "./Pages/TempCheckoutPage.jsx";
 import CheckAddress from "./Pages/CheckAddress.jsx";
 import { CartProvider } from './Components/CartContext';
+import FloatingWhatsApp from "./Components/FloatingWhatsapp.jsx";
 const Layout = () => {
   window.scrollTo(0, 0);
   return (
@@ -60,6 +61,7 @@ const Layout = () => {
           <Route path="/checkAddress" element={<CheckAddress />} />
           <Route path="/orderDetails" element={<OrderDetails />} />
         </Routes>
+         <FloatingWhatsApp />
         <Footer />
       </Router>
       </CartProvider>
