@@ -29,7 +29,30 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 // import { config } from 'dotenv';
 // import imageKit from './config/imageKit.js';
+import slugify from "slugify";
+
 dotenv.config();
+async function generateUniqueSlug(name) {
+  if (!name) {
+    throw new Error("Product name is required for slug");
+  }
+
+  const baseSlug = slugify(name, {
+    lower: true,
+    strict: true,
+    trim: true
+  });
+
+  let slug = baseSlug;
+  let count = 1;
+
+  while (await Product.exists({ slug })) {
+    slug = `${baseSlug}-${count}`;
+    count++;
+  }
+
+  return slug;
+}
 
 
 
@@ -131,10 +154,11 @@ app.post('/api/products', upload.array('image', 6), async (req, res) => {
 
     // Extract image paths from the uploaded files and prepend base URL
     const imageUrls = files.map(file => `${baseURL}${file.originalname}`);
-
+const slug = await generateUniqueSlug(name);
     // Create and save the product with image URLs
     const newProduct = new Product({
       name,
+      slug,
       description,
       price,
       stock,
@@ -264,6 +288,20 @@ app.post('/products/by-categories', async (req, res) => {
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+app.get('/products/:slug', async (req, res) => {
+  try {
+    const product = await Product.findOne({ slug: req.params.slug });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

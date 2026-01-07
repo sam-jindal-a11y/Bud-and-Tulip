@@ -13,12 +13,13 @@ const ProductCard = ({
   hasOffer,
   size,
   productId,
+  slug,
 }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
   const singleProduct = () => {
-    navigate(`/product/${productId}`);
+  navigate(`/product/${slug}`);
   };
 
   const addToWishlist = async () => {

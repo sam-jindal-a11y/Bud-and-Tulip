@@ -9,7 +9,7 @@ import Loading from "./Loading";
 import { CartContext } from "./CartContext";
 import config from "../config";
 const ProductView = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -172,7 +172,7 @@ const ProductView = () => {
     window.scrollTo(0, 0);
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`${config}/products/${id}`);
+        const response = await axios.get(`${config}/products/${slug}`);
         const productData = response.data;
         setProduct(productData);
         // console.log(productData.category);
@@ -192,7 +192,20 @@ const ProductView = () => {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [slug]);
+  useEffect(() => {
+  if (product?.name) {
+    document.title = ` ${product.name} | Bud & Tulips `;
+  } else {
+    document.title = "Bud & Tulips";
+  }
+
+  // cleanup (optional, but good practice)
+  return () => {
+    document.title = "Bud & Tulips";
+  };
+}, [product]);
+
 
   if (!product)
     return (
@@ -472,6 +485,7 @@ const ProductView = () => {
                 <div key={product._id} className="">
                   <ProductCard
                     productId={product._id}
+                    slug={product.slug}
                     image={product.image[0]}
                     name={product.name}
                     price={product.price}
