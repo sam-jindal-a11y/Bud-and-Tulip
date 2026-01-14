@@ -25,45 +25,54 @@ import ScrollToTop from "./Components/ScrollToTop.jsx";
 import EditAddressForm from "./Pages/EditAddressForm.jsx";
 import TempCheckoutPage from "./Pages/TempCheckoutPage.jsx";
 import CheckAddress from "./Pages/CheckAddress.jsx";
-import { CartProvider } from './Components/CartContext';
+import { CartProvider } from "./Components/CartContext";
 import FloatingWhatsApp from "./Components/FloatingWhatsapp.jsx";
 const Layout = () => {
   window.scrollTo(0, 0);
   return (
     <div className="layout">
-       <CartProvider>
-      <Router>
-        <ScrollToTop />
-        <Navbar />
-        <Routes>
-    
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          {/* <Route path="/products" element={<Products />} /> */}
-          <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/shippingPolicy" element={<ShippingPolicy />} />
-          <Route path="/Refund" element={<RefundPolicy />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/product" element={<ProductView />}/>
-          <Route path="/product/:slug" element={<ProductView />} />
-          <Route path="/Register" element={<Register />} />
-          <Route path="/Account" element={<Account />} />
-          <Route path="/ShoppingCart" element={<ShoppingCart />} />
-          <Route path="/Search" element={<SearchSection />} />
-          <Route path="/Wishlist" element={<Wishlist />} />
-          <Route path="/SizeChart" element={<SizeChart />} />
-          <Route path="/AddressForm" element={<Addressform />} />
-          <Route path="/CheckoutPage" element={<CheckoutPage />} />
-          <Route path="/Tempcheckout" element={<TempCheckoutPage />} />
-          <Route path="/editaddressform" element={<EditAddressForm />} />
-          <Route path="/checkAddress" element={<CheckAddress />} />
-          <Route path="/orderDetails" element={<OrderDetails />} />
-        </Routes>
-         <FloatingWhatsApp />
-        <Footer />
-      </Router>
+      <CartProvider>
+        <Router>
+          <ScrollToTop />
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+
+            <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/shippingPolicy" element={<ShippingPolicy />} />
+            <Route path="/Refund" element={<RefundPolicy />} />
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/Register" element={<Register />} />
+            <Route path="/Account" element={<Account />} />
+            <Route path="/ShoppingCart" element={<ShoppingCart />} />
+            <Route path="/Search" element={<SearchSection />} />
+            <Route path="/Wishlist" element={<Wishlist />} />
+            <Route path="/SizeChart" element={<SizeChart />} />
+            <Route path="/AddressForm" element={<Addressform />} />
+            <Route path="/CheckoutPage" element={<CheckoutPage />} />
+            <Route path="/Tempcheckout" element={<TempCheckoutPage />} />
+            <Route path="/editaddressform" element={<EditAddressForm />} />
+            <Route path="/checkAddress" element={<CheckAddress />} />
+            <Route path="/orderDetails" element={<OrderDetails />} />
+
+            {/* ✅ PRODUCT ROUTES */}
+            <Route path="/product/:slug" element={<ProductView />} />
+            <Route path="/product/slug/:slug" element={<ProductView />} />
+
+            {/* optional: show something for unknown routes */}
+            <Route
+              path="*"
+              element={<div className="p-10 text-center">Page not found</div>}
+            />
+          </Routes>
+
+          <FloatingWhatsApp />
+          <Footer />
+        </Router>
       </CartProvider>
     </div>
   );
