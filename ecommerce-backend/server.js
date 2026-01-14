@@ -290,7 +290,7 @@ app.post('/products/by-categories', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-app.get('/products/:slug', async (req, res) => {
+app.get('/products/slug/:slug', async (req, res) => {
   try {
     const product = await Product.findOne({ slug: req.params.slug });
 

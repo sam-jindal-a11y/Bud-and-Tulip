@@ -19,7 +19,7 @@ const ProductCard = ({
   const [user, setUser] = useState(null);
 
   const singleProduct = () => {
-  navigate(`/product/${slug}`);
+  navigate(`/product/slug/${slug}`);
   };
 
   const addToWishlist = async () => {
