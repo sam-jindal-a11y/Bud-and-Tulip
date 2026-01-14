@@ -72,6 +72,7 @@ const Layout = () => {
             {isAuthenticated() ? (
               <>
                 <Route path="/addproduct" element={<AddProduct />} />
+                
                 <Route path="/updateproduct/:id" element={<UpdateProduct />} />
                 <Route path="/addsize" element={<AddSize />} />
                 <Route path="/updatesize" element={<UpdateSize />} />

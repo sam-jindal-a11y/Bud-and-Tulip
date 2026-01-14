@@ -89,7 +89,7 @@ const SearchSection = () => {
   const handleProductClick = (slug) => {
     // Store the current page in localStorage before navigating
     localStorage.setItem("currentPage", currentPage);
-    navigate(`/product/${slug}`);
+    navigate(`/product/slug/${slug}`);
   };
 
   const handleSizeChange = (size) => {

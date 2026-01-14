@@ -172,7 +172,7 @@ const ProductView = () => {
     window.scrollTo(0, 0);
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`${config}/products/${slug}`);
+        const response = await axios.get(`${config}/products/slug/${slug}`);
         const productData = response.data;
         setProduct(productData);
         // console.log(productData.category);
