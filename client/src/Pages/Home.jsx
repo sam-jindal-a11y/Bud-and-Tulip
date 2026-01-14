@@ -138,6 +138,7 @@ const Home = () => {
             {displayedProductslatest.map((product) => (
               <ProductCard
                 key={product._id}
+                slug={product.slug}
                 productId={product._id}
                 image={product.image?.[0]}
                 name={product.name}
@@ -170,6 +171,7 @@ const Home = () => {
             {bestSellers.map((product) => (
               <ProductCard
                 key={product._id}
+                slug={product.slug}
                 productId={product._id}
                 image={product.image?.[0]}
                 name={product.name}
@@ -200,6 +202,7 @@ const Home = () => {
             {displayedSaleProducts.map((product) => (
               <ProductCard
                 key={product._id}
+                slug ={product.slug}
                 productId={product._id}
                 image={product.image?.[0]}
                 name={product.name}

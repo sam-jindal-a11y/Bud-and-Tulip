@@ -21,6 +21,8 @@ const SearchSection = () => {
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+    const params = new URLSearchParams(location.search);
+  const selectedCategory = params.get("category");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -84,10 +86,10 @@ const SearchSection = () => {
     navigate,
   ]);
 
-  const handleProductClick = (productId) => {
+  const handleProductClick = (slug) => {
     // Store the current page in localStorage before navigating
     localStorage.setItem("currentPage", currentPage);
-    navigate(`/product/${productId}`);
+    navigate(`/product/${slug}`);
   };
 
   const handleSizeChange = (size) => {
@@ -350,6 +352,14 @@ const SearchSection = () => {
 
       {/* Main Content */}
       <div className="w-full lg:w-2/3 p-4 mx-auto">
+       {/* ✅ ADDED: CATEGORY TITLE */}
+        {selectedCategory && selectedCategory !== "All Products" && (
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {selectedCategory}
+            </h2>
+          </div>
+        )}
         <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
           <div className="mb-2 sm:mb-0">
             <label className="mr-2">Show</label>
@@ -451,7 +461,7 @@ const SearchSection = () => {
               <div
                 key={product._id}
                 className="bg-white rounded-sm shadow-md overflow-hidden relative cursor-pointer"
-                onClick={() => handleProductClick(product._id)}
+                onClick={() => handleProductClick(product.slug)}
               >
                 {product.hasOffer && (
                   <div className="absolute top-0 left-0 bg-pink-500 text-white px-2 py-1 text-xs rounded-md mx-4 my-4">

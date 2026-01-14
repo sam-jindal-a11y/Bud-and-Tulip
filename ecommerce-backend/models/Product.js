@@ -76,6 +76,12 @@ const ProductSchema = new mongoose.Schema({
     keywords:{
         type: [String],
         default: ""
+    },
+    slug:{
+        type: String,
+        required: true,
+        unique: true,
+        index: true
     }
 });
 
