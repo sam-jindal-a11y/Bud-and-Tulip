@@ -28,6 +28,11 @@ const ProductsTable = ({ products }) => {
   };
 
   const handleDelete = (id) => {
+    const confirmDelete = window.confirm(
+    "Are you sure you want to delete this product?"
+  );
+
+  if (!confirmDelete) return; 
     // `/api/wishlist/${user}/${productId}
     axios.delete(`${config}/products/${id}`)
       .then(response => {
