@@ -193,17 +193,50 @@ const ProductView = () => {
 
     fetchProduct();
   }, [slug]);
-  useEffect(() => {
-  if (product?.name) {
-    document.title = ` ${product.name} | Bud & Tulips `;
-  } else {
-    document.title = "Bud & Tulips";
+useEffect(() => {
+  
+  let metaDescription = document.querySelector(
+    'meta[name="description"]'
+  );
+
+  if (!metaDescription) {
+    metaDescription = document.createElement("meta");
+    metaDescription.name = "description";
+    document.head.appendChild(metaDescription);
   }
 
-  // cleanup (optional, but good practice)
-  return () => {
+  
+  let metaKeywords = document.querySelector(
+    'meta[name="keywords"]'
+  );
+
+  if (!metaKeywords) {
+    metaKeywords = document.createElement("meta");
+    metaKeywords.name = "keywords";
+    document.head.appendChild(metaKeywords);
+  }
+
+  if (product?.name) {
+   
+    document.title = product.metaTitle || product.name;
+
+    
+    metaDescription.content =
+      product.metaDescription || "Bud & Tulips";
+
+    
+    const cleanedKeywords = (product.keywords || [])
+      .filter(k => k && k.trim() !== "");
+
+    metaKeywords.content =
+      cleanedKeywords.length > 0
+        ? cleanedKeywords.join(", ")
+        : product.slug?.replace(/-/g, ", ");
+  } else {
     document.title = "Bud & Tulips";
-  };
+    metaDescription.content = "Bud & Tulips";
+    metaKeywords.content = "";
+  }
 }, [product]);
 
 
