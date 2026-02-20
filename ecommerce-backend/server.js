@@ -229,6 +229,54 @@ app.put('/update-offers', async (req, res) => {
       res.status(500).json({ message: 'An error occurred while updating offers.', error: error.message });
   }
 });
+// GET OUT OF STOCK PRODUCTS
+app.get('/products/out-of-stock', async (req, res) => {
+  try {
+    const products = await Product.find({ stock: { $lte: 0 } });
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching out-of-stock products:", error);
+    res.status(500).json({
+      message: "Server error while fetching out-of-stock products"
+    });
+  }
+});
+
+// REMOVE DISCOUNT FROM PRODUCT
+app.put('/products/remove-discount/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        hasOffer: false,
+        offerPrice: 0,
+        originalHasOffer: false,
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
+
+    res.status(200).json({
+      message: "Discount removed successfully",
+      product: updatedProduct
+    });
+
+  } catch (error) {
+    console.error("Error removing discount:", error);
+    res.status(500).json({
+      message: "Server error while removing discount"
+    });
+  }
+});
+
 
 app.delete('/products/:id', async (req, res) => {
   try {

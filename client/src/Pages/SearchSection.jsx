@@ -161,8 +161,14 @@ const SearchSection = () => {
         const colorMatch =
           selectedColors.length === 0 ||
           product.color.some((color) => selectedColors.includes(color));
-        const priceMatch =
-          product.price >= priceRange.min && product.price <= priceRange.max;
+const effectivePrice =
+  product.hasOffer && product.offerPrice > 0
+    ? product.offerPrice
+    : product.price;
+
+const priceMatch =
+  effectivePrice >= priceRange.min &&
+  effectivePrice <= priceRange.max;
         const queryMatch =
           !query || product.name.toLowerCase().includes(query.toLowerCase());
         return sizeMatch && colorMatch && priceMatch && queryMatch;

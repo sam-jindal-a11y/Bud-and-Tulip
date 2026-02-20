@@ -20,7 +20,7 @@ import UpdateBanner from './Pages/UpdateBanner';
 import UsersTable from './Pages/UsersTable';
 import LoginPage from './Pages/LoginPage';
 import UserDetails from './Pages/UserDetails';
-
+import OutOfStockProducts from './Pages/OutOfStockProducts';
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
@@ -89,6 +89,7 @@ const Layout = () => {
                 <Route path="/updatebanner" element={<UpdateBanner />} />
                 <Route path="/userdetails/:userId" element={<UserDetails />} />
                 <Route path="/users" element={<UsersTable />} />
+                <Route path="/Out-of-stock" element={<OutOfStockProducts />} />
                 {/* Add more routes for other content components */}
               </>
             ) : (
