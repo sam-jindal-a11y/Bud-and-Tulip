@@ -5,59 +5,38 @@ import Sidebar from "./Sidebar";
 import axios from "axios";
 import { CartContext } from "./CartContext";
 import config from "../config";
+
 const Navbar = () => {
+
   const [productName, setProductName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Products");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [upcomingSale, setUpcomingSale] = useState("");
-  // const [tempCart, setTempCart] = useState([]);
+
   const location = useLocation();
-  const { tempCart, itemsAdded } = useContext(CartContext);
   const navigate = useNavigate();
-  window.scrollTo(0, 0);
+
+  const { tempCart } = useContext(CartContext);
 
   useEffect(() => {
+
     const params = new URLSearchParams(location.search);
     const query = params.get("query");
     const category = params.get("category");
-    const fetchUpcomingSaleDetails = async () => {
-      try {
-        const response = await axios.get(
-          `${config}/sales`
-        );
-        setUpcomingSale(response.data[0]);
-        // console.log(response.data[0]._id); // Log the actual data received
-      } catch (error) {
-        console.error("Error fetching upcoming sale details:", error);
-      }
-    };
-    if (query) {
-      setProductName(decodeURIComponent(query));
-    }
-    if (category) {
-      setSelectedCategory(decodeURIComponent(category));
-    }
-    fetchUpcomingSaleDetails();
+
+    if (query) setProductName(decodeURIComponent(query));
+    if (category) setSelectedCategory(decodeURIComponent(category));
+
   }, [location.search]);
 
-  const handleInputChange = (event) => {
-    setProductName(event.target.value);
-  };
-
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-  };
-
   const handleSubmit = (event) => {
+
     event.preventDefault();
+
     const query = encodeURIComponent(productName);
     const category = encodeURIComponent(selectedCategory);
-    navigate(`/search?query=${query}&category=${category}`);
-  };
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    navigate(`/search?query=${query}&category=${category}`);
+
   };
 
   const toggleSidebar = () => {
@@ -65,108 +44,92 @@ const Navbar = () => {
   };
 
   return (
-    
-    <nav className="bg-white shadow-lg navbar mt-0">
-     
 
-      <div className="container mx-auto py-2.5 h-12 px-6 md:px-0 flex items-center justify-between">
-        
-        <div className="flex items-center justify-around w-full md:w-auto">
+    <>
+      <nav className="navbar">
+
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+
+          {/* Mobile Menu */}
           <button
-            className="block md:hidden text-gray-700 hover:text-pinkc focus:outline-none"
+            className="md:hidden text-xl text-gray-700"
             onClick={toggleSidebar}
           >
-            <i className="fas fa-bars text-2xl"></i>
+            <i className="fas fa-bars"></i>
           </button>
-          <Link
-            to="/"
-            className="text-xl md:text-5xl font-bold text-pinkc md:ml-0 navbar-brand"
-          >
-            <h1  className=" navbar-brand">Bud&Tulip</h1>
-          </Link>
-        </div>
 
-        <div className=" md:flex items-center md:mt-0 flex-grow mx-4">
-          <div className="relative md:ml-6 flex flex-col md:flex-row items-start md:items-center w-full">
-            <form onSubmit={handleSubmit} className="flex w-full mx-2">
-              <input
-                type="text"
-                placeholder="Product name..."
-                value={productName}
-                onChange={handleInputChange}
-                className="w-full px-4 border rounded-l-md focus:outline-none focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                className="px-4 bg-pinkc text-white rounded-r-md"
-              >
-                <i className="fa fa-search"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div className="flex items-center md:mt-0">
-          <Link
-            to="/ShoppingCart"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center relative"
-          >
-            <i
-              className={`fa-solid fa-bag-shopping text-xl ${
-                itemsAdded ? "text-gray-700" : ""
-              }`}
-            ></i>
-            {tempCart.length > 0 && (
-             <span className="absolute top-0 bottom-1 right-0 left-2 flex items-center justify-center w-4 h-4 bg-pink-400 text-white text-xs font-bold rounded-full shadow-lg">
-             {tempCart.length}
-           </span>
-           
-            )}
+          {/* Logo */}
+          <Link to="/" className="navbar-brand text-3xl md:text-4xl">
+            Bud<span className="text-gray-800">&</span>Tulip
           </Link>
 
-          <Link
-            to="/Account"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
+          {/* Search */}
+          <form
+            onSubmit={handleSubmit}
+            className="hidden md:flex items-center w-[40%] relative"
           >
-            <i className="far fa-user text-xl"></i>
-          </Link>
-          <Link
-            to="/Wishlist"
-            className="text-gray-700 hover:text-pinkc text-center text-base mr-2 md:mr-4 flex flex-col items-center"
-          >
-            <i className="hidden md:inline-block far fa-heart text-xl"></i>
-          </Link>
-        </div>
-      </div>
 
-      <div className="navbar-desktop bg-pinkc py-1 border-t px-6  hidden md:flex md:justify-between md:items-center shadow-sm">
-        <div className="container mx-auto">
-          <div className="flex justify-center md:justify-center">
-            <Link
-              to="/"
-              className="text-white text-semibold hover:text-pink-500 px-4 py-2"
-            >
-              Home
+            <input
+              type="text"
+              placeholder="Search suits, dresses..."
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+              className="w-full px-5 py-2 focus:outline-none"
+            />
+
+            <button type="submit" className="search-btn">
+              <i className="fa fa-search"></i>
+            </button>
+
+          </form>
+
+          {/* Icons */}
+          <div className="flex items-center gap-6 text-xl">
+
+            <Link to="/ShoppingCart" className="relative text-gray-700">
+              <i className="fa-solid fa-bag-shopping"></i>
+
+              {tempCart.length > 0 && (
+                <span className="cart-badge">
+                  {tempCart.length}
+                </span>
+              )}
             </Link>
+
+            <Link to="/Account" className="text-gray-700">
+              <i className="far fa-user"></i>
+            </Link>
+
+            <Link to="/Wishlist" className="text-gray-700">
+              <i className="far fa-heart"></i>
+            </Link>
+
+          </div>
+
+        </div>
+
+        {/* Menu */}
+        <div className="navbar-desktop text-white hidden md:block">
+
+          <div className="max-w-7xl mx-auto py-2 text-sm tracking-wide">
+
+            <Link to="/" className="navbar-link">Home</Link>
+
             <DropdownMenu />
-            <Link
-              to="/about"
-              className="text-white text-semibold hover:text-pink-500 px-4 py-2"
-            >
-              About Us
-            </Link>
-            <Link
-              to="/contact"
-              className="text-white text-semibold hover:text-pink-500 px-4 py-2"
-            >
-              Contact
-            </Link>
+
+            <Link to="/about" className="navbar-link">About Us</Link>
+
+            <Link to="/contact" className="navbar-link">Contact</Link>
+
           </div>
+
         </div>
-      </div>
+
+      </nav>
 
       <Sidebar isOpen={isSidebarOpen} toggleMenu={toggleSidebar} />
-    </nav>
+
+    </>
   );
 };
 
