@@ -8,7 +8,7 @@
 
 html,body{
   margin:0 !important;
-  padding:0 !important;
+  padding-top:58px !important;
   background:#F9F6F2;
   overflow-x:hidden;
 }
@@ -47,14 +47,15 @@ html,body{
 /* ================= NAVBAR ================= */
 
 .navbar{
-  position:sticky;
+  position:fixed;
   top:0;
+  left:0;
+  width:100%;
   z-index:1000;
   background:rgba(255,255,255,0.95);
   backdrop-filter:blur(10px);
   border-bottom:1px solid #eee;
 }
-
 /* ================= NAVBAR BRAND ================= */
 
 .navbar-brand{
@@ -390,4 +391,271 @@ transform:translateY(-2px);
     height:90px;
   }
 
+}
+
+/* ================= CUSTOMER REVIEWS ================= */
+
+.customer-review-section{
+padding:80px 0;
+background:#fff;
+text-align:center;
+}
+
+.review-heading{
+font-size:30px;
+font-weight:600;
+margin-bottom:40px;
+}
+
+/* GOOGLE BANNER */
+
+.google-review-banner{
+max-width:1200px;
+margin:auto;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 30px;
+background:#ffd1ec;
+border-radius:12px;
+margin-bottom:40px;
+}
+
+.google-left h3{
+margin:0;
+font-size:20px;
+}
+
+.rating{
+margin:4px 0 0;
+font-size:16px;
+}
+
+.google-review-btn{
+background:white;
+border:none;
+padding:10px 20px;
+border-radius:25px;
+font-weight:500;
+cursor:pointer;
+transition:.3s;
+}
+
+.google-review-btn:hover{
+background:#ffb3df;
+}
+
+/* REVIEW GRID */
+
+.review-grid{
+max-width:1200px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+}
+
+/* REVIEW CARD */
+
+.review-card{
+background:white;
+border-radius:12px;
+padding:20px;
+text-align:left;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+transition:.35s;
+}
+
+.review-card:hover{
+transform:translateY(-6px);
+box-shadow:0 15px 35px rgba(0,0,0,.12);
+}
+
+/* USER */
+
+.review-user{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:10px;
+}
+
+.review-user img{
+width:40px;
+height:40px;
+border-radius:50%;
+object-fit:cover;
+}
+
+.review-time{
+font-size:12px;
+color:#777;
+}
+
+/* STARS */
+
+.review-stars{
+color:#f5b301;
+font-size:16px;
+margin-bottom:8px;
+}
+
+/* REVIEW IMAGE */
+
+.review-image{
+width:100%;
+border-radius:10px;
+margin-top:10px;
+}
+
+/* LOAD MORE */
+
+.review-load-more{
+margin-top:40px;
+}
+
+.review-load-more button{
+background:var(--brand);
+border:none;
+padding:12px 28px;
+border-radius:30px;
+font-weight:500;
+cursor:pointer;
+transition:.3s;
+}
+
+.review-load-more button:hover{
+background:var(--brand-hover);
+}
+
+/* ============================================= */
+/* ============ CELEBRATION SECTION ============ */
+/* ============================================= */
+
+.lux-celebration-section{
+padding:70px 0;
+background:#F9F6F2;
+}
+
+/* Title */
+
+.lux-celebration-title{
+text-align:center;
+font-size:32px;
+font-weight:600;
+letter-spacing:3px;
+margin-bottom:50px;
+color:#1A1A1A;
+}
+
+/* Grid Layout */
+
+.lux-celebration-grid{
+max-width:1300px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:25px;
+padding:0 20px;
+}
+
+/* Individual Card */
+
+.lux-celebration-card{
+position:relative;
+overflow:hidden;
+border-radius:18px;
+cursor:pointer;
+height:420px;                 /* FIXED HEIGHT */
+transition:.4s ease;
+box-shadow:0 10px 25px rgba(0,0,0,0.06);
+background:#fff;
+}
+
+/* Image */
+
+.lux-celebration-card img{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block;
+transition:transform .7s ease;
+}
+
+/* Overlay */
+
+.lux-celebration-overlay{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:flex;
+align-items:flex-end;
+justify-content:flex-start;
+padding:30px;
+background:linear-gradient(
+to top,
+rgba(0,0,0,0.55),
+rgba(0,0,0,0.15),
+transparent
+);
+transition:.4s ease;
+}
+
+/* Text */
+
+.lux-celebration-overlay h3{
+color:#fff;
+font-size:26px;
+letter-spacing:3px;
+font-weight:600;
+transform:translateY(20px);
+opacity:0;
+transition:.5s ease;
+}
+
+/* Hover Effects */
+
+.lux-celebration-card:hover img{
+transform:scale(1.1);
+}
+
+.lux-celebration-card:hover .lux-celebration-overlay{
+background:linear-gradient(
+to top,
+rgba(0,0,0,0.75),
+rgba(0,0,0,0.25),
+transparent
+);
+}
+
+.lux-celebration-card:hover .lux-celebration-overlay h3{
+transform:translateY(0);
+opacity:1;
+}
+
+/* Pink Border Glow on Hover */
+
+.lux-celebration-card:hover{
+box-shadow:0 15px 40px rgba(255, 209, 236, 0.5);
+}
+
+/* ============================================= */
+/* =============== RESPONSIVE =================== */
+/* ============================================= */
+
+@media(max-width:1100px){
+.lux-celebration-grid{
+grid-template-columns:repeat(2,1fr);
+}
+}
+
+@media(max-width:600px){
+.lux-celebration-grid{
+grid-template-columns:1fr;
+}
+.lux-celebration-card{
+height:360px;
+}
 }

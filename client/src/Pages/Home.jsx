@@ -110,6 +110,73 @@ const Home = () => {
   </div>
 </section>
 
+{/* ================= PREMIUM CELEBRATION COUTURE ================= */}
+
+<section className="lux-celebration-section">
+
+<h2 className="lux-celebration-title">
+Celebration Column
+</h2>
+
+<div className="lux-celebration-grid">
+
+{/* WEDDING */}
+
+<div 
+className="lux-celebration-card"
+onClick={()=>navigate("/search?occasion=wedding")}
+>
+<img src="/celebrations/wedding.jpg" alt="Wedding"/>
+<div className="lux-celebration-overlay">
+<h3>Wedding</h3>
+</div>
+</div>
+
+
+{/* MEHNDI */}
+
+<div 
+className="lux-celebration-card"
+onClick={()=>navigate("/search?occasion=mehndi")}
+>
+      <img src="https://image2url.com/r2/default/images/1772178643423-245eb90d-7a83-415f-8f4f-de68204b9cd2.jpg" alt="" />
+<img src="" alt="Mehndi"/>
+<div className="lux-celebration-overlay">
+<h3>Mehndi</h3>
+</div>
+</div>
+
+
+{/* HALDI */}
+
+<div 
+className="lux-celebration-card"
+onClick={()=>navigate("/search?occasion=haldi")}
+>
+      <img src="https://image2url.com/r2/default/images/1772178507761-2c89ba5c-d636-4c55-b92f-a689bcd2f56f.webp" alt="" />
+<img src="" alt="Haldi"/>
+<div className="lux-celebration-overlay">
+<h3>Haldi</h3>
+</div>
+</div>
+
+
+{/* RECEPTION */}
+
+<div 
+className="lux-celebration-card"
+onClick={()=>navigate("/search?occasion=reception")}
+>
+<img src="/celebrations/reception.jpg" alt="Reception"/>
+<div className="lux-celebration-overlay">
+<h3>Reception</h3>
+</div>
+</div>
+
+</div>
+
+</section>
+
       <div className="container mx-auto px-4 py-8">
         {/* New Arrivals */}
         <section className="mb-12 text-center">
@@ -214,7 +281,119 @@ const Home = () => {
           >
             View More <i className="fa-solid fa-arrow-right"></i>
           </button>
+
+          
         </section>
+
+        {/* ================= CUSTOMER REVIEWS ================= */}
+
+<section className="customer-review-section">
+
+<h2 className="review-heading">
+What Our Customers Say
+</h2>
+
+{/* GOOGLE REVIEW BANNER */}
+
+<div className="google-review-banner">
+
+<div className="google-left">
+<h3>Google Reviews</h3>
+<p className="rating">5.0 ⭐⭐⭐⭐⭐ (241)</p>
+</div>
+
+<button className="google-review-btn">
+Review us on Google
+</button>
+
+</div>
+
+
+{/* REVIEW GRID */}
+
+<div className="review-grid">
+
+{/* REVIEW CARD */}
+
+<div className="review-card">
+
+<div className="review-user">
+<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
+<div>
+<h4>Priya Sharma</h4>
+<span className="review-time">7 days ago</span>
+</div>
+</div>
+
+<div className="review-stars">★★★★★</div>
+
+<p>
+Absolutely loved the embroidery and quality.
+The outfit looked exactly like the pictures.
+</p>
+
+<img
+className="review-image"
+src="/reviews/review1.jpg"
+alt=""
+/>
+
+</div>
+
+
+{/* REVIEW CARD */}
+
+<div className="review-card">
+
+<div className="review-user">
+<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
+<div>
+<h4>Ananya Mehta</h4>
+<span className="review-time">10 days ago</span>
+</div>
+</div>
+
+<div className="review-stars">★★★★★</div>
+
+<p>
+Delivery was quick and the festive collection is beautiful.
+Highly recommended.
+</p>
+
+</div>
+
+
+{/* REVIEW CARD */}
+
+<div className="review-card">
+
+<div className="review-user">
+<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
+<div>
+<h4>Riya Kapoor</h4>
+<span className="review-time">18 days ago</span>
+</div>
+</div>
+
+<div className="review-stars">★★★★★</div>
+
+<p>
+Amazing designs and very comfortable fabric.
+Will definitely shop again.
+</p>
+
+</div>
+
+</div>
+
+
+{/* LOAD MORE */}
+
+<div className="review-load-more">
+<button>View More</button>
+</div>
+
+</section>
       </div>
     </div>
   );
