@@ -75,41 +75,7 @@ const Home = () => {
       </Helmet>
 
       <Carousel />
-    {/* ================= SHOP BY CATEGORY ================= */}
-
-<section className="category-section">
-  <h2 className="category-title">Shop by Category</h2>
-
-  <div className="category-grid">
-
-    <div className="category-item" onClick={()=>navigate("/search?category=Suits")}>
-      <img src="https://www.fabricoz.com/cdn/shop/products/Indian-Dress-C1064B_1.jpg?v=1699763567" alt="" />
-      <p>Suits</p>
-    </div>
-
-    <div className="category-item" onClick={()=>navigate("/search?category=Sharara")}>
-      <img src="https://image2url.com/r2/default/images/1772178507761-2c89ba5c-d636-4c55-b92f-a689bcd2f56f.webp" alt="" />
-      <p>Sharara</p>
-    </div>
-
-    <div className="category-item" onClick={()=>navigate("/search?category=Kaftan")}>
-      <img src="https://image2url.com/r2/default/images/1772178595747-bc5882cb-6a6d-4f0d-b405-98de89f3e91c.jpg" alt="" />
-      <p>Kaftan</p>
-    </div>
-
-    <div className="category-item" onClick={()=>navigate("/search?category=Festive")}>
-      <img src="https://image2url.com/r2/default/images/1772178643423-245eb90d-7a83-415f-8f4f-de68204b9cd2.jpg" alt="" />
-      <p>Festive</p>
-    </div>
-
-    <div className="category-item" onClick={()=>navigate("/search?category=Saree")}>
-      <img src="https://image2url.com/r2/default/images/1772178866019-981c8f32-9cf6-4bd3-a8af-029810020a60.jpg" alt="" />
-      <p>Saree</p>
-    </div>
-
-  </div>
-</section>
-
+   
 {/* ================= PREMIUM CELEBRATION COUTURE ================= */}
 
 <section className="lux-celebration-section">
@@ -120,54 +86,64 @@ Celebration Column
 
 <div className="lux-celebration-grid">
 
-{/* WEDDING */}
+{/* WEDDING → SUITS */}
 
 <div 
 className="lux-celebration-card"
-onClick={()=>navigate("/search?occasion=wedding")}
+onClick={()=>navigate("/search?category=Suits")}
 >
-<img src="/celebrations/wedding.jpg" alt="Wedding"/>
+<img 
+src="https://api.budandtulips.com/images/Red%20Rose%20Straight%20Suit2.jpg" 
+alt="Wedding"
+/>
 <div className="lux-celebration-overlay">
 <h3>Wedding</h3>
 </div>
 </div>
 
 
-{/* MEHNDI */}
+{/* MEHNDI → GREEN PRODUCTS */}
 
 <div 
 className="lux-celebration-card"
-onClick={()=>navigate("/search?occasion=mehndi")}
+onClick={()=>navigate("/search?query=&category=All%20Products")}
 >
-      <img src="https://image2url.com/r2/default/images/1772178643423-245eb90d-7a83-415f-8f4f-de68204b9cd2.jpg" alt="" />
-<img src="" alt="Mehndi"/>
+<img 
+src="https://api.budandtulips.com/images/Green%20Adhya%20Suit1.jpg" 
+alt="Mehndi"
+/>
 <div className="lux-celebration-overlay">
 <h3>Mehndi</h3>
 </div>
 </div>
 
 
-{/* HALDI */}
+{/* HALDI → YELLOW PRODUCTS */}
 
 <div 
 className="lux-celebration-card"
-onClick={()=>navigate("/search?occasion=haldi")}
+onClick={() => navigate("/search?color=yellow")}
 >
-      <img src="https://image2url.com/r2/default/images/1772178507761-2c89ba5c-d636-4c55-b92f-a689bcd2f56f.webp" alt="" />
-<img src="" alt="Haldi"/>
+<img 
+src="https://api.budandtulips.com/images/mustard%20Sadhna%20Suit1.jpg" 
+alt="Haldi"
+/>
 <div className="lux-celebration-overlay">
 <h3>Haldi</h3>
 </div>
 </div>
 
 
-{/* RECEPTION */}
+{/* RECEPTION → DRESSES */}
 
 <div 
 className="lux-celebration-card"
-onClick={()=>navigate("/search?occasion=reception")}
+onClick={()=>navigate("/search?category=Dresses")}
 >
-<img src="/celebrations/reception.jpg" alt="Reception"/>
+<img 
+src="https://api.budandtulips.com/images/BT673ii31.jpg" 
+alt="Reception"
+/>
 <div className="lux-celebration-overlay">
 <h3>Reception</h3>
 </div>
@@ -249,6 +225,152 @@ onClick={()=>navigate("/search?occasion=reception")}
   </button>
 </section>
 
+{/* ================= SHOP BY CATEGORY ================= */}
+
+<section className="category-section">
+
+<h2 className="category-title">Shop by Category</h2>
+
+<div className="category-grid">
+
+{/* SUITS */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Suits")}
+>
+
+<img src="https://api.budandtulips.com/images/BT683ij31.jpg" alt="Suits"/>
+
+<div className="category-text">
+
+<span className="category-btn">
+Kurta & Suit Sets
+</span>
+
+</div>
+
+</div>
+
+
+{/* SHARARA */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Loungewear")}
+>
+
+<img src="https://api.budandtulips.com/images/BT581hz11.jpg" alt="Sharara"/>
+
+<div className="category-text">
+
+<span className="category-btn">
+Loungewear
+</span>
+
+</div>
+
+</div>
+
+
+{/* KAFTAN */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Kaftan")}
+>
+
+<img src="https://api.budandtulips.com/images/Sachi%20Kaftan1.jpg" alt="Kaftan"/>
+
+<div className="category-text">
+
+<span className="category-btn">
+Kaftan
+</span>
+
+</div>
+
+</div>
+
+
+{/* FESTIVE */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Co-ords")}
+>
+
+<img src="https://api.budandtulips.com/images/BT559hw91.jpg" alt="Festive"/>
+
+<div className="category-text">
+
+<span className="category-btn">
+Co-Ords
+</span>
+
+</div>
+
+</div>
+
+
+{/* SAREE */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Dresses")}
+>
+
+<img src="https://api.budandtulips.com/images/Starlet%20Shirt%20Dress1.jpg" alt="Saree"/>
+
+<div className="category-text">
+
+<span className="category-btn">
+Dresses
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section className="brand-story">
+
+<h2 className="story-heading">
+The Bud & Tulip Story
+</h2>
+
+<div className="story-divider"></div>
+
+<div className="story-content">
+
+<p className="story-paragraph">
+Bud & Tulip celebrates timeless Indian craftsmanship blended with modern
+silhouettes. Inspired by the rich culture of Jaipur, every piece is designed
+to bring elegance, comfort, and effortless sophistication to your wardrobe.
+Our collections focus on fine embroidery, premium fabrics, and graceful
+designs that make every moment special.
+</p>
+
+<p className="story-paragraph">
+From everyday elegance to festive celebrations, Bud & Tulip creates outfits
+that reflect individuality and confidence. Each design is thoughtfully crafted
+to offer a luxurious experience while remaining versatile for every occasion.
+Our goal is simple — to make every woman feel beautiful, confident, and
+uniquely herself.
+</p>
+
+</div>
+
+</section>
+
+{/* ================= PRODUCTS ON SALE ================= */}
+
+<section className="products-sale section-spacing">
+
+</section>
         {/* Products on Sale */}
         <section className="mb-12 text-center">
           <h2 className="text-3xl font-bold mb-6">Products on Sale</h2>
