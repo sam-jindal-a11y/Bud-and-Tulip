@@ -60,7 +60,7 @@ const Navbar = () => {
 
           {/* Logo */}
           <Link to="/" className="navbar-brand text-3xl md:text-4xl">
-            Bud<span className="text-gray-800">&</span>Tulip
+            Bud&Tulip
           </Link>
 
           {/* Search */}
@@ -109,22 +109,83 @@ const Navbar = () => {
         </div>
 
         {/* Menu */}
-        <div className="navbar-desktop text-white hidden md:block">
+      <div className="navbar-desktop">
 
-          <div className="max-w-7xl mx-auto py-2 text-sm tracking-wide">
+<div className="max-w-7xl">
 
-            <Link to="/" className="navbar-link">Home</Link>
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Suits")}
+>
+Suits
+</a>
 
-            <DropdownMenu />
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Loungewear")}
+>
+Loungewear
+</a>
 
-            <Link to="/about" className="navbar-link">About Us</Link>
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Co-ords")}
+>
+Co-Ords
+</a>
 
-            <Link to="/contact" className="navbar-link">Contact</Link>
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Dresses")}
+>
+Dresses
+</a>
 
-          </div>
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Saree")}
+>
+Saree
+</a>
 
-        </div>
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Kurtas")}
+>
+Kurtas
+</a>
 
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Tops")}
+>
+Tops
+</a>
+
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Blazer")}
+>
+Blazer
+</a>
+
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Skirt Sets")}
+>
+Skirt Sets
+</a>
+
+<a
+className="navbar-link"
+onClick={()=>navigate("/search?category=Shirts")}
+>
+Shirts
+</a>
+
+</div>
+
+</div>
       </nav>
 
       <Sidebar isOpen={isSidebarOpen} toggleMenu={toggleSidebar} />
