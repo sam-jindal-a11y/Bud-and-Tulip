@@ -6,6 +6,7 @@ import config from "../config";
 
 const ProductCard = ({
   image,
+  images,
   name,
   price,
   offerPrice,
@@ -67,7 +68,7 @@ const ProductCard = ({
     }
   };
 
-  /* ---------------- ADD TO CART (UI only for now) ---------------- */
+  /* ---------------- ADD TO CART ---------------- */
 
   const addToCart = (e) => {
     e.stopPropagation();
@@ -90,37 +91,51 @@ const ProductCard = ({
         </div>
       )}
 
-   {/* SOLD OUT */}
+      {/* SOLD OUT */}
 
-{size && size.length === 0 && (
-  <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-    <div className="bg-pink-500 bg-opacity-80 w-full text-center py-2 text-white font-bold">
-      Sold Out
-    </div>
-  </div>
-)}
+      {size && size.length === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <div className="bg-pink-500 bg-opacity-80 w-full text-center py-2 text-white font-bold">
+            Sold Out
+          </div>
+        </div>
+      )}
 
-      {/* IMAGE */}
+      {/* IMAGE CONTAINER */}
 
-      <img
-        src={image}
-        alt={name}
-        className="w-full h-56 sm:h-64 md:h-72 lg:h-80 object-cover"
-      />
+      <div className="product-image-container">
+
+        {/* MAIN IMAGE */}
+
+        <img
+          src={images?.[0] || image}
+          alt={name}
+          className="product-img product-img-main"
+        />
+
+        {/* HOVER IMAGE */}
+
+        {images && images.length > 1 && (
+          <img
+            src={images[1]}
+            alt={name}
+            className="product-img product-img-hover"
+          />
+        )}
+
+      </div>
 
       {/* CONTENT */}
 
       <div className="p-4 text-left">
 
         <p className="text-sm text-gray-400 mb-1">
-          {category[0]}
+          {category?.[0]}
         </p>
 
         <h3 className="text-md font-semibold mb-2 product-name">
           {name}
         </h3>
-
-        {/* PRICE + ACTIONS */}
 
         <div className="flex items-center justify-between">
 
@@ -141,16 +156,12 @@ const ProductCard = ({
 
           <div className="flex gap-2">
 
-            {/* Wishlist */}
-
             <button
               onClick={addToWishlist}
               className="product-action-btn"
             >
               <i className="far fa-heart"></i>
             </button>
-
-            {/* Cart */}
 
             <button
               onClick={addToCart}
@@ -164,6 +175,7 @@ const ProductCard = ({
         </div>
 
       </div>
+
     </div>
   );
 };

@@ -122,16 +122,16 @@ html,body{
   position:relative;
   font-size:15px;
   font-weight:500;
-  color:#ffffff;
+  color:#ec4899;
   cursor:pointer;
   padding:6px 4px;
-  transition:color .3s ease;
+  transition:color.3s ease;
 }
 
 /* TEXT COLOR CHANGE */
 
 .navbar-link:hover{
-  color:#ff2a7f;   /* pink hover like screenshot */
+  color:#ffffff;   /* pink hover like screenshot */
 }
 
 /* UNDERLINE EFFECT */
@@ -208,7 +208,7 @@ html,body{
   letter-spacing:.4px;
   padding:6px 4px;
   transition:.3s;
-  color:white;
+  color:#ff2a7f;
 }
 
 .navbar-link::after{
@@ -354,14 +354,57 @@ html,body{
   box-shadow:0 12px 28px rgba(0,0,0,0.08);
 }
 
-.product-card img,
-.card img{
-  transition:transform .6s ease;
+/* IMAGE CONTAINER */
+
+.product-image-container{
+position:relative;
+width:100%;
+height:320px;
+overflow:hidden;
 }
 
-.product-card:hover img,
-.card:hover img{
-  transform:scale(1.05);
+/* BOTH IMAGES */
+
+.product-img{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:cover;
+top:0;
+left:0;
+transition:opacity .45s ease;
+}
+
+/* DEFAULT IMAGE */
+
+.product-img-main{
+opacity:1;
+z-index:1;
+}
+
+/* HOVER IMAGE */
+
+.product-img-hover{
+opacity:0;
+z-index:2;
+}
+
+/* HOVER EFFECT */
+
+.product-card:hover .product-img-main{
+opacity:0;
+}
+
+.product-card:hover .product-img-hover{
+opacity:1;
+}
+
+.product-card img{
+transition:opacity .35s ease, transform .3s ease;
+}
+
+.product-card:hover img{
+transform:scale(1.03);
 }
 
 .product-action-btn{
@@ -531,25 +574,76 @@ font-size:16px;
 /* ================================================= */
 
 .slider-wrapper{
-  width:100%;
-  overflow:hidden;
-  position:relative;
+width:100%;
+overflow:hidden;
+position:relative;
+padding:8px 0;
 }
 
 .slider-track{
-  display:flex;
-  gap:20px;
-  width:max-content;
-  animation:bestSellerScroll 20s linear infinite;
+display:flex;
+gap:25px;
+width:max-content;
+animation:bestSellerScroll 25s linear infinite;
+align-items:stretch;
 }
 
+/* FIX PRODUCT CARD WIDTH */
+
+.slider-track .product-card{
+min-width:260px;
+max-width:260px;
+width:260px;
+flex-shrink:0;
+border-radius:16px;
+overflow:hidden;
+background:#fff;
+}
+
+/* FIX IMAGE SIZE */
+
+.slider-track .product-image-container{
+width:100%;
+height:340px;
+position:relative;
+overflow:hidden;
+}
+
+/* IMAGE */
+
+.slider-track .product-img{
+width:100%;
+height:100%;
+object-fit:cover;
+position:absolute;
+top:0;
+left:0;
+}
+
+/* CARD HOVER */
+
+.slider-track .product-card:hover{
+transform:translateY(-6px);
+box-shadow:0 20px 40px rgba(0,0,0,0.12);
+transition:0.3s;
+}
+
+/* SLIDER ANIMATION */
+
 @keyframes bestSellerScroll{
-  0%{ transform:translateX(0); }
-  100%{ transform:translateX(-50%); }
+
+0%{
+transform:translateX(0);
+}
+
+100%{
+transform:translateX(-50%);
+}
+
 }
 
 .slider-wrapper:hover .slider-track{
-  animation-play-state:paused;
+animation-play-state:paused;
 }
 
 /* ================= SHOP BY CATEGORY ================= */
@@ -586,13 +680,14 @@ position:relative;
 display:flex;
 gap:20px;
 width:max-content;
-animation:categoryScroll 15s linear infinite;
+animation:categoryScroll 35s linear infinite;
 }
 
 /* CATEGORY CARD */
 
 .category-card{
-min-width:210px;
+min-width:260px;
+max-width:260px;
 height:440px;
 border-radius:24px;
 overflow:hidden;
@@ -892,23 +987,62 @@ position:relative;
 overflow:hidden;
 border-radius:18px;
 cursor:pointer;
-height:420px;                 /* FIXED HEIGHT */
+height:420px;
 transition:.4s ease;
 box-shadow:0 10px 25px rgba(0,0,0,0.06);
 background:#fff;
 }
 
-/* Image */
+/* IMAGE WRAPPER */
 
-.lux-celebration-card img{
+.lux-celebration-image{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+overflow:hidden;
+}
+
+/* BOTH IMAGES */
+
+.lux-celebration-image img{
+position:absolute;
+top:0;
+left:0;
 width:100%;
 height:100%;
 object-fit:cover;
-display:block;
-transition:transform .7s ease;
+transition:opacity .6s ease, transform .7s ease;
 }
 
-/* Overlay */
+/* MAIN IMAGE */
+
+.celebration-img-main{
+opacity:1;
+z-index:1;
+}
+
+/* HOVER IMAGE */
+
+.celebration-img-hover{
+opacity:0;
+z-index:2;
+}
+
+/* IMAGE HOVER EFFECT */
+
+.lux-celebration-card:hover .celebration-img-main{
+opacity:0;
+transform:scale(1.05);
+}
+
+.lux-celebration-card:hover .celebration-img-hover{
+opacity:1;
+transform:scale(1.05);
+}
+
+/* OVERLAY */
 
 .lux-celebration-overlay{
 position:absolute;
@@ -926,26 +1060,21 @@ rgba(0,0,0,0.55),
 rgba(0,0,0,0.15),
 transparent
 );
+z-index:3;
 transition:.4s ease;
 }
 
-/* Text */
+/* TEXT */
 
 .lux-celebration-overlay h3{
 color:#fff;
 font-size:26px;
 letter-spacing:3px;
 font-weight:600;
-transform:translateY(20px);
-opacity:0;
-transition:.5s ease;
+text-shadow:0 4px 12px rgba(0,0,0,0.5);
 }
 
-/* Hover Effects */
-
-.lux-celebration-card:hover img{
-transform:scale(1.1);
-}
+/* HOVER OVERLAY DARKEN */
 
 .lux-celebration-card:hover .lux-celebration-overlay{
 background:linear-gradient(
@@ -956,15 +1085,11 @@ transparent
 );
 }
 
-.lux-celebration-card:hover .lux-celebration-overlay h3{
-transform:translateY(0);
-opacity:1;
-}
-
-/* Pink Border Glow on Hover */
+/* CARD HOVER EFFECT */
 
 .lux-celebration-card:hover{
-box-shadow:0 15px 40px rgba(255, 209, 236, 0.5);
+box-shadow:0 15px 40px rgba(255,209,236,0.5);
+transform:translateY(-6px);
 }
 
 /* ============================================= */
@@ -972,16 +1097,21 @@ box-shadow:0 15px 40px rgba(255, 209, 236, 0.5);
 /* ============================================= */
 
 @media(max-width:1100px){
+
 .lux-celebration-grid{
 grid-template-columns:repeat(2,1fr);
 }
+
 }
 
 @media(max-width:600px){
+
 .lux-celebration-grid{
 grid-template-columns:1fr;
 }
+
 .lux-celebration-card{
 height:360px;
 }
+
 }
