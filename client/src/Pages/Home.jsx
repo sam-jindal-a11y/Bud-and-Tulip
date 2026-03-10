@@ -92,10 +92,22 @@ Celebration Couture
 className="lux-celebration-card"
 onClick={()=>navigate("/search?category=Suits")}
 >
+
+<div className="lux-celebration-image">
+
 <img 
+className="celebration-img-main"
 src="https://api.budandtulips.com/images/Red%20Rose%20Straight%20Suit2.jpg" 
 alt="Wedding"
 />
+
+<img 
+className="celebration-img-hover"
+src="https://api.budandtulips.com/images/Red%20Rose%20Suit%203.jpg"
+alt="Weddding"
+/>
+
+</div>
 <div className="lux-celebration-overlay">
 <h3>Wedding</h3>
 </div>
@@ -108,15 +120,26 @@ alt="Wedding"
 className="lux-celebration-card"
 onClick={()=>navigate("/search?query=&category=All%20Products")}
 >
+<div className="lux-celebration-image">
+
 <img 
+className="celebration-img-main"
 src="https://api.budandtulips.com/images/Green%20Adhya%20Suit1.jpg" 
 alt="Mehndi"
 />
+
+<img 
+className="celebration-img-hover"
+src="https://api.budandtulips.com/images/BT732io21.jpg"
+alt="Mehndi Hover"
+/>
+
+</div>
+  
 <div className="lux-celebration-overlay">
 <h3>Mehndi</h3>
 </div>
 </div>
-
 
 {/* HALDI → YELLOW PRODUCTS */}
 
@@ -124,15 +147,28 @@ alt="Mehndi"
 className="lux-celebration-card"
 onClick={() => navigate("/search?color=yellow")}
 >
+
+<div className="lux-celebration-image">
+
 <img 
+className="celebration-img-main"
 src="https://api.budandtulips.com/images/mustard%20Sadhna%20Suit1.jpg" 
 alt="Haldi"
 />
+
+<img 
+className="celebration-img-hover"
+src="https://api.budandtulips.com/images/Basanti%20Suit%201.jpg"
+alt="Haldi Hover"
+/>
+
+</div>
+
 <div className="lux-celebration-overlay">
 <h3>Haldi</h3>
 </div>
-</div>
 
+</div>
 
 {/* RECEPTION → DRESSES */}
 
@@ -140,10 +176,23 @@ alt="Haldi"
 className="lux-celebration-card"
 onClick={()=>navigate("/search?category=Dresses")}
 >
+
+<div className="lux-celebration-image">
+
 <img 
+className="celebration-img-main"
 src="https://api.budandtulips.com/images/BT673ii31.jpg" 
 alt="Reception"
 />
+
+<img 
+className="celebration-img-hover"
+src="https://api.budandtulips.com/images/BT733io31.jpg"
+alt="Reception"
+/>
+
+</div>
+
 <div className="lux-celebration-overlay">
 <h3>Reception</h3>
 </div>
@@ -167,6 +216,7 @@ alt="Reception"
                 slug={product.slug}
                 productId={product._id}
                 image={product.image?.[0]}
+                images={product.image}
                 name={product.name}
                 price={product.price}
                 offerPrice={product.offerPrice}
@@ -203,6 +253,7 @@ alt="Reception"
             slug={product.slug}
             productId={product._id}
             image={product.image?.[0]}
+            images={product.image}
             name={product.name}
             price={product.price}
             offerPrice={product.offerPrice}
@@ -423,6 +474,7 @@ onClick={()=>navigate("/search?category=Loungewear")}
                 slug={product.slug}
                 productId={product._id}
                 image={product.image?.[0]}
+                images={product.image}
                 name={product.name}
                 price={product.price}
                 offerPrice={product.offerPrice}
