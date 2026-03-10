@@ -81,7 +81,7 @@ const Home = () => {
 <section className="lux-celebration-section">
 
 <h2 className="lux-celebration-title">
-Celebration Column
+Celebration Couture
 </h2>
 
 <div className="lux-celebration-grid">
@@ -225,53 +225,49 @@ alt="Reception"
   </button>
 </section>
 
+{/* ================= FULL WIDTH POSTER ================= */}
+
+<section className="promo-banner">
+
+  <img
+     src="https://image2url.com/r2/default/images/1773128515561-8462daba-26db-4bb1-bd6e-684b8394e9ce.png"
+    alt="Bud & Tulips Collection"
+  />
+
+</section>
+
 {/* ================= SHOP BY CATEGORY ================= */}
 
 <section className="category-section">
 
 <h2 className="category-title">Shop by Category</h2>
 
-<div className="category-grid">
+<div className="category-slider">
 
+  <div className="category-track">
 {/* SUITS */}
 
 <div
 className="category-card"
 onClick={()=>navigate("/search?category=Suits")}
 >
-
 <img src="https://api.budandtulips.com/images/BT683ij31.jpg" alt="Suits"/>
-
 <div className="category-text">
-
-<span className="category-btn">
-Kurta & Suit Sets
-</span>
-
+<span className="category-btn">Kurta & Suit Sets</span>
+</div>
 </div>
 
-</div>
-
-
-{/* SHARARA */}
+{/* LOUNGEWEAR */}
 
 <div
 className="category-card"
 onClick={()=>navigate("/search?category=Loungewear")}
 >
-
-<img src="https://api.budandtulips.com/images/BT581hz11.jpg" alt="Sharara"/>
-
+<img src="https://api.budandtulips.com/images/BT581hz11.jpg" alt="Loungewear"/>
 <div className="category-text">
-
-<span className="category-btn">
-Loungewear
-</span>
-
+<span className="category-btn">Loungewear</span>
 </div>
-
 </div>
-
 
 {/* KAFTAN */}
 
@@ -279,88 +275,131 @@ Loungewear
 className="category-card"
 onClick={()=>navigate("/search?category=Kaftan")}
 >
-
 <img src="https://api.budandtulips.com/images/Sachi%20Kaftan1.jpg" alt="Kaftan"/>
-
 <div className="category-text">
-
-<span className="category-btn">
-Kaftan
-</span>
-
+<span className="category-btn">Kaftan</span>
+</div>
 </div>
 
-</div>
-
-
-{/* FESTIVE */}
+{/* CO-ORDS */}
 
 <div
 className="category-card"
 onClick={()=>navigate("/search?category=Co-ords")}
 >
-
-<img src="https://api.budandtulips.com/images/BT559hw91.jpg" alt="Festive"/>
-
+<img src="https://api.budandtulips.com/images/BT559hw91.jpg" alt="Co-Ords"/>
 <div className="category-text">
-
-<span className="category-btn">
-Co-Ords
-</span>
-
+<span className="category-btn">Co-Ords</span>
+</div>
 </div>
 
-</div>
-
-
-{/* SAREE */}
+{/* DRESSES */}
 
 <div
 className="category-card"
 onClick={()=>navigate("/search?category=Dresses")}
 >
-
-<img src="https://api.budandtulips.com/images/Starlet%20Shirt%20Dress1.jpg" alt="Saree"/>
-
+<img src="https://api.budandtulips.com/images/Starlet%20Shirt%20Dress1.jpg" alt="Dresses"/>
 <div className="category-text">
+<span className="category-btn">Dresses</span>
+</div>
+</div>
 
-<span className="category-btn">
-Dresses
-</span>
+{/* SAREE */}
 
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Saree")}
+>
+<img src="https://api.budandtulips.com/images/saree1.jpg" alt="Saree"/>
+<div className="category-text">
+<span className="category-btn">Saree</span>
+</div>
+</div>
+
+{/* KURTAS */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Kurtas")}
+>
+<img src="https://api.budandtulips.com/images/BT753iq31.jpg" alt="Kurtas"/>
+<div className="category-text">
+<span className="category-btn">Kurtas</span>
+</div>
+</div>
+
+{/* TOPS */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Tops")}
+>
+<img src="https://api.budandtulips.com/images/BT651ig11.jpg" alt="Tops"/>
+<div className="category-text">
+<span className="category-btn">Tops</span>
+</div>
+</div>
+
+{/* BLAZER */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Blazer")}
+>
+<img src="https://api.budandtulips.com/images/BT546hv61.jpg" alt="Blazer"/>
+<div className="category-text">
+<span className="category-btn">Blazer</span>
+</div>
+</div>
+
+{/* SKIRT SETS */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Skirt Sets")}
+>
+<img src="https://api.budandtulips.com/images/BT673ii31.jpg" alt="Skirt Sets"/>
+<div className="category-text">
+<span className="category-btn">Skirt Sets</span>
+</div>
+</div>
+
+{/* SHIRTS */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Shirts")}
+>
+<img src="https://api.budandtulips.com/images/BT755iq51.jpg" alt="Shirts"/>
+<div className="category-text">
+<span className="category-btn">Shirts</span>
+</div>
+</div>
+
+{/* DUPLICATE ITEMS FOR INFINITE SLIDER */}
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Suits")}
+>
+<img src="https://api.budandtulips.com/images/BT683ij31.jpg" alt="Suits"/>
+<div className="category-text">
+<span className="category-btn">Kurta & Suit Sets</span>
+</div>
+</div>
+
+<div
+className="category-card"
+onClick={()=>navigate("/search?category=Loungewear")}
+>
+<img src="https://api.budandtulips.com/images/BT581hz11.jpg" alt="Loungewear"/>
+<div className="category-text">
+<span className="category-btn">Loungewear</span>
+</div>
 </div>
 
 </div>
-
-</div>
-
-</section>
-
-<section className="brand-story">
-
-<h2 className="story-heading">
-The Bud & Tulip Story
-</h2>
-
-<div className="story-divider"></div>
-
-<div className="story-content">
-
-<p className="story-paragraph">
-Bud & Tulip celebrates timeless Indian craftsmanship blended with modern
-silhouettes. Inspired by the rich culture of Jaipur, every piece is designed
-to bring elegance, comfort, and effortless sophistication to your wardrobe.
-Our collections focus on fine embroidery, premium fabrics, and graceful
-designs that make every moment special.
-</p>
-
-<p className="story-paragraph">
-From everyday elegance to festive celebrations, Bud & Tulip creates outfits
-that reflect individuality and confidence. Each design is thoughtfully crafted
-to offer a luxurious experience while remaining versatile for every occasion.
-Our goal is simple — to make every woman feel beautiful, confident, and
-uniquely herself.
-</p>
 
 </div>
 
@@ -373,7 +412,7 @@ uniquely herself.
 </section>
         {/* Products on Sale */}
         <section className="mb-12 text-center">
-          <h2 className="text-3xl font-bold mb-6">Products on Sale</h2>
+          <h2 className="text-3xl font-bold mb-6">Exclusive Price Drop</h2>
           <hr />
           <br />
 

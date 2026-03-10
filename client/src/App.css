@@ -554,10 +554,16 @@ font-size:16px;
 
 /* ================= SHOP BY CATEGORY ================= */
 
+/* FULL WIDTH SECTION */
+
 .category-section{
-padding:80px 40px;
-background:#fff;
+width:100vw;
+margin-left:calc(50% - 50vw);
+margin-right:calc(50% - 50vw);
+background:#faf7f9;
+padding:90px 80px;
 text-align:center;
+overflow:hidden;
 }
 
 .category-title{
@@ -566,24 +572,35 @@ font-weight:600;
 margin-bottom:40px;
 }
 
-/* GRID */
+/* SLIDER WRAPPER */
 
-.category-grid{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:25px;
+.category-slider{
+width:100%;
+overflow:hidden;
+position:relative;
 }
 
-/* CARD */
+/* SLIDER TRACK */
+
+.category-track{
+display:flex;
+gap:20px;
+width:max-content;
+animation:categoryScroll 15s linear infinite;
+}
+
+/* CATEGORY CARD */
 
 .category-card{
-position:relative;
-height:480px;
-border-radius:20px;
+min-width:210px;
+height:440px;
+border-radius:24px;
 overflow:hidden;
 cursor:pointer;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
+position:relative;
+box-shadow:0 12px 40px rgba(0,0,0,0.08);
 transition:0.4s;
+flex-shrink:0;
 }
 
 /* IMAGE */
@@ -601,7 +618,7 @@ transition:0.6s;
 transform:scale(1.05);
 }
 
-/* TEXT CONTAINER (BOTTOM CENTER) */
+/* TEXT POSITION */
 
 .category-text{
 position:absolute;
@@ -612,16 +629,7 @@ text-align:center;
 width:100%;
 }
 
-/* SUBTITLE */
-
-.category-text h4{
-color:#e07b7b;
-font-size:18px;
-margin-bottom:10px;
-font-weight:500;
-}
-
-/* CATEGORY LABEL */
+/* CATEGORY BUTTON */
 
 .category-btn{
 display:inline-block;
@@ -634,23 +642,38 @@ font-weight:500;
 letter-spacing:0.5px;
 }
 
-/* HOVER */
+/* CARD HOVER */
 
 .category-card:hover{
 transform:translateY(-6px);
 box-shadow:0 20px 40px rgba(0,0,0,0.12);
 }
 
+/* SLIDER ANIMATION */
+
+@keyframes categoryScroll{
+
+0%{
+transform:translateX(0);
+}
+
+100%{
+transform:translateX(-59%);
+}
+
+}
+
 /* MOBILE */
 
 @media(max-width:1000px){
 
-.category-grid{
-grid-template-columns:repeat(2,1fr);
+.category-section{
+padding:70px 20px;
 }
 
 .category-card{
 height:360px;
+min-width:170px;
 }
 
 .category-card::after{
@@ -665,6 +688,30 @@ background:linear-gradient(to top, rgba(0,0,0,0.4), transparent);
 
 }
 
+/* ================= PROMO POSTER ================= */
+
+.promo-banner{
+width:100vw;
+margin-left:calc(50% - 50vw);
+margin-right:calc(50% - 50vw);
+margin-top:80px;
+margin-bottom:80px;
+overflow:hidden;
+}
+
+.promo-banner img{
+width:100%;
+height:auto;
+display:block;
+object-fit:cover;
+transition:transform .6s ease;
+}
+
+/* Premium hover effect */
+
+.promo-banner:hover img{
+transform:scale(1.03);
+}
 /* ================= GLOBAL SECTION SPACING ================= */
 
 .section-spacing{
