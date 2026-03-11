@@ -13,6 +13,13 @@ html,body{
   overflow-x:hidden;
 }
 
+/* MOBILE FIX */
+@media (max-width:768px){
+  html,body{
+    padding-top:48px !important; /* navbar height ke equal */
+  }
+}
+
 /* REMOVE ROOT SPACE */
 
 #root{
@@ -246,6 +253,16 @@ box-shadow:0 4px 12px rgba(0,0,0,.06);
 
 /* ================= NAV ANIMATION ================= */
 
+/* ===== HIDE CATEGORY MENU ON MOBILE ===== */
+
+@media (max-width:768px){
+
+.navbar-desktop{
+display:none;
+}
+
+}
+
 .navbar-desktop .navbar-link{
   opacity:0;
   display:inline-block;
@@ -330,12 +347,24 @@ box-shadow:0 4px 12px rgba(0,0,0,.06);
 .carousel-item{
   margin:0 !important;
   padding:0 !important;
+  margin-top:0 !important;
 }
 
 .carousel img{
   width:100%;
   height:520px;
   object-fit:cover;
+}
+
+/* ===== MOBILE HERO SLIDER HEIGHT ===== */
+
+@media (max-width:768px){
+
+.carousel img{
+height:460px;
+object-fit:cover;
+}
+
 }
 
 /* ================= PRODUCT CARD ================= */
@@ -803,6 +832,27 @@ object-fit:cover;
 transition:transform .6s ease;
 }
 
+/* ===== FIX PROMO POSTER ON MOBILE ===== */
+
+@media (max-width:768px){
+
+.promo-banner{
+width:100%;
+margin:40px 0;
+margin-left:0;
+margin-right:0;
+height:auto;
+}
+
+.promo-banner img{
+width:100%;
+height:auto;
+object-fit:cover;
+display:block;
+}
+
+}
+
 /* Premium hover effect */
 
 .promo-banner:hover img{
@@ -956,6 +1006,39 @@ background:#ffd1ec;
 color:#1A1A1A;
 }
 
+/* ===== MOBILE FIX ONLY ===== */
+
+@media (max-width:768px){
+
+/* reduce gap below slider */
+.carousel{
+margin-bottom:0 !important;
+}
+
+/* tighten celebration section spacing */
+.lux-celebration-section{
+padding:3px 0 !important;
+}
+
+/* reduce title gap */
+.lux-celebration-title{
+margin-bottom:20px !important;
+font-size:26px;
+}
+
+/* celebration cards 2 per row */
+.lux-celebration-grid{
+grid-template-columns:repeat(2,1fr) !important;
+gap:15px !important;
+padding:0 15px !important;
+}
+
+/* reduce card height slightly for mobile */
+.lux-celebration-card{
+height:260px !important;
+}
+
+}
 /* ============================================= */
 /* ============ CELEBRATION SECTION ============ */
 /* ============================================= */
