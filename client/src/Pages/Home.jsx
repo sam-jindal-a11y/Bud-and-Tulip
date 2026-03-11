@@ -229,15 +229,18 @@ alt="Reception"
           </div>
 
           <button
-            className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 mt-5"
-            onClick={() =>
-              navigate(
-                "/search?query=&category=All%20Products&hasoffer=false&sortorder=new"
-              )
-            }
-          >
-            View More <i className="fa-solid fa-arrow-right"></i>
-          </button>
+  className="text-white px-6 py-2 rounded-md mt-5 transition-all duration-300"
+  style={{ backgroundColor: "#ec4899" }}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = "#ffd1ec")}
+  onMouseLeave={(e) => (e.target.style.backgroundColor = "#ec4899")}
+  onClick={() =>
+    navigate(
+      "/search?query=&category=All%20Products&hasoffer=false&sortorder=new"
+    )
+  }
+>
+  View More <i className="fa-solid fa-arrow-right"></i>
+</button>
         </section>
 
        {/* Best Sellers Section */}
@@ -268,12 +271,19 @@ alt="Reception"
     </div>
   </div>
 
-  <button
-    className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 mt-6"
-    onClick={() => navigate("/search?query=&category=All%20Products")}
-  >
-    View More <i className="fa-solid fa-arrow-right"></i>
-  </button>
+ <button
+  className="text-white px-6 py-2 rounded-md mt-5 transition-all duration-300"
+  style={{ backgroundColor: "#ec4899" }}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = "#ffd1ec")}
+  onMouseLeave={(e) => (e.target.style.backgroundColor = "#ec4899")}
+  onClick={() =>
+    navigate(
+      "/search?query=&category=All%20Products&hasoffer=false&sortorder=new"
+    )
+  }
+>
+  View More <i className="fa-solid fa-arrow-right"></i>
+</button>
 </section>
 
 {/* ================= FULL WIDTH POSTER ================= */}
@@ -485,16 +495,19 @@ onClick={()=>navigate("/search?category=Loungewear")}
               />
             ))}
           </div>
-
-          <button
-            className="bg-pinkc text-white px-4 py-2 rounded-sm hover:bg-blue-950 mt-5"
-            onClick={() =>
-              navigate("/search?query=&category=All%20Products&hasoffer=true")
-            }
-          >
-            View More <i className="fa-solid fa-arrow-right"></i>
-          </button>
-
+<button
+  className="text-white px-6 py-2 rounded-md mt-5 transition-all duration-300"
+  style={{ backgroundColor: "#ec4899" }}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = "#ffd1ec")}
+  onMouseLeave={(e) => (e.target.style.backgroundColor = "#ec4899")}
+  onClick={() =>
+    navigate(
+      "/search?query=&category=All%20Products&hasoffer=false&sortorder=new"
+    )
+  }
+>
+  View More <i className="fa-solid fa-arrow-right"></i>
+</button>
           
         </section>
 
