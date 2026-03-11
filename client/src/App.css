@@ -131,7 +131,7 @@ html,body{
 /* TEXT COLOR CHANGE */
 
 .navbar-link:hover{
-  color:#ffffff;   /* pink hover like screenshot */
+  color:#ffd1ec;   /* pink hover like screenshot */
 }
 
 /* UNDERLINE EFFECT */
@@ -208,7 +208,7 @@ html,body{
   letter-spacing:.4px;
   padding:6px 4px;
   transition:.3s;
-  color:#ff2a7f;
+  color:#ffffff;
 }
 
 .navbar-link::after{
@@ -229,12 +229,12 @@ html,body{
 /* ================= MENU BAR ================= */
 
 .navbar-desktop{
-  background:var(--brand);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:48px;
-  box-shadow:0 4px 12px rgba(0,0,0,.06);
+background:#ec4899;
+display:flex;
+align-items:center;
+justify-content:center;
+height:48px;
+box-shadow:0 4px 12px rgba(0,0,0,.06);
 }
 
 .navbar-desktop .max-w-7xl{
@@ -792,6 +792,7 @@ margin-right:calc(50% - 50vw);
 margin-top:80px;
 margin-bottom:80px;
 overflow:hidden;
+height: 650px;
 }
 
 .promo-banner img{
@@ -933,20 +934,26 @@ margin-top:10px;
 
 .review-load-more{
 margin-top:40px;
+text-align:center;
 }
 
 .review-load-more button{
-background:var(--brand);
+background:#ec4899;
 border:none;
-padding:12px 28px;
-border-radius:30px;
+padding:12px 32px;
+border-radius:6px;   /* rectangular shape */
 font-weight:500;
+color:white;
 cursor:pointer;
-transition:.3s;
+transition:all .3s ease;
+font-size:15px;
 }
 
+/* HOVER */
+
 .review-load-more button:hover{
-background:var(--brand-hover);
+background:#ffd1ec;
+color:#1A1A1A;
 }
 
 /* ============================================= */
