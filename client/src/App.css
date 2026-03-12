@@ -6,27 +6,28 @@
   box-sizing:border-box;
 }
 
-html,body{
-  margin:0 !important;
-  padding-top:58px !important;
-  background:#F9F6F2;
-  overflow-x:hidden;
+html,body{ 
+margin:0 !important;
+padding-top:55px !important;   /* desktop navbar space */
+background:#F9F6F2;
+overflow-x:hidden;
 }
 
 /* MOBILE FIX */
 @media (max-width:768px){
-  html,body{
-    padding-top:48px !important; /* navbar height ke equal */
-  }
+
+html,body{
+padding-top:0 !important;     /* remove extra gap on mobile */
+}
+
 }
 
 /* REMOVE ROOT SPACE */
 
 #root{
-  margin:0 !important;
-  padding:0 !important;
+margin:0 !important;
+padding:0 !important;
 }
-
 /* ================= BRAND COLORS ================= */
 
 :root{
@@ -684,7 +685,7 @@ width:100vw;
 margin-left:calc(50% - 50vw);
 margin-right:calc(50% - 50vw);
 background:#faf7f9;
-padding:90px 80px;
+padding:30px 80px;
 text-align:center;
 overflow:hidden;
 }
@@ -792,7 +793,7 @@ transform:translateX(-59%);
 @media(max-width:1000px){
 
 .category-section{
-padding:70px 20px;
+padding:10px 20px;
 }
 
 .category-card{
@@ -821,7 +822,7 @@ margin-right:calc(50% - 50vw);
 margin-top:80px;
 margin-bottom:80px;
 overflow:hidden;
-height: 650px;
+height: 525px;
 }
 
 .promo-banner img{
@@ -868,7 +869,7 @@ padding-bottom:50px;
 /* ================= CUSTOMER REVIEWS ================= */
 
 .customer-review-section{
-padding:80px 0;
+padding:40px 0;
 background:#fff;
 text-align:center;
 }
@@ -1067,7 +1068,7 @@ margin:auto;
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:25px;
-padding:0 20px;
+padding:0 0px;
 }
 
 /* Individual Card */
