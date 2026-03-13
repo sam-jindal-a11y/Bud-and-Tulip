@@ -305,7 +305,37 @@ alt="Reception"
 
 <div className="category-slider">
 
-  <div className="category-track">
+{/* LEFT BUTTON */}
+
+<button
+className="category-arrow left"
+onClick={()=>{
+document.querySelector(".category-track").scrollBy({
+left:-320,
+behavior:"smooth"
+})
+}}
+>
+‹
+</button>
+
+{/* RIGHT BUTTON */}
+
+<button
+className="category-arrow right"
+onClick={()=>{
+document.querySelector(".category-track").scrollBy({
+left:320,
+behavior:"smooth"
+})
+}}
+>
+›
+</button>
+
+
+<div className="category-track">
+
 {/* SUITS */}
 
 <div
@@ -317,6 +347,7 @@ onClick={()=>navigate("/search?category=Suits")}
 <span className="category-btn">Kurta & Suit Sets</span>
 </div>
 </div>
+
 
 {/* LOUNGEWEAR */}
 
@@ -330,6 +361,7 @@ onClick={()=>navigate("/search?category=Loungewear")}
 </div>
 </div>
 
+
 {/* KAFTAN */}
 
 <div
@@ -341,6 +373,7 @@ onClick={()=>navigate("/search?category=Kaftan")}
 <span className="category-btn">Kaftan</span>
 </div>
 </div>
+
 
 {/* CO-ORDS */}
 
@@ -354,6 +387,7 @@ onClick={()=>navigate("/search?category=Co-ords")}
 </div>
 </div>
 
+
 {/* DRESSES */}
 
 <div
@@ -365,6 +399,7 @@ onClick={()=>navigate("/search?category=Dresses")}
 <span className="category-btn">Dresses</span>
 </div>
 </div>
+
 
 {/* SAREE */}
 
@@ -378,6 +413,7 @@ onClick={()=>navigate("/search?category=Saree")}
 </div>
 </div>
 
+
 {/* KURTAS */}
 
 <div
@@ -389,6 +425,7 @@ onClick={()=>navigate("/search?category=Kurtas")}
 <span className="category-btn">Kurtas</span>
 </div>
 </div>
+
 
 {/* TOPS */}
 
@@ -402,6 +439,7 @@ onClick={()=>navigate("/search?category=Tops")}
 </div>
 </div>
 
+
 {/* BLAZER */}
 
 <div
@@ -413,6 +451,7 @@ onClick={()=>navigate("/search?category=Blazer")}
 <span className="category-btn">Blazer</span>
 </div>
 </div>
+
 
 {/* SKIRT SETS */}
 
@@ -426,6 +465,7 @@ onClick={()=>navigate("/search?category=Skirt Sets")}
 </div>
 </div>
 
+
 {/* SHIRTS */}
 
 <div
@@ -438,30 +478,259 @@ onClick={()=>navigate("/search?category=Shirts")}
 </div>
 </div>
 
-{/* DUPLICATE ITEMS FOR INFINITE SLIDER */}
+
+</div>
+</div>
+
+</section>
+
+{/* ================= TRENDING LOOKS ================= */}
+
+<section className="video-section">
+
+<h2 className="video-title">Trending Looks</h2>
+
+<div className="video-slider">
+
+<button
+className="video-arrow left"
+onClick={()=>{
+document.querySelector(".video-track").scrollBy({
+left:-320,
+behavior:"smooth"
+})
+}}
+>
+‹
+</button>
+
+<button
+className="video-arrow right"
+onClick={()=>{
+document.querySelector(".video-track").scrollBy({
+left:320,
+behavior:"smooth"
+})
+}}
+>
+›
+</button>
+
+<div className="video-track">
+
+{Array.from({length:20}).map((_,i)=>{
+
+const video =
+i % 2 === 0
+? "/video/reel1.mp4"
+: "/video/reel2.mp4"
+
+return(
 
 <div
-className="category-card"
-onClick={()=>navigate("/search?category=Suits")}
+className="video-card"
+key={i}
+onClick={()=>{
+document.getElementById("reelModal").style.display="flex"
+document.getElementById("reelPlayer").src=video
+document.getElementById("reelPlayer").play()
+}}
 >
-<img src="https://api.budandtulips.com/images/BT683ij31.jpg" alt="Suits"/>
-<div className="category-text">
-<span className="category-btn">Kurta & Suit Sets</span>
+
+<video
+src={video}
+muted
+loop
+playsInline
+preload="metadata"
+
+/* DESKTOP HOVER PLAY */
+onMouseEnter={(e)=>{
+if(window.innerWidth > 1000){
+e.target.play()
+}
+}}
+
+onMouseLeave={(e)=>{
+if(window.innerWidth > 1000){
+e.target.pause()
+e.target.currentTime=0
+}
+}}
+
+/* MOBILE TAP PLAY */
+onTouchStart={(e)=>{
+if(window.innerWidth <= 1000){
+const vid=e.target
+vid.paused ? vid.play() : vid.pause()
+}
+}}
+/>
+
 </div>
+
+)
+
+})}
+
 </div>
+
+</div>
+
+
+{/* ================= REEL MODAL ================= */}
 
 <div
-className="category-card"
-onClick={()=>navigate("/search?category=Loungewear")}
+id="reelModal"
+className="reel-modal"
+onClick={(e)=>{
+if(e.target.id==="reelModal"){
+document.getElementById("reelModal").style.display="none"
+document.getElementById("reelPlayer").pause()
+}
+}}
 >
-<img src="https://api.budandtulips.com/images/BT581hz11.jpg" alt="Loungewear"/>
-<div className="category-text">
-<span className="category-btn">Loungewear</span>
+
+<span
+className="reel-close"
+onClick={()=>{
+document.getElementById("reelModal").style.display="none"
+document.getElementById("reelPlayer").pause()
+}}
+>
+×
+</span>
+
+<video
+id="reelPlayer"
+className="reel-player"
+controls
+/>
+
+</div>
+
+</section>
+
+{/* ================= CUSTOMER REVIEWS ================= */}
+
+<section className="customer-review-section">
+
+<h2 className="review-heading">
+What Our Customers Say
+</h2>
+
+
+{/* GOOGLE REVIEW BANNER */}
+
+<div className="google-review-banner">
+
+<div className="google-left">
+<h3>Google Reviews</h3>
+<p className="rating">5.0 ⭐⭐⭐⭐⭐ (241)</p>
+</div>
+
+<button className="google-review-btn">
+Review us on Google
+</button>
+
+</div>
+
+
+{/* REVIEW GRID */}
+
+<div className="review-grid">
+
+
+{/* REVIEW CARD */}
+
+<div
+className="review-card"
+style={{
+backgroundImage:`url(https://api.budandtulips.com/images/sea%20Green%20cindrella%20suit2.jpg)`
+}}
+>
+
+<div className="review-stars">★★★★★</div>
+
+<p>
+Absolutely loved the embroidery and quality.
+The outfit looked exactly like the pictures.
+</p>
+
+<div className="review-user">
+<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
+<div>
+<h4>Priya Sharma</h4>
+<span className="review-time">7 days ago</span>
 </div>
 </div>
 
 </div>
 
+
+
+{/* REVIEW CARD */}
+
+<div
+className="review-card"
+style={{
+backgroundImage:`url(https://api.budandtulips.com/images/sea%20Green%20cindrella%20suit2.jpg)`
+}}
+>
+
+<div className="review-stars">★★★★★</div>
+
+<p>
+Delivery was quick and the festive collection
+is beautiful. Highly recommended.
+</p>
+
+<div className="review-user">
+<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
+<div>
+<h4>Ananya Mehta</h4>
+<span className="review-time">10 days ago</span>
+</div>
+</div>
+
+</div>
+
+
+
+{/* REVIEW CARD */}
+
+<div
+className="review-card"
+style={{
+backgroundImage:`url(https://api.budandtulips.com/images/sea%20Green%20cindrella%20suit2.jpg)`
+}}
+>
+
+<div className="review-stars">★★★★★</div>
+
+<p>
+Amazing designs and very comfortable fabric.
+Will definitely shop again.
+</p>
+
+<div className="review-user">
+<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
+<div>
+<h4>Riya Kapoor</h4>
+<span className="review-time">18 days ago</span>
+</div>
+</div>
+
+</div>
+
+
+</div>
+
+
+{/* LOAD MORE */}
+
+<div className="review-load-more">
+<button>View More</button>
 </div>
 
 </section>
@@ -510,116 +779,6 @@ onClick={()=>navigate("/search?category=Loungewear")}
 </button>
           
         </section>
-
-        {/* ================= CUSTOMER REVIEWS ================= */}
-
-<section className="customer-review-section">
-
-<h2 className="review-heading">
-What Our Customers Say
-</h2>
-
-{/* GOOGLE REVIEW BANNER */}
-
-<div className="google-review-banner">
-
-<div className="google-left">
-<h3>Google Reviews</h3>
-<p className="rating">5.0 ⭐⭐⭐⭐⭐ (241)</p>
-</div>
-
-<button className="google-review-btn">
-Review us on Google
-</button>
-
-</div>
-
-
-{/* REVIEW GRID */}
-
-<div className="review-grid">
-
-{/* REVIEW CARD */}
-
-<div className="review-card">
-
-<div className="review-user">
-<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
-<div>
-<h4>Priya Sharma</h4>
-<span className="review-time">7 days ago</span>
-</div>
-</div>
-
-<div className="review-stars">★★★★★</div>
-
-<p>
-Absolutely loved the embroidery and quality.
-The outfit looked exactly like the pictures.
-</p>
-
-<img
-className="review-image"
-src="/reviews/review1.jpg"
-alt=""
-/>
-
-</div>
-
-
-{/* REVIEW CARD */}
-
-<div className="review-card">
-
-<div className="review-user">
-<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
-<div>
-<h4>Ananya Mehta</h4>
-<span className="review-time">10 days ago</span>
-</div>
-</div>
-
-<div className="review-stars">★★★★★</div>
-
-<p>
-Delivery was quick and the festive collection is beautiful.
-Highly recommended.
-</p>
-
-</div>
-
-
-{/* REVIEW CARD */}
-
-<div className="review-card">
-
-<div className="review-user">
-<img src="https://image2url.com/r2/default/images/1772778835514-373752dc-3eee-49de-953f-2f460950b59a.webp" alt="" />
-<div>
-<h4>Riya Kapoor</h4>
-<span className="review-time">18 days ago</span>
-</div>
-</div>
-
-<div className="review-stars">★★★★★</div>
-
-<p>
-Amazing designs and very comfortable fabric.
-Will definitely shop again.
-</p>
-
-</div>
-
-</div>
-
-
-{/* LOAD MORE */}
-
-<div className="review-load-more">
-<button>View More</button>
-</div>
-
-</section>
       </div>
     </div>
   );
