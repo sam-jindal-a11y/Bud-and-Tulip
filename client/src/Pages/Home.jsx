@@ -75,132 +75,6 @@ const Home = () => {
       </Helmet>
 
       <Carousel />
-   
-{/* ================= PREMIUM CELEBRATION COUTURE ================= */}
-
-<section className="lux-celebration-section">
-
-<h2 className="lux-celebration-title">
-Celebration Couture
-</h2>
-
-<div className="lux-celebration-grid">
-
-{/* WEDDING → SUITS */}
-
-<div 
-className="lux-celebration-card"
-onClick={()=>navigate("/search?category=Suits")}
->
-
-<div className="lux-celebration-image">
-
-<img 
-className="celebration-img-main"
-src="https://api.budandtulips.com/images/Red%20Rose%20Straight%20Suit2.jpg" 
-alt="Wedding"
-/>
-
-<img 
-className="celebration-img-hover"
-src="https://api.budandtulips.com/images/Red%20Rose%20Suit%203.jpg"
-alt="Weddding"
-/>
-
-</div>
-<div className="lux-celebration-overlay">
-<h3>Wedding</h3>
-</div>
-</div>
-
-
-{/* MEHNDI → GREEN PRODUCTS */}
-
-<div 
-className="lux-celebration-card"
-onClick={()=>navigate("/search?query=&category=All%20Products")}
->
-<div className="lux-celebration-image">
-
-<img 
-className="celebration-img-main"
-src="https://api.budandtulips.com/images/Green%20Adhya%20Suit1.jpg" 
-alt="Mehndi"
-/>
-
-<img 
-className="celebration-img-hover"
-src="https://api.budandtulips.com/images/BT732io21.jpg"
-alt="Mehndi Hover"
-/>
-
-</div>
-  
-<div className="lux-celebration-overlay">
-<h3>Mehndi</h3>
-</div>
-</div>
-
-{/* HALDI → YELLOW PRODUCTS */}
-
-<div 
-className="lux-celebration-card"
-onClick={() => navigate("/search?color=yellow")}
->
-
-<div className="lux-celebration-image">
-
-<img 
-className="celebration-img-main"
-src="https://api.budandtulips.com/images/mustard%20Sadhna%20Suit1.jpg" 
-alt="Haldi"
-/>
-
-<img 
-className="celebration-img-hover"
-src="https://api.budandtulips.com/images/Basanti%20Suit%201.jpg"
-alt="Haldi Hover"
-/>
-
-</div>
-
-<div className="lux-celebration-overlay">
-<h3>Haldi</h3>
-</div>
-
-</div>
-
-{/* RECEPTION → DRESSES */}
-
-<div 
-className="lux-celebration-card"
-onClick={()=>navigate("/search?category=Dresses")}
->
-
-<div className="lux-celebration-image">
-
-<img 
-className="celebration-img-main"
-src="https://api.budandtulips.com/images/BT673ii31.jpg" 
-alt="Reception"
-/>
-
-<img 
-className="celebration-img-hover"
-src="https://api.budandtulips.com/images/BT733io31.jpg"
-alt="Reception"
-/>
-
-</div>
-
-<div className="lux-celebration-overlay">
-<h3>Reception</h3>
-</div>
-</div>
-
-</div>
-
-</section>
 
       <div className="container mx-auto px-4 py-8">
         {/* New Arrivals */}
@@ -242,6 +116,113 @@ alt="Reception"
   View More <i className="fa-solid fa-arrow-right"></i>
 </button>
         </section>
+   
+{/* ================= PREMIUM CELEBRATION POSTER ================= */}
+
+<section className="celebration-poster-wrapper">
+
+  {/* LEFT POSTER */}
+  <div className="poster-left">
+
+    <img
+      src="https://image2url.com/r2/default/images/1774334548742-5c023fb9-a8e7-44fe-bc52-d520caab0f21.png"
+      alt="Celebration Poster"
+      className="poster-img"
+    />
+
+    {/* OVERLAY CONTENT */}
+  <div className="poster-content">
+  <h1>
+    CELEBRATION <br /> 
+    EDIT
+  </h1>
+
+  <p>
+    A curated collection of timeless ethnic styles
+    crafted for every celebration moment
+  </p>
+
+  <button
+    className="shop-btn"
+    onClick={() => navigate("/search")}
+  >
+    Shop Now →
+  </button>
+</div>
+
+  </div>
+
+  {/* RIGHT CARDS */}
+  <div className="poster-right">
+
+    {/* WEDDING */}
+    <div 
+      className="lux-celebration-card"
+      onClick={()=>navigate("/search?category=Suits")}
+    >
+      <div className="lux-celebration-image">
+        <img className="celebration-img-main"
+          src="https://api.budandtulips.com/images/Red%20Rose%20Straight%20Suit2.jpg"/>
+        <img className="celebration-img-hover"
+          src="https://api.budandtulips.com/images/Red%20Rose%20Suit%203.jpg"/>
+      </div>
+      <div className="lux-celebration-overlay">
+        <h3>Wedding</h3>
+      </div>
+    </div>
+
+    {/* MEHNDI */}
+    <div 
+      className="lux-celebration-card"
+      onClick={()=>navigate("/search?category=All%20Products")}
+    >
+      <div className="lux-celebration-image">
+        <img className="celebration-img-main"
+          src="https://api.budandtulips.com/images/Green%20Adhya%20Suit1.jpg"/>
+        <img className="celebration-img-hover"
+          src="https://api.budandtulips.com/images/BT732io21.jpg"/>
+      </div>
+      <div className="lux-celebration-overlay">
+        <h3>Mehndi</h3>
+      </div>
+    </div>
+
+    {/* HALDI */}
+    <div 
+      className="lux-celebration-card"
+      onClick={()=>navigate("/search?color=yellow")}
+    >
+      <div className="lux-celebration-image">
+        <img className="celebration-img-main"
+          src="https://api.budandtulips.com/images/mustard%20Sadhna%20Suit1.jpg"/>
+        <img className="celebration-img-hover"
+          src="https://api.budandtulips.com/images/Basanti%20Suit%201.jpg"/>
+      </div>
+      <div className="lux-celebration-overlay">
+        <h3>Haldi</h3>
+      </div>
+    </div>
+
+    {/* RECEPTION */}
+    <div 
+      className="lux-celebration-card"
+      onClick={()=>navigate("/search?category=Dresses")}
+    >
+      <div className="lux-celebration-image">
+        <img className="celebration-img-main"
+          src="https://api.budandtulips.com/images/BT673ii31.jpg"/>
+        <img className="celebration-img-hover"
+          src="https://api.budandtulips.com/images/BT733io31.jpg"/>
+      </div>
+      <div className="lux-celebration-overlay">
+        <h3>Reception</h3>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
 
        {/* Best Sellers Section */}
 <section className="mb-12 text-center overflow-hidden">
@@ -284,6 +265,48 @@ alt="Reception"
 >
   View More <i className="fa-solid fa-arrow-right"></i>
 </button>
+</section>
+
+{/* ================= LOVED BY CELEBS ================= */}
+
+<section className="celebs-section">
+
+  <h2 className="celebs-title">LOVED BY CELEBS</h2>
+
+  <div className="celebs-wrapper">
+
+    {/* LEFT BIG IMAGE */}
+    <div className="celebs-left">
+      <img src="https://image2url.com/r2/default/images/1774345665742-cf66b9a3-626f-4b3c-82e1-cc408062c037.jpeg" />
+    </div>
+
+    {/* RIGHT GRID */}
+    <div className="celebs-grid">
+
+      <div className="celebs-card">
+        <img src="https://image2url.com/r2/default/images/1774345713246-ddb49e2f-c6ee-4319-8a0a-514a3738a0a0.jpeg" />
+        <span>Manushi Chillar</span>
+      </div>
+
+      <div className="celebs-card">
+        <img src="https://image2url.com/r2/default/images/1774346015352-f061e20b-dada-4d60-9a9d-cb6d0373aae4.jpeg" />
+        <span>Rubina Dilaik</span>
+      </div>
+
+      <div className="celebs-card">
+        <img src="https://image2url.com/r2/default/images/1774346054451-e783b5e3-105e-4a37-b99e-6795189b3c0b.jpeg" />
+        <span>Chitrangada Singh</span>
+      </div>
+
+      <div className="celebs-card">
+        <img src="https://image2url.com/r2/default/images/1774346079727-9e13473d-64dc-4f8a-9685-61ae77a788e0.jpeg" />
+        <span>Nargis Fakhri</span>
+      </div>
+
+    </div>
+
+  </div>
+
 </section>
 
 {/* ================= FULL WIDTH POSTER ================= */}
