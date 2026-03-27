@@ -267,43 +267,86 @@ const Home = () => {
 </button>
 </section>
 
-{/* ================= LOVED BY CELEBS ================= */}
+{/* ================= ULTRA PREMIUM CELEBS ================= */}
 
-<section className="celebs-section">
+<section className="celebs-premium">
 
-  <h2 className="celebs-title">LOVED BY CELEBS</h2>
+  <h2 className="celebs-heading">Loved By Celebs</h2>
 
-  <div className="celebs-wrapper">
+  <div className="celebs-premium-grid">
 
-    {/* LEFT BIG IMAGE */}
-    <div className="celebs-left">
-      <img src="https://image2url.com/r2/default/images/1774345665742-cf66b9a3-626f-4b3c-82e1-cc408062c037.jpeg" />
-    </div>
+    {[
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5506.PNG",
+        link: "/product/slug/hand-embroidered-blue-adhya-suit"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5495.PNG"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5496.PNG"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5499.PNG",
+        link: "/product/slug/hand-embroidered-roop-suit"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5503.PNG"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5508.PNG",
+        link: "/product/slug/somya-suit"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5502.PNG",
+        link: "/product/slug/hand-embroidered-straight-rose-suit"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5500.JPG.jpeg",
+        link: "/product/slug/hot-pink-pleated-suit"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5501.PNG",
+        link: "/product/slug/red-rose-suit"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5507.PNG",
+        link: "/product/slug/uvika-suit"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5504.JPG.jpeg"
+      },
+      {
+        img: "https://ik.imagekit.io/a4onplc06/IMG_5510.JPG.jpeg"
+      }
+    ].map((item, i) => {
 
-    {/* RIGHT GRID */}
-    <div className="celebs-grid">
+      const isClickable = !!item.link;
 
-      <div className="celebs-card">
-        <img src="https://image2url.com/r2/default/images/1774345713246-ddb49e2f-c6ee-4319-8a0a-514a3738a0a0.jpeg" />
-        <span>Manushi Chillar</span>
-      </div>
+      return (
+        <div
+          className="celebs-item"
+          key={i}
+          onClick={() => {
+            if (!isClickable) return;
 
-      <div className="celebs-card">
-        <img src="https://image2url.com/r2/default/images/1774346015352-f061e20b-dada-4d60-9a9d-cb6d0373aae4.jpeg" />
-        <span>Rubina Dilaik</span>
-      </div>
+            if (item.link.startsWith("http")) {
+              window.open(item.link, "_self");
+            } else {
+              navigate(item.link);
+            }
+          }}
+          style={{ cursor: isClickable ? "pointer" : "default" }}
+        >
+          <img src={item.img} alt="celebrity" />
 
-      <div className="celebs-card">
-        <img src="https://image2url.com/r2/default/images/1774346054451-e783b5e3-105e-4a37-b99e-6795189b3c0b.jpeg" />
-        <span>Chitrangada Singh</span>
-      </div>
+          <div className="celebs-overlay">
+            <span>{isClickable ? "Shop This Look" : "Shop Look"}</span>
+          </div>
+        </div>
+      );
 
-      <div className="celebs-card">
-        <img src="https://image2url.com/r2/default/images/1774346079727-9e13473d-64dc-4f8a-9685-61ae77a788e0.jpeg" />
-        <span>Nargis Fakhri</span>
-      </div>
-
-    </div>
+    })}
 
   </div>
 
